@@ -1,0 +1,64 @@
+%*****************************************
+\chapter{Related Work}\label{ch:related_work}
+%*****************************************
+This chapter describes the related work in the field of Cloud Computing Monitoring. Additional, this chapter also provides a small overview of several state-of-the-art Open Source solutions that are relevant in developing a monitoring Cloud application.
+
+\section{Related literature} \label{sec:related_literature}
+The research that is described in this thesis is the successor of the work performed by Ashton D. Spina. In \cite{spina} he explains the concern for the lack of non-proprietary tools to monitor cost and waste in a generalized manner on cloud deployments in the Virtual Machine as a Service (VMaaS) delivery model. He then proposes a general solution based on a set of probes (one per Virtual Machine), together with an aggregator. These tools are based on a set of requirements that describe the problem space. Although Spina has successfully shown that a monitoring solution that meets the elicited requirements can and has been created, there is future work to ensure quality of the tool. These improvements are mainly based to make the solution to be more effective and to be more user friendly.\\
+
+\noindent
+\cite{hauser2018reviewing} explains the representation of resource statistics. This statistical model consists of two parts: a state change probability matrix as the dynamic part, while a static part contains fixed information like CPU cores, and reference values of the underlying hardware for hardware independent comparisons. It presents an approach for monitoring resource statistics on the physical level only, and provide resource utilization profiles to cloud middle-ware and customers, instead of storing the raw time series data. Thus, its main advantage is the new approach of Cloud resource profiling by revisiting the necessary metrics for hardware independent resource profiles. This profile is interested for this research as it provides a critical view of the relevant resources that can be collected for monitoring cloud applications.\\
+
+\noindent
+According to \cite{aktas2018hybrid}, an important requirement in resource monitoring of cloud computing platforms is to monitor malfunctioning problems and/or security-related problems. Therefore, the detection of such problems becomes a highly important requirement for the continuous availability and maintenance of cloud computing systems. This paper presents a generic software architecture that is independent of the implementation of cloud computing platforms. The architecture is designed to provide two main functionalities for monitoring cloud computing platforms, i.e. (1) real-time monitoring for preventive maintenance and (2) after-the-fact monitoring for detecting malfunctions/security-related problems.\\
+
+\noindent
+In \cite{wang2018self}, a description is provided that states the problem of monitoring cloud computing systems, as they are always in large scales and have complex architectures. To track the running status of these systems, a monitoring system always acquires kinds of monitoring data from different layers (e.g. network, hardware, virtual machine, operating system, middle-ware, application) in lots of distributed nodes. However, collecting, storing and processing a large amount of monitoring data should cause a huge resource overhead, which affects the timeliness of anomaly detection, the accuracy of fault locations, and even overall performance. Therefore, this paper proposes a self-adaptive monitoring framework. According to them, a distributed monitoring system needs to collect the following four key monitoring metrics:
+\begin{itemize}
+    \item \textbf{CPU: }CPU time occupied by system calls;
+    \item \textbf{Network: }Number of packets received and sent;
+    \item \textbf{Memory: }Number of bytes transferred from disk to memory;
+    \item \textbf{Disk: }Number of bytes read and written;
+\end{itemize}
+
+\noindent
+The information described in the papers above highlight all another part of the requirements of developing a Cloud Computing Monitoring solution. Thus, \cite{wang2018self} explains the relevant metrics, \cite{aktas2018hybrid} explains a generic monitoring architecture, and \cite{hauser2018reviewing} explains a representation of resource statistics.
+
+\section{Related technologies} \label{sc:related_technologies}
+Relevant technologies for the research in this thesis are cAdvisor, Prometheus and Grafana. This is a well known combination for resource monitoring, with the advantage that these three are all popular Open Source projects. Alternatives for this profiling stack are solutions like Nagios\footnote{\url{https://www.nagios.org/}}, Sensu\footnote{\url{https://sensu.io/}}, and New Relic\footnote{\url{https://newrelic.com/}} but they are too heavy and too expensive – or both. In the sections below, a description of each component is provided, together with their advantages.
+
+\subsection{cAdvisor}
+CAdvisor is hosted on Github\footnote{\url{https://github.com/google/cadvisor}} and aims to provide container users an understanding of the resource usage and performance characteristics of their running containers. It is a running daemon that collects, aggregates, processes, and exports information about running containers. Specifically, for each container it keeps resource isolation parameters, historical resource usage, histograms of complete historical resource usage and network statistics. This data is exported by container and machine-wide. The collected statistics are both exposed using their remote REST API, or can be scraped by Prometheus.
+
+\subsection{Prometheus} 
+Prometheus\footnote{\url{https://github.com/prometheus/prometheus/}} is a system originally developed by SoundCloud as part of a move towards a microservice architecture. It is a Time Series Database (TSDB) and a subset of its main features as compared to other monitoring systems are: 
+
+\begin{itemize}
+    \item A multi-dimensional data model (timeseries defined by metric name and set of key/value dimensions);
+    \item A flexible query language to leverage this dimensionality;
+    \item Timeseries collection happens via a pull model over HTTP;
+    \item Support for hierarchical and horizontal federation;
+\end{itemize}
+    
+Its architecture is interesting as it provides a better understanding of the possibilities with Prometheus and how it works. This architecture can be found in \autoref{fig:prometheus_architecture}. In this image, it can be seen that Prometheus collects its metrics by scraping multiple targets (called a job), and it can even scrape other Prometheus servers (known as federation). From this architecture, it also becomes clear that Prometheus can be configured with Grafana for presenting its visualizations. This is described in the next section.\\
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/prometheus_architecture.png}
+    \caption{Prometheus architecture}
+    \label{fig:prometheus_architecture}
+\end{figure}
+
+Another interesting feature of Prometheus is how it represents its data. Unlike traditional SQL databases, the data is not structured in tables, rather it is structured as time series, in one of the four possible metric types \cite{prometheus_metrics}:
+\begin{itemize}
+    \item \textbf{Counter: }A counter is a cumulative metric that represents a single monotonically increasing counter whose value can only increase or be reset to zero on restart.
+    \item \textbf{Gauge: }A gauge is a metric that represents a single numerical value that can arbitrarily go up and down.
+    \item \textbf{Histogram: }A histogram samples observations (usually things like request durations or response sizes) and counts them in configurable buckets. It also provides a sum of all observed values.
+    \item \textbf{Summary: }Similar to a histogram, a summary samples observations (usually things like request durations and response sizes). While it also provides a total count of observations and a sum of all observed values, it calculates configurable quantiles over a sliding time window.
+\end{itemize}
+
+\subsection{Grafana}
+Grafana\footnote{\url{https://github.com/grafana/grafana}} allows you to query, visualize, alert on and understand your metrics no matter where they are stored. Grafana is highly customizable, which allows the user of Grafana to configure it to their needs. It can be configured to connect to different data sources, including Prometheus. Therefore, it is the perfect use for visualizing the results that are collected in this research. Grafana works with the notion of dashboards, which groups a set of visualizations together. A dashboard can be stored in a well known JSON format. A dashboard can be updated and configured by its graphical user interface. This results in an updated JSON file, which can be replaced by the original JSON dashboard. Therefore, it is straight forward to customize and configure the dashboard. A dashboard consists of several views, which are known as panels. There are already a set of predefined panels, including a graph, a heatmap, a pie chart, single stat (panel for displaying a single number) and a table. Every panel can be configured, so that it visualizes the required data. However, all visualizations are insufficient for this research, so a new one needs to be developed. This can be done by any language that compiles to Javascript. Therefore, the compiled source code results in the new panel. In Grafana, it is also possible to create an app, which is a combination of panels, data sources, dashboards and new UI pages. Apps can be imported directly in Grafana, so that there is no need for configuring anymore. 
+
+\subsection{Docker}
+Docker is a technology that offers the ability to create, deploy, and run standardized software packages \cite{docker}. These software packages are known as containers, which can be created from images. Images specify how containers should operate and what software libraries are inside this container. Images are often created by combining and modifying standard images downloaded from public repositories, such as Dockerhub\footnote{\url{https://hub.docker.com/}}. Docker can be compared with a virtual machine, as they both offer some abstraction.  But unlike a virtual machine, rather than creating a whole virtual operating system, Docker allows applications to use the same Linux kernel as the system that it is running on and only requires applications be shipped with things not already running on the host computer. This gives a significant performance boost and reduces the size of the application.

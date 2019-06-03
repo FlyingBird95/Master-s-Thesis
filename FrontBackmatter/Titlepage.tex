@@ -1,0 +1,46 @@
+%*******************************************************
+% Titlepage
+%*******************************************************
+\begin{titlepage}
+    %\pdfbookmark[1]{\myTitle}{titlepage}
+    % if you want the titlepage to be centered, uncomment and fine-tune the line below (KOMA classes environment)
+    \begin{addmargin}[-1cm]{-3cm}
+    \begin{center}
+        \includegraphics[height=2cm]{gfx/logo_fse_black.pdf}\\
+        \large
+
+        \hfill
+
+        \vfill
+
+        \begingroup
+            \color{CTtitle}\spacedallcaps{\myTitle} \\ \bigskip
+        \endgroup
+
+        \spacedlowsmallcaps{\myName}
+
+        \vfill
+
+        \mySubtitle \medskip
+        \myDepartment \\
+        \myFaculty \\
+        \myUni \\ \bigskip
+        
+        \vfill
+        
+        \large
+        
+        \begin{tabular}{rl}
+            \spacedlowsmallcaps{Supervisors}:\\
+            \myProf\\
+            \myOtherProf\\
+        \end{tabular}
+        
+        \vfill
+        \myLocation, \myTime\ 
+
+        
+
+    \end{center}
+  \end{addmargin}
+\end{titlepage}

@@ -1,0 +1,99 @@
+%********************************************************************
+% Appendix
+%*******************************************************
+\chapter{Proof of determinant being non-zero} \label{ch:proof}
+If the determinant of a matrix is non-zero, then that matrix is invertible. Therefore, it is necessary to proof that the determinant of matrix $A_n$ is non-zero. This can be done using the following two theorems:
+\begin{theorem} \label{th:swap}
+Let $A$ be an arbitrary matrix and let $A'$ be a permutation of this matrix with two columns swapped, then $\det(A) = - \det(A')$.
+\end{theorem}
+\begin{theorem} \label{th:block}
+If a matrix $M$ can be written as $M = \begin{bmatrix}
+A & B \\ 
+C & D 
+\end{bmatrix}$, then $\det(M) = \det(A) \det(D - C A^{-1} B)$.
+\end{theorem}
+
+\section{Proof}
+Given are the following utilization values $u_1$, $u_2$, \dots, $u_n$, where $0 < u_i \leq 1$ (for $1 \leq i \leq n)$. As described in \autoref{sec:approaches}, the matrix $A_n~(n \times n)$ can be constructed as follows:
+\begin{equation}
+    A_n = 
+\begin{bmatrix}
+    u_1    & -u_2 &       &        & \\
+    u_1    &      &  -u_3 &        & \\
+    \vdots &      &       & \ddots & \\
+    u_1    &      &       &        & -u_n \\
+    1      & 1    & 1     & \dots  & 1 \\
+\end{bmatrix}
+\end{equation}
+
+Using \autoref{th:swap} the first row can be swapped with the second row. Then row 2 can be swapped with row 3. This process can be repeated $n-1$ times, such that the last swap is between row $n-1$ and row $n$. This leads to the following mutated matrix $A_n'$:
+\begin{equation}
+    A_n' = 
+\begin{bmatrix}
+    -u_2 &      &        &      & u_1\\
+         & -u_3 &        &      & u_1\\
+         &      & \ddots &      & \vdots\\
+         &      &        & -u_n & u_1 \\
+    1    & 1    & \dots  & 1    & 1 \\
+\end{bmatrix}
+\end{equation}
+The determinant of $A_n$ can be written in terms of $A_n'$:
+\begin{equation} \label{eq:3}
+    \det(A_n) = (-1)^{n-1} \det(A_n')
+\end{equation}
+
+Matrix $A_n'$ can be splitted into matrices $A, B, C$ and $D$ of $(n-1 \times n-1), (n-1 \times 1), (1 \times n-1)$ and $(1 \times 1)$ respectively. Thus:
+\begin{equation}
+\begin{split}
+A &= \begin{bmatrix}
+    -u_2 &      &        &      \\
+         & -u_3 &        &      \\
+         &      & \ddots &      \\
+         &      &        & -u_n
+    \end{bmatrix}\\
+C &= \begin{bmatrix}1 & 1 & \dots & 1\end{bmatrix}
+\end{split}\quad~\quad
+\begin{split}
+B &= \begin{bmatrix}u_1 \\ u_1 \\ \vdots \\ u_1\end{bmatrix}\\
+D &= \begin{bmatrix}1\end{bmatrix}
+\end{split}
+\end{equation}
+
+Using \autoref{th:block}, the determinant of $A_n'$ is:
+\begin{align} \label{eq:4}
+\begin{split}
+\det(A_n') &= \det(A) \det(D - C A^{-1} B) \\
+& = \prod_{i=2}^n (-u_i) \det(D - CA^{-1}B)
+\end{split}
+\end{align}
+And $\det(D - CA^{-1}B)$ is:
+\begin{align} \label{eq:6}
+\begin{split}
+  &= \det(1 - \begin{bmatrix}1 & 1 & \dots & 1\end{bmatrix} \begin{bmatrix}
+      \frac{1}{-u_2} \\
+      & \frac{1}{-u_3} \\
+      & & \ddots \\
+      & & & \frac{1}{-u_n}\\
+  \end{bmatrix}
+  \begin{bmatrix}u_1 \\ u_1 \\ \vdots \\ u_1\end{bmatrix}) \\
+  &= \det\begin{vmatrix}
+      1 + \frac{u_1}{u_2} \\
+      & 1 + \frac{u_1}{u_3} \\
+      & & \ddots \\
+      & & & 1 + \frac{u_1}{u_n}
+  \end{vmatrix} \\
+  & = \prod_{i=2}^n(1+\frac{u_1}{u_i})
+\end{split}
+\end{align}
+
+Combining \autoref{eq:3}, \autoref{eq:4} and \autoref{eq:6} yields:
+\begin{align} \label{eq:det}
+    \det(A_n) &= (-1)^{n-1} \prod_{i=2}^n (-u_i) \prod_{i=2}^n (1 + \frac{u_1}{u_i})
+\end{align}
+
+$\det(A_n) \neq 0$, as every term from \autoref{eq:det} is non-zero:
+\begin{itemize}
+    \item $(-1)^{n-1}$ is either 1 or $-1$, and therefore non-zero;
+    \item $\prod_{i=2}^n (-u_i)$ is non-zero, as every element $u_i$ is strictly positive;
+    \item $\prod_{i=2}^n (1 + \frac{u_1}{u_i})$ is non-zero, as $\frac{u_1}{u_i} > 0$.
+\end{itemize}
