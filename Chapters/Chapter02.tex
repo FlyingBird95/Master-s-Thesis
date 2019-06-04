@@ -1,12 +1,28 @@
 %*****************************************
 \chapter{Related Work}\label{ch:related_work}
 %*****************************************
-This chapter describes the related work in the field of Cloud Computing Monitoring. Additional, this chapter provides a small overview of several state-of-the-art Open Source solutions that are relevant in developing a monitoring Cloud application. However, this chapter starts with a concise overview of related background material.
+This chapter describes the related literature in the field of Cloud Computing Monitoring. Additional, this chapter provides a small overview of several state-of-the-art Open Source solutions that are relevant in developing a monitoring Cloud application. However, this chapter starts with a concise overview of related background material.
 
 \section{Background} \label{sec:background}
-Cloud Computing Monitoring exists from the beginning of Cloud Computing. \autoref{ch:introduction} already described that it is an essential feature in controlling and managing hardware and software infrastructures. This section provides background information
+This section provides background information for Cloud Computing Monitoring. Additionally, this section provides relevant challenges. Monitoring for the Cloud Consumer is primarily performed for discovering whether the service is working as expected. Additionally, Cloud Consumer Monitoring can be used for comparing monitoring data, from equivalent services, to decide which is the best one. However, it is important that the quality of the collected data is of a certain standard. The next section evaluates several properties of evaluating this quality.
 
+\subsection{Quality of data} \label{sec:quality}
+The aspects for assessing the quality are defined in \cite{wand1996anchoring}:
+\begin{itemize}
+    \item \textbf{Timeless: }the delay between a change of the real-world state and the resulting modification of the information system state.
+    \item \textbf{Accuracy: }this implies that the information system represents a real-world state equivalent to the one that is represented.
+    \item \textbf{Completeness: }the ability of an information system to represent every meaningful state of the represented real-world system.
+    \item \textbf{Availability: }the extent to which data is present obtainable, and ready for use.
+\end{itemize}
 
+\noindent
+Obtaining a good level of quality for the monitoring data according to these attributes depends on many factors. The monitoring system need to be able to read the status of the attribute and to convert it into a value. There might be errors arising due to the precision of the data, the approximations done during the computations and the reliability of the formulas adopted. A proper balance between the cost of designing and running the monitoring system and the quality of the monitoring data is therefore crucial \cite{pernici2016monitoring}.
+
+\subsection{Open issues} \label{sec:open_issues}
+In this section, several open issues and challenges are discussed. As stated in \cite{pernici2016monitoring} there are two main issues in a systematic approach to monitoring. There are both described below.\\
+
+\noindent
+The first open issue is with respect to the specification of monitoring elements. It can be stated as: ``what monitoring data should be collected?'' The interesting data depends on the service being provided, and is thus different for every situation. Not only the elements to be monitored should be specified, but also the available sources. Another issue concerns the possibility of viewing the data and analysing it at different granularities. A third issue concerns the quality of the monitoring data, as can be evaluated by using the properties from \autoref{sec:quality}. Concerning sources, the monitoring system should be able to dynamically create or use new sources, in particular in services being provided in very variable situations, such as the ability to auto-scale in Docker\footnote{This is explained further in \autoref{sec:docker}.}
 
 \section{Related literature} \label{sec:related_literature}
 The research that is described in this thesis is the successor of the work performed by Ashton D. Spina. In \cite{spina} he explains the concern for the lack of non-proprietary tools to monitor cost and waste in a generalized manner on cloud deployments in the Virtual Machine as a Service (VMaaS) delivery model. He then proposes a general solution based on a set of probes (one per Virtual Machine), together with an aggregator. These tools are based on a set of requirements that describe the problem space. Although Spina has successfully shown that a monitoring solution that meets the elicited requirements can and has been created, there is future work to ensure quality of the tool. These improvements are mainly based to make the solution to be more effective and to be more user friendly.\\
