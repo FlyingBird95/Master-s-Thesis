@@ -19,9 +19,6 @@ The aspects for assessing the monitoring data quality are defined in \cite{wand1
 Obtaining a good level of quality for the monitoring data according to these attributes depends on many factors. The monitoring system needs to be able to read the status of the attribute and to convert it into a value. There might be errors arising due to the precision of the data, the approximations done during the computations and the reliability of the formulas adopted. A proper balance between the cost of designing and running the monitoring system and the quality of the monitoring data is therefore crucial \cite{pernici2016monitoring}. 
 
 
-
-
-
 \subsection{Open issues} \label{sec:open_issues}
 In this section, several open issues and challenges are discussed. As stated in \cite{pernici2016monitoring, aceto2013cloud} there are multiple main issues in a systematic approach to monitoring. There are all described below.\\
 
@@ -47,9 +44,9 @@ The first question can be used to determine the monitoring data. This data needs
 
 
 \section{Related literature} \label{sec:related_literature}
-The research that is described in this thesis is the successor of the work performed by Ashton D. Spina. In \cite{spina} he explains the concern for the lack of non-proprietary tools to monitor cost and waste in a generalized manner on cloud deployments in the Virtual Machine as a Service (VMaaS) delivery model. He then proposes a general solution based on a set of probes (one per Virtual Machine), together with an aggregator. These tools are based on a set of requirements that describe the problem space. Although Spina has successfully shown that a monitoring solution that meets the elicited requirements can and has been created, there is future work to ensure quality of the tool. These improvements are mainly based to make the solution to be more effective and to be more user friendly. This section summarises several related papers. The work from these papers are used to highlight important features that are relevant for designing the method proposed in \autoref{ch:methods}.
+The research that is described in this thesis is the successor of the work performed by Ashton D. Spina. In \cite{spina} he explains the concern for the lack of non-proprietary tools to monitor cost and waste in a generalized manner on cloud deployments in the Virtual Machine as a Service (VMaaS) delivery model. He then proposes a general solution based on a set of probes (one per Virtual Machine), together with an aggregator. These tools are based on a set of requirements that describe the problem space. Although Spina has successfully shown that a monitoring solution that meets the elicited requirements can and has been created, there is future work to ensure quality of the tool. These improvements are mainly based to make the solution to be more effective and to be more user friendly. This section summarises several relevant papers. The papers are categorized by their main contribution. The following categories are evaluated: resource selection, monitoring architecture and 
 
-\subsection{Resource selection}
+\subsection{Resource selection} \label{sec:resource_selection}
 In \cite{wang2018self}, a description is provided that states the problem of monitoring cloud computing systems, as they are always in large scales and have complex architectures. To track the running status of these systems, a monitoring system always acquires kinds of monitoring data from different layers (e.g. network, hardware, virtual machine, operating system, middle-ware, application) in lots of distributed nodes. However, collecting, storing and processing a large amount of monitoring data should cause a huge resource overhead, which affects the timeliness of anomaly detection, the accuracy of fault locations, and even overall performance. Therefore, this paper proposes a self-adaptive monitoring framework. According to them, a distributed monitoring system needs to collect the following four key monitoring metrics:
 \begin{itemize}
     \item \textbf{CPU: }CPU time occupied by system calls;
@@ -62,9 +59,13 @@ In \cite{wang2018self}, a description is provided that states the problem of mon
 Using the collected metrics above, they must be represented in a statistical model. \cite{hauser2018reviewing} explains the representation of resource statistics. This statistical model consists of two parts: a state change probability matrix as the dynamic part, while a static part contains fixed information like CPU cores, and reference values of the underlying hardware for hardware independent comparisons. It presents an approach for monitoring resource statistics on the physical level only, and provide resource utilization profiles to cloud middle-ware and customers, instead of storing the raw time series data. Thus, its main advantage is the new approach of Cloud resource profiling by revisiting the necessary metrics for hardware independent resource profiles. This profile is interested for this research as it provides a critical view of the relevant resources that can be collected for monitoring cloud applications.\\
 
 
-
 \noindent
 According to \cite{aktas2018hybrid}, an important requirement in resource monitoring of cloud computing platforms is to monitor malfunctioning problems and/or security-related problems. Therefore, the detection of such problems becomes a highly important requirement for the continuous availability and maintenance of cloud computing systems. This paper presents a generic software architecture that is independent of the implementation of cloud computing platforms. The architecture is designed to provide two main functionalities for monitoring cloud computing platforms, i.e. (1) real-time monitoring for preventive maintenance and (2) after-the-fact monitoring for detecting malfunctions/security-related problems.\\
+
+\subsection{Monitoring architecture} \label{sec:monitoring_architecture}
+Parallel to the decision that needs to be made on what to monitor (i.e. which resource metrics, as described in \autoref{sec:resource_selection}), is to state how this can be achieved. This mainly concerns the architecture of the monitoring system. According to \cite{kumar2017inspection}, this can either be done centralized or decentralized. A centralized architecture has various issues, such as: (1) single point of failure, (2) not scalable, (3) high communication cost, and (4) lacking computational power. The authors of this paper argues for a decentralized architecture, which tackles the 4 issues described above. A monitoring system is considered decentralized when there is not a single component that is more necessary than another component.\\
+
+
 
 
 
