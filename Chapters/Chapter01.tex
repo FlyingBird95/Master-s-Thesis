@@ -1,7 +1,7 @@
 %************************************************
 \chapter{Introduction}\label{ch:introduction}
 %************************************************
-The Cloud is a set of different types of hardware and software that work collectively to deliver many aspects of computing to the end-user as an online service \cite{lenovo_cloud}. Cloud Computing is the use of hardware and software to deliver a service over a network, usually the Internet. The NIST definition of cloud computing is the following: ``Cloud computing is a model for enabling ubiquitous, convenient, on-demand network access to a shared pool of configurable computing resources (e.g., networks, servers, storage, applications, and services) that can be rapidly provisioned and released with minimal management effort or service provider interaction.''\cite{nist:cloud_computing} This cloud model is composed of five essential characteristics and three service models. The five characteristics are:
+The Cloud is a set of different types of hardware and software that work collectively to deliver many aspects of computing to the end-user as an online service \cite{lenovo_cloud}. Cloud Computing is the use of hardware and software to deliver a service over a network, usually the Internet. The NIST definition of cloud computing is the following: ``Cloud Computing is a model for enabling ubiquitous, convenient, on-demand network access to a shared pool of configurable computing resources (e.g., networks, servers, storage, applications, and services) that can be rapidly provisioned and released with minimal management effort or service provider interaction.''\cite{nist:cloud_computing} This cloud model is composed of five essential characteristics and three service models. These are:
 \begin{enumerate}
     \item On-demand self-service
     \item Broad network access
@@ -19,15 +19,13 @@ And the three service models are:
 \end{enumerate}
 
 \noindent
-When developing a monitoring application that targets to deploy in the cloud, it is important to keep the essential characteristics in mind. Therefore, the desired solution must meet all these five characteristics. The third characteristic is resource pooling, and this is especially interesting as Cloud systems automatically control and optimize resource use by leveraging a metering capability at some level of abstraction appropriate to the type of service. Monitoring of Cloud is a key tool for controlling and managing hardware and software infrastructures. Additionally, it provides information and Key Performance Indicators (KPIs) for both platforms and applications. According to \cite{aceto2013cloud}, Cloud Computing involves many activities for which monitoring is an essential task. The most important of these activities are the following:\\
+When developing a monitoring application that targets to deploy in the cloud, it is important to keep the essential characteristics in mind. Therefore, the desired solution must meet all these five characteristics. The third characteristic is resource pooling, and this is especially interesting as Cloud Systems automatically control and optimize resource use by leveraging a metering capability at some level of abstraction appropriate to the type of service. Monitoring of Cloud is a key tool for controlling and managing hardware and software infrastructures. Additionally, it provides information and Key Performance Indicators (KPIs) for both platforms and applications. According to \cite{aceto2013cloud}, Cloud Computing involves many activities for which monitoring is an essential task. The most important of these activities are the following:\\
 
 \noindent
-One of the most challenging tasks for application and service developers, before the large scale adoption of Cloud Computing, has always been resource and capacity planning. 
-In order to guarantee the performance required by applications and services, developers have to quantify capacity and resources to be purchased, depending on how such applications and services are designed and implemented.
-Although this can be estimated by static analysis, testing and monitoring, the real values are unpredictable and highly variable. To this end, monitoring becomes essential for Cloud Service Providers to predict and keep track of the evolution of all the parameters involved in the process of QoS assurance \cite{katsaros2011building}.\\
+One of the most challenging tasks for application and service developers, before the large scale adoption of Cloud Computing, has always been resource and capacity planning. In order to guarantee the performance required by applications and services, developers have to quantify capacity and resources to be purchased, depending on how such applications and services are designed and implemented. Although this can be estimated by static analysis, testing and monitoring, the real values are unpredictable and highly variable. To this end, monitoring becomes essential for Cloud Service Providers to predict and keep track of the evolution of all the parameters involved in the process of QoS assurance \cite{katsaros2011building}.\\
 
 \noindent
-A key feature of Cloud Computing is to pay proportionally to the use of the service with different metrics and different granularity, according to the type of service and the price model adopted. For example, in SaaS the number of users of a system can be a reference of billing criteria. In PaaS, the CPU utilization, or the task completion time is interesting. And lastly, for IaaS, the number of VM (and the amount of resources) can be used as a billing criteria. Monitoring is important for both the Provider side for the billing, and the Consumer side for verifying his own usage and to compare different Providers.\\
+However, monitoring Cloud Computing applications is not only import for the Cloud Service Provider, but it is also important for the Cloud Service Consumer. A key feature of Cloud Computing is to pay proportionally to the use of the service with different metrics and different granularity, according to the type of service and the price model adopted. For example, in SaaS the number of users of a system can be a reference of billing criteria. In PaaS, the CPU utilization, or the task completion time is interesting. And lastly, for IaaS, the number of VM (and the amount of resources) can be used as a billing criteria. Monitoring is important for the Consumer side for verifying his own usage and to compare different Providers. This results in choosing the best Provider, according to the metrics of the Consumer.\\
 
 \noindent
 The last monitoring activity that is important with respect to this thesis is the performance management. Despite the attention paid by Providers, some Cloud nodes may attain performance orders of magnitude worse than other nodes. From a Consumer's perspective, monitoring the perceived performance is necessary to adapt to the changes or to apply corrective measures. In the remainder of this thesis, performance monitoring is considered as important, and will be discussed further in \autoref{ch:related_work}.\\
@@ -40,24 +38,25 @@ As discussed above, there is a strong need for monitoring Cloud Computing at bot
 \end{equation}
 
 \noindent
-Expressing the actual cost in terms of effective cost and waste is desired, as it easily summarizes the main target of a Cloud Computing Deployment. These two values, and the waste-ratio (which is $c_\text{waste} /c_\text{actual}$), are an effective manner of expressing the amount of resources that can be thrown away. However, when computing these costs, there is a certain price involved. Monitoring the actual costs of a Cloud deployment is rather complicated, as it depends on how the pricing is modeled and around what economic principles it is based. In \cite{samimi2011review} the basic core principles are presented and they provide a comparative review of the latest and most appropriate economic and pricing models applicable to grid and Cloud Computing. Therefore, it is not the focus of this thesis to reveal the actual costs of running a certain deployment, but rather use several metrics to estimate this pricing. Eventually, this pricing model will be used to compute the total cost, and the effective cost. With a simple rewriting of \autoref{eq:intro}, the waste can be computed. Note that all these values hold for a specific machine. For a given deployment that consists of multiple nodes, the total actual cost is the sum of all nodes. This also holds for the total waste and total effective cost.\\
+Expressing the actual cost in terms of effective cost and waste is desired, as it easily summarizes the main target of a Cloud Computing Deployment. These two values, and the waste-ratio (which is $c_\text{waste} / c_\text{actual}$), are an effective manner of expressing the amount of resources that can be thrown away. However, when computing these costs, there is a certain price involved. Monitoring the actual costs of a Cloud deployment is rather complicated, as it depends on how the pricing is modelled and around what economic principles it is based. In \cite{samimi2011review} the basic core principles are presented and they provide a comparative review of the latest and most appropriate economic and pricing models applicable to grid and Cloud Computing. Therefore, it is not the focus of this thesis to reveal the actual costs of running a certain deployment, but rather use several metrics to estimate this pricing. Eventually, this pricing model will be used to compute the total cost, and the effective cost. With a simple rewriting of \autoref{eq:intro}, the waste can be computed. Note that all these variables can be computed per VM. For a given deployment that consists of multiple nodes, the total actual cost is the sum of all nodes. This also holds for the total waste and total effective cost.\\
 
 \noindent
-The need for computing the cost and waste leads to the following research question:
+The need for monitoring and computing the cost and waste leads to the following research question:
 
 \begin{quote}
 \textbf{Q1: }\textit{How can the cost and waste monitoring of a Cloud Computing Application be offered in a scalable and resilient manner?}
 \end{quote}
 \noindent
-This research question can be answered by splitting this question into several sub questions:
+This research question can be answered by splitting this down into several sub questions:
 
 \begin{quote}
-    \textbf{Q2: }\textit{How can the utilization of a Cloud application be monitored in an effective manner?}\\
-    \textbf{Q3: }\textit{What is an accurate pricing model for estimating the cost of a Cloud application?}\\
-    \textbf{Q4: }\textit{What is an effective approach for computing the waste of a Cloud application?}\\
-    \textbf{Q5: }\textit{How can the cost and waste be presented to the user in a simple and effective manner?}\\
+    \begin{itemize}
+        \item[\textbf{Q2}: ]\textit{How can the utilization of a Cloud application be monitored in an effective manner?}
+        \item[\textbf{Q3}: ]\textit{What is an accurate pricing model for estimating the cost of a Cloud application?}
+        \item[\textbf{Q4}: ]\textit{What is an effective approach for computing the waste of a Cloud application?}
+        \item[\textbf{Q5}: ]\textit{How can the cost and waste be presented to the user in a simple and effective manner?}
+    \end{itemize}
 \end{quote}
 
 \noindent
-Each of these sub questions are described in the remaining chapters of this thesis. Chapter ... provides ... 
-\todo{Provide an overview of the content in the thesis}
+Each of these sub questions are described in the remaining chapters of this thesis. \autoref{ch:related_work} states the related work, as well as existing technologies that can be used for providing a solution. \autoref{ch:requirements} explains the requirements of the desired solution. \autoref{ch:methods} that are relevant for the proposed solution, while \autoref{ch:results} describes the obtained results. The results are further evaluated in a case study that is performed with a company that have deployed their infrastructure at the Cloud. This case study is described in \autoref{ch:evaluation}. This thesis ends with \autoref{ch:conclusion} that provides a conclusion.
