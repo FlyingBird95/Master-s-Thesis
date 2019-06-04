@@ -7,7 +7,7 @@ This chapter describes the related literature in the field of Cloud Computing Mo
 This section provides background information for Cloud Computing Monitoring. Additionally, this section provides relevant challenges. Monitoring for the Cloud Consumer is primarily performed for discovering whether the service is working as expected. Additionally, Cloud Consumer Monitoring can be used for comparing monitoring data, from equivalent services, to decide which is the best one. However, it is important that the quality of the collected data is of a certain standard. The next section evaluates several properties of assessing this quality.
 
 \subsection{Quality of data} \label{sec:quality}
-The aspects for assessing the quality are defined in \cite{wand1996anchoring}:
+The aspects for assessing the monitoring data quality are defined in \cite{wand1996anchoring}:
 \begin{itemize}
     \item \textbf{Timeless: }the delay between a change of the real-world state and the resulting modification of the information system state.
     \item \textbf{Accuracy: }this implies that the information system represents a real-world state equivalent to the one that is represented.
@@ -23,26 +23,33 @@ Obtaining a good level of quality for the monitoring data according to these att
 
 
 \subsection{Open issues} \label{sec:open_issues}
-In this section, several open issues and challenges are discussed. As stated in \cite{pernici2016monitoring} there are two main issues in a systematic approach to monitoring. There are both described below.\\
+In this section, several open issues and challenges are discussed. As stated in \cite{pernici2016monitoring, aceto2013cloud} there are multiple main issues in a systematic approach to monitoring. There are all described below.\\
 
 \noindent
 The first open issue is with respect to the specification of monitoring elements. It can be stated as: ``what monitoring data should be collected?'' The interesting data depends on the service being provided, and is thus different for every situation. Not only the elements to be monitored should be specified, but also the available sources. Another issue concerns the possibility of viewing the data and analysing it at different granularities. A third issue concerns the quality of the monitoring data, as can be evaluated by using the properties from \autoref{sec:quality}. Concerning sources, the monitoring system should be able to dynamically create or use new sources, in particular in services being provided in very variable situations, such as the ability to auto-scale in Docker\footnote{This is explained further in \autoref{sec:docker}.}\\
 
-Another open issue is concerned with the usage of the monitoring data. As there is variability in systems being monitored, there is also variability in the monitoring system behaviour. In some situations, monitoring is not always necessary or only a light observation is needed. In other situations, such as start up phases, there is stronger need for monitoring. In general, there is need to design the monitoring process. This can be done by specifying the requirements, related to different types of risks. Additionally, the requirements include the specification of the quality parameters for monitoring elements, as described in \autoref{sec:quality}. Thus, there is a need to coordinate monitoring activities, and to investigate monitoring as a process. The specification of monitoring requirements requires additional research by designing formal models and methods.
+\noindent
+Another open issue is concerned with the usage of the monitoring data. As there is variability in systems being monitored, there is also variability in the monitoring system behaviour. In some situations, monitoring is not always necessary or only a light observation is needed. In other situations, such as start up phases, there is stronger need for monitoring. In general, there is need to design the monitoring process. This can be done by specifying the requirements, related to different types of risks. The requirements include the specification of the quality parameters for monitoring elements, as described in \autoref{sec:quality}. Thus, there is a need to coordinate monitoring activities, and to investigate monitoring as a process. The specification of monitoring requirements needs additional research by designing formal models and methods.\\
 
+\noindent
+In \cite{aceto2013cloud} it is also stated that one of the open issues is the lack of custom algorithms and techniques that provide effective summaries. This paper also states the importance of accurate measures in an environment dominated by virtualized resources. Additionally, \cite{aceto2013cloud} argues that there are main improvements expected in terms of efficiency for data management. In particular, algorithms and techniques that are more efficient are needed to manage the large volume of monitoring data necessary to have a comprehensive view of the Cloud, in a way that is quickly and continuously.\\
 
+\noindent
+The complex structure of Cloud is made of several layers to allow for functional separation, modularity and thus manageable. However, such strong layering poses several limits on the monitoring system, in terms of kinds of analysis and consequent actions that can be performed. Therefore, another open research direction is to investigate possibilities of cross-layer monitoring.
+
+\subsection{Conclusion}
+This Background section can be concluded with the fact that there are multiple open issues in the field of Cloud Computing Monitoring. When investigating methods that overcome one of these issues, it is important to keep the following two questions in mind:
+\begin{itemize}
+    \item What monitoring data should be collected?
+    \item How can the monitoring data be used?
+\end{itemize} 
+The first question can be used to determine the monitoring data. This data needs to be evaluated according to the properties from \autoref{sec:quality}. Then, the second question can be answered. The final developed method must have validated both questions.
 
 
 \section{Related literature} \label{sec:related_literature}
-The research that is described in this thesis is the successor of the work performed by Ashton D. Spina. In \cite{spina} he explains the concern for the lack of non-proprietary tools to monitor cost and waste in a generalized manner on cloud deployments in the Virtual Machine as a Service (VMaaS) delivery model. He then proposes a general solution based on a set of probes (one per Virtual Machine), together with an aggregator. These tools are based on a set of requirements that describe the problem space. Although Spina has successfully shown that a monitoring solution that meets the elicited requirements can and has been created, there is future work to ensure quality of the tool. These improvements are mainly based to make the solution to be more effective and to be more user friendly.\\
+The research that is described in this thesis is the successor of the work performed by Ashton D. Spina. In \cite{spina} he explains the concern for the lack of non-proprietary tools to monitor cost and waste in a generalized manner on cloud deployments in the Virtual Machine as a Service (VMaaS) delivery model. He then proposes a general solution based on a set of probes (one per Virtual Machine), together with an aggregator. These tools are based on a set of requirements that describe the problem space. Although Spina has successfully shown that a monitoring solution that meets the elicited requirements can and has been created, there is future work to ensure quality of the tool. These improvements are mainly based to make the solution to be more effective and to be more user friendly. This section summarises several related papers. The work from these papers are used to highlight important features that are relevant for designing the method proposed in \autoref{ch:methods}.
 
-\noindent
-\cite{hauser2018reviewing} explains the representation of resource statistics. This statistical model consists of two parts: a state change probability matrix as the dynamic part, while a static part contains fixed information like CPU cores, and reference values of the underlying hardware for hardware independent comparisons. It presents an approach for monitoring resource statistics on the physical level only, and provide resource utilization profiles to cloud middle-ware and customers, instead of storing the raw time series data. Thus, its main advantage is the new approach of Cloud resource profiling by revisiting the necessary metrics for hardware independent resource profiles. This profile is interested for this research as it provides a critical view of the relevant resources that can be collected for monitoring cloud applications.\\
-
-\noindent
-According to \cite{aktas2018hybrid}, an important requirement in resource monitoring of cloud computing platforms is to monitor malfunctioning problems and/or security-related problems. Therefore, the detection of such problems becomes a highly important requirement for the continuous availability and maintenance of cloud computing systems. This paper presents a generic software architecture that is independent of the implementation of cloud computing platforms. The architecture is designed to provide two main functionalities for monitoring cloud computing platforms, i.e. (1) real-time monitoring for preventive maintenance and (2) after-the-fact monitoring for detecting malfunctions/security-related problems.\\
-
-\noindent
+\subsection{Resource selection}
 In \cite{wang2018self}, a description is provided that states the problem of monitoring cloud computing systems, as they are always in large scales and have complex architectures. To track the running status of these systems, a monitoring system always acquires kinds of monitoring data from different layers (e.g. network, hardware, virtual machine, operating system, middle-ware, application) in lots of distributed nodes. However, collecting, storing and processing a large amount of monitoring data should cause a huge resource overhead, which affects the timeliness of anomaly detection, the accuracy of fault locations, and even overall performance. Therefore, this paper proposes a self-adaptive monitoring framework. According to them, a distributed monitoring system needs to collect the following four key monitoring metrics:
 \begin{itemize}
     \item \textbf{CPU: }CPU time occupied by system calls;
@@ -52,7 +59,14 @@ In \cite{wang2018self}, a description is provided that states the problem of mon
 \end{itemize}
 
 \noindent
-The information described in the papers above highlight all another part of the requirements of developing a Cloud Computing Monitoring solution. Thus, \cite{wang2018self} explains the relevant metrics, \cite{aktas2018hybrid} explains a generic monitoring architecture, and \cite{hauser2018reviewing} explains a representation of resource statistics.
+Using the collected metrics above, they must be represented in a statistical model. \cite{hauser2018reviewing} explains the representation of resource statistics. This statistical model consists of two parts: a state change probability matrix as the dynamic part, while a static part contains fixed information like CPU cores, and reference values of the underlying hardware for hardware independent comparisons. It presents an approach for monitoring resource statistics on the physical level only, and provide resource utilization profiles to cloud middle-ware and customers, instead of storing the raw time series data. Thus, its main advantage is the new approach of Cloud resource profiling by revisiting the necessary metrics for hardware independent resource profiles. This profile is interested for this research as it provides a critical view of the relevant resources that can be collected for monitoring cloud applications.\\
+
+
+
+\noindent
+According to \cite{aktas2018hybrid}, an important requirement in resource monitoring of cloud computing platforms is to monitor malfunctioning problems and/or security-related problems. Therefore, the detection of such problems becomes a highly important requirement for the continuous availability and maintenance of cloud computing systems. This paper presents a generic software architecture that is independent of the implementation of cloud computing platforms. The architecture is designed to provide two main functionalities for monitoring cloud computing platforms, i.e. (1) real-time monitoring for preventive maintenance and (2) after-the-fact monitoring for detecting malfunctions/security-related problems.\\
+
+
 
 \section{Related technologies} \label{sc:related_technologies}
 Relevant technologies for the research in this thesis are cAdvisor, Prometheus and Grafana. This is a well known combination for resource monitoring, with the advantage that these three are all popular Open Source projects. Alternatives for this profiling stack are solutions like Nagios\footnote{\url{https://www.nagios.org/}}, Sensu\footnote{\url{https://sensu.io/}}, and New Relic\footnote{\url{https://newrelic.com/}} but they are too heavy and too expensive – or both. In the sections below, a description of each component is provided, together with their advantages.
@@ -92,3 +106,6 @@ Grafana\footnote{\url{https://github.com/grafana/grafana}} allows you to query, 
 
 \subsection{Docker} \label{sec:docker}
 Docker is a technology that offers the ability to create, deploy, and run standardized software packages \cite{docker}. These software packages are known as containers, which can be created from images. Images specify how containers should operate and what software libraries are inside this container. Images are often created by combining and modifying standard images downloaded from public repositories, such as Dockerhub\footnote{\url{https://hub.docker.com/}}. Docker can be compared with a virtual machine, as they both offer some abstraction.  But unlike a virtual machine, rather than creating a whole virtual operating system, Docker allows applications to use the same Linux kernel as the system that it is running on and only requires applications be shipped with things not already running on the host computer. This gives a significant performance boost and reduces the size of the application.
+
+\section{Discussion} \label{sec:relatedwork_discussion}
+The information described in the papers above highlight all another part of the requirements of developing a Cloud Computing Monitoring solution. Thus, \cite{wang2018self} explains the relevant metrics, \cite{aktas2018hybrid} explains a generic monitoring architecture, and \cite{hauser2018reviewing} explains a representation of resource statistics.
