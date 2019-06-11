@@ -17,11 +17,34 @@ In the sections below, an architecture for collecting the utilization of a Cloud
 In the sections below, the cost for hosting a Cloud Computing system will be discussed. To rephrase, the research question that will be answered is:
 
 \begin{quote}
-	\textbf{Q3: }\textit{What is an effective approach for computing the waste of a Cloud application?}\\
+	\textbf{Q3: }\textit{What is an accurate pricing model for estimating the cost of a Cloud application?}\\
 \end{quote}
 
+As stated in the introduction, the actual cost of running a virtual machine can be formulated by \autoref{eq:intro}. It is therefore important to develop an accurate model for determining $c_\text{effective}$ and $c_\text{waste}$. Therefore, this section is divided into a number of sub-sections. First, \autoref{sec:model} shows how these cost-values can be computed. Second, the pricing model is computed in \autoref{sec:pricing}.
+
 ...
-\todo{I want to answer this question by explaining that the price of a VM can be estimated by a simple formula, for which the data is based on GCE. Additionally, I want to do some research that this price is more or less equivalent accross multiple Cloud Providers}
+TODO: I want to answer this question by explaining that the price of a VM can be estimated by a simple formula, for which the data is based on GCE. Additionally, I want to do some research that this price is more or less equivalent across multiple Cloud Providers
+...
+\subsection{Computing the cost and waste} \label{sec:model}
+The effective cost and waste can be monitored per billing time unit (BTU). For most public cloud providers, this BTU is one second. However, it is computationally to intensive to compute the effective cost and waste every second. Instead, an average over a time period of one hour is taken. This leads to the same results as computing it every second. However, the disadvantage is that the desired solution must be up for one hour before a result can be obtained. Additionally, the effective cost are related to the part of the VM that is utilized. Therefore, for a time period of one hour, the effective costs are:
+
+\begin{equation} \label{eq:effective}
+c_\text{effective} = p \sum_{i=1}^n u_i
+\end{equation}
+
+Where $p$ is the price of the actual cost for one hour, and $u_i$ is the average utilization for one hour. This formula can be repeated for expressing the waste in terms of the price for a host and the resource waste:
+
+\begin{equation} \label{eq:waste}
+c_\text{waste} = p \sum_{i=1}^n w_i
+\end{equation}
+
+Where $w_i$ is the average resource waste for one hour. Note that \autoref{eq:effective} and \autoref{eq:waste} both determine the cost for a specific host. In case the deployed system consists of multiple hosts, the values need to be summed. Furthermore, these costs are for a period of one hour. In case the system is deployed for a longer period of time, than this computation needs to be recomputed every hour, and the collected values must be summed. 
+
+\subsection{Pricing model} \label{sec:pricing}
+
+
+
+
 
 
 \section{Computing the waste distribution} \label{sec:waste_into}
