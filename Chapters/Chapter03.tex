@@ -4,10 +4,36 @@
 As stated in the introduction (\autoref{ch:introduction}), the research question is the following: ``How can the cost and waste monitoring of a Cloud Computing application be offered in a scalable and resilient manner?''. In order to investigate the characteristics of the solution for monitoring a Cloud Computing application, it is important to determine the requirements before. After these requirements are described, the design is provided. 
 
 \section{Requirements} \label{sec:requirements}
-As this research is the successor of the work: `Visualizing Computational Waste in Cloud Computing' by A. Spina \cite{spina}, there is some similarity with his requirements. However, as his as important as ...
+This section divides the requirements in architectural requirements and utilization requirements. The architectural requirements can be used for answering sub question Q1. The utilization requirements can be used for answering Q2. 
 
-TODO: Use Section 5 from paper: Cloud Monitoring: A survey
+\subsection{Architectural requirements}
+As this research is the successor of the work: `Visualizing Computational Waste in Cloud Computing' by A. Spina \cite{spina}, there is some similarity with his architectural requirements. However, his architecture is based on a solution for which a probe collects data from monitored instances, and an aggregator that represents this data into a human-readable format. His relevant requirements are:
+\begin{itemize}
+    \item The solution should be functional across command cloud providers.
+    \item The data should be considered sensitive and secured accordingly.
+    \item The solutions should be configurable, but easy to use.
+    \item The solution should strike a balance between efficiency and effectiveness.
+    \item The solution should collect utilization statistics on the monitored system. 
+\end{itemize}
 
+In \cite{aceto2013cloud} a number of properties are mentioned. These apply to a distributed monitoring system, and are therefore applicable to the desired solution. The most important properties are:
+\begin{itemize}
+    \item Scalability: a monitoring system is scalable if it can cope with a large number of probes.
+    \item Elasticity: a monitoring system is elastic if it can cope with dynamic changes of monitored entities, so that virtual resources created and destroyed by expansion and contraction are monitored correctly.
+    \item Adaptability: a monitoring system is adaptable if it can adapt to varying computational and network loads in order not to be invasive.
+    \item Timeliness: a monitoring solution is timely if detected events are available on time for their intended use.
+    \item Autonomicity: an autonomic monitoring solution is able to self-manage its distributed resources by automatically reacting to unpredictable changes.
+    \item Accuracy: a monitoring system is accurate when the measures it provides are accurate, i.e. they are as close as possible to the real value to be measured.
+\end{itemize}
 
-\subsection{Utilization distribution} \label{sec:utilization}
-TODO: describe mathematically the definition of the utilization distribution of a Cloud Computing process 
+Both lists in this sub section are considered as relevant, and the desired solution should be able to meet all these properties. For the implemented solution, the decision has been made to monitor only Docker containers, as this provides a way of abstracting a certain deployment. Therefore, the underlying operating system is not that important. This ensures that the solution will be functional across all OS's that are capable of running Docker containers. 
+
+\subsection{Utilization requirements} \label{sec:utilization}
+As explained in the previous subsection, the architectural requirements lead to a solution that is capable of monitoring a set of Docker containers in a SOA. However, there are a few restrictions for the utilization of these containers. This is mathematically stated as:
+
+\begin{itemize}
+    \item $0 < u_i \leq 1$ for $1 \leq i \leq n$: Every container within a host utilizes a value between 0 (exclusive) and 1 (inclusive). Theoretically, a utilization of 100\% is not possible, as the monitoring solution also utilizes a fraction. However, the decision has been made to exclude the utilization from the monitoring solution.
+    \item $\sum_{i=1}^n u_i \leq 1$: The total utilization of a certain set of containers for a given host cannot utilize more than 100\%. And with the previous requirement, its lower-bound is 0 (exclusive). As the total waste is computed as $1 - \sum_{i=1}^n u_i$, it can be concluded that the waste is bounded by 0 (inclusive) and 1 (exclusive).
+\end{itemize}
+
+ 
