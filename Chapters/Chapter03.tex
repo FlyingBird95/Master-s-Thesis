@@ -1,12 +1,9 @@
 %************************************************
-\chapter{Design}\label{ch:design} % $\mathbb{ZNR}$
+\chapter{Requirements}\label{ch:requirements} % $\mathbb{ZNR}$
 %************************************************
-As stated in the introduction (\autoref{ch:introduction}), the research question is the following: ``How can the cost and waste monitoring of a Cloud Computing application be offered in a scalable and resilient manner?''. In order to investigate the characteristics of the solution for monitoring a Cloud Computing application, it is important to determine the requirements before. After these requirements are described, the design is provided. 
+As stated in the introduction (\autoref{ch:introduction}), the research question is the following: ``How can the cost and waste monitoring of a Cloud Computing application be offered in a scalable and resilient manner?''. In order to investigate the characteristics of the solution for monitoring a Cloud Computing application, it is important to determine the requirements before. The requirements are divides into architectural requirements and utilization requirements. The architectural requirements can be used for answering sub question Q1. The utilization requirements can be used for answering Q2. 
 
-\section{Requirements} \label{sec:requirements}
-This section divides the requirements in architectural requirements and utilization requirements. The architectural requirements can be used for answering sub question Q1. The utilization requirements can be used for answering Q2. 
-
-\subsection{Architectural requirements}
+\section{Architectural requirements}
 As this research is the successor of the work: `Visualizing Computational Waste in Cloud Computing' by A. Spina \cite{spina}, there is some similarity with his architectural requirements. However, his architecture is based on a solution for which a probe collects data from monitored instances, and an aggregator that represents this data into a human-readable format. His relevant requirements are:
 \begin{itemize}
     \item The solution should be functional across command cloud providers.
@@ -28,7 +25,7 @@ In \cite{aceto2013cloud} a number of properties are mentioned. These apply to a 
 
 Both lists in this sub-section are considered relevant, and the desired solution should be able to meet all these properties. For the implemented solution, the decision has been made to monitor only Docker containers, as this provides a way of abstracting a certain deployment. Therefore, the underlying operating system is not that important. This ensures that the solution will be functional across all OS's that are capable of running Docker containers. 
 
-\subsection{Utilization requirements} \label{sec:utilization}
+\section{Utilization requirements} \label{sec:utilization}
 As explained in the previous subsection, the architectural requirements lead to a solution that is capable of monitoring a set of Docker containers in a SOA. However, there are a few restrictions for the resource utilization of these containers. This is mathematically stated as:
 
 \begin{itemize}
@@ -38,6 +35,4 @@ As explained in the previous subsection, the architectural requirements lead to 
 
 Although the mathematical constraints are very trivial, it is important to state this beforehand. Using these utilization requirements, several approaches of computing the resource waste can be assessed. Also, stating these constraints are important as it affects the desired solution.
 
-\section{Design}
-TODO: Discuss design
  
