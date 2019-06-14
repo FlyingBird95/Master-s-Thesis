@@ -9,6 +9,7 @@ In order to provide this monitoring, they have allocated a physical server consi
 \section{Architecture} \label{sec:sb-architecture}
 The six virtual machines work together as one system. Each virtual machine is responsible for running a number of services. These services can be found in \autoref{fig:sb-architecture}. In order to simplify the deployment, the decided to assign a name to every VM. The names are also presented in the architecture diagram. A small overview of the number of CPU, RAM and memory per VM can be found in \autoref{tab:vms}.\\
 
+\noindent
 As described in \autoref{sec:collect_utilization}, the architecture is a fully connected peer-to-peer system, as well as a hierarchical structure for the data replication. For the latter, the structure can be found in \autoref{fig:sb-tree}.
 
 
@@ -39,8 +40,7 @@ As described in \autoref{sec:collect_utilization}, the architecture is a fully c
     \begin{forest}
         for tree={
             grow=south,
-            rectangle, draw, minimum size=3ex, inner sep=1pt,
-            s sep=7mm
+            rectangle, draw, minimum size=3ex, inner sep=1pt,s sep=7mm
         }
         [Alfheim 
             [Vanaheim 
@@ -56,7 +56,33 @@ As described in \autoref{sec:collect_utilization}, the architecture is a fully c
     \label{fig:sb-tree}
 \end{figure}
 
-
 \section{Deployment process} \label{sec:sb-process}
+This section describes the process of deploying the implemented system on their architecture. This deployment has been made possible within three meetings. They are shortly described in the sub-sections below.
+
+\subsection{First meeting}
+Each meeting consisted of three hours. After the first meeting, there were several issues. Initially, the developed system was implemented in such a way that the nodes were communicating over their public IP address. However, it turned out that not every node was publicly accessible. Therefore, the program was updated, such that they communicate over their internal IP. Another issue was due to the amount of load going in and out their system. Therefore, the part of the program that monitors the internet traffic with respect to the containers raised its CPU to above 100\% as can be seen in \autoref{fig:100}.
+The decision was therefore made to not deploy the program any more, and first solve the issues that showed up.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/load-100.png}
+    \caption{CPU data of the deployed system during the first meeting}
+    \label{fig:100}
+\end{figure}
+
+\subsection{Second meeting}
+In order to solve the issue described in the previous sub-section, a sub sampling of the internet monitoring was applied. Therefore, instead of capturing all packets, the packets where captured for $x$ seconds, while sleeping $y$ seconds. The packet size collected during each sampling was therefore multiplied with $1+y/x$. However, for every packet that is coming from a peer within the system, the program tries to assign this packet directly to a remote Docker container. Therefore, there was still a significant amount of communication overhead, which can be seen in \autoref{fig:60}. Eventually, the program kept consuming more CPU resources, which lead to the conclusion that the program was not efficient enough. Therefore, the program was not deployed.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/load-60.png}
+    \caption{CPU data of the deployed system during the second meeting}
+    \label{fig:60}
+\end{figure}
+
+\subsection{Third meeting}
+In order to solve the issue from the second meeting, the decision was made to implement a caching functionality. This means that the program resolves the internet traffic packets afterwards instead of real-time. The decision was made to implement a caching time limit of one minute, such that the obtained results are near real-time. The system therefore only communicates with its peer once per minute. It turned out that this optimization was efficient enough, as the program showed a stable 10\%-12\% CPU usage during the entire deployment of the system. This can be seen in \autoref{fig:deployment}.
+% Make figure deployment
 
 \section{Evaluation} \label{sec:sb-evaluation}
+In order to evaluate the deployment of the system, the decision has been made to perform an interview with one of the employees of the company. The entire interview can be found in \autoref{ch:interview}.
