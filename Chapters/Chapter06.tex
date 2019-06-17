@@ -81,8 +81,39 @@ In order to solve the issue described in the previous sub-section, a sub samplin
 \end{figure}
 
 \subsection{Third meeting}
-In order to solve the issue from the second meeting, the decision was made to implement a caching functionality. This means that the program resolves the internet traffic packets afterwards instead of real-time. The decision was made to implement a caching time limit of one minute, such that the obtained results are near real-time. The system therefore only communicates with its peer once per minute. It turned out that this optimization was efficient enough, as the program showed a stable 10\%-12\% CPU usage during the entire deployment of the system. This can be seen in \autoref{fig:deployment}.
-% Make figure deployment
+In order to solve the issue from the second meeting, the decision was made to implement a caching functionality. This means that the program resolves the internet traffic packets afterwards instead of real-time. The decision was made to implement a caching time limit of one minute, such that the obtained results are near real-time. The system therefore only communicates with its peer once per minute. It turned out that this optimization was efficient enough, as the program showed an average of 12\% CPU usage during the entire deployment of the system. This can be seen in \autoref{fig:deployment}.
+
+\begin{figure}
+    \subfloat[Asgard]{%
+        \includegraphics[width=0.45\textwidth]{gfx/asgard.png}
+        \label{fig:deployment:asgard}
+    }\qquad
+    \subfloat[Midgard]{
+        \includegraphics[width=0.45\textwidth]{gfx/midgard.png}%
+        \label{fig:deployment:midgard}
+    }
+
+    \subfloat[Vanaheim]{%
+        \includegraphics[width=0.45\textwidth]{gfx/vanaheim.png}
+        \label{fig:deployment:vanaheim}
+    }\qquad
+    \subfloat[Alfheim]{
+        \includegraphics[width=0.45\textwidth]{gfx/alfheim.png}%
+        \label{fig:deployment:alfheim}
+    }
+    
+    \subfloat[Jotunheim]{%
+        \includegraphics[width=0.45\textwidth]{gfx/jotunheim.png}
+        \label{fig:deployment:jotunheim}
+    }\qquad
+    \subfloat[Niflheim]{
+        \includegraphics[width=0.45\textwidth]{gfx/niflheim.png}%
+        \label{fig:deployment:niflheim}
+    }
+    \caption{CPU utilization of the deployed system at 6 different VMs.}
+    \label{fig:deployment}
+\end{figure}
+
 
 \section{Evaluation} \label{sec:sb-evaluation}
 In order to evaluate the deployment of the system, the decision has been made to perform an interview with one of the employees of the company. The entire interview can be found in \autoref{ch:interview}.
