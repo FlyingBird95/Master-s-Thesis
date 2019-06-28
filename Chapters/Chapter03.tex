@@ -13,6 +13,7 @@ As this research is the successor of the work: `Visualizing Computational Waste 
     \item The solution should collect utilization statistics on the monitored system. 
 \end{itemize}
 
+\noindent
 In \cite{aceto2013cloud} a number of properties are mentioned. These apply to a distributed monitoring system, and are therefore applicable to the desired solution. The most important properties are:
 \begin{itemize}
     \item Scalability: a monitoring system is scalable if it can cope with a large number of probes.
@@ -23,6 +24,7 @@ In \cite{aceto2013cloud} a number of properties are mentioned. These apply to a 
     \item Accuracy: a monitoring system is accurate when the measures it provides are accurate, i.e. they are as close as possible to the real value to be measured.
 \end{itemize}
 
+\noindent
 Both lists in this sub-section are considered relevant, and the desired solution should be able to meet all these properties. For the implemented solution, the decision has been made to monitor only Docker containers, as this provides a way of abstracting a certain deployment. Therefore, the underlying operating system is not that important. This ensures that the solution will be functional across all OS's that are capable of running Docker containers. 
 
 \section{Utilization requirements} \label{sec:utilization}
@@ -33,6 +35,7 @@ As explained in the previous subsection, the architectural requirements lead to 
     \item $\sum_{i=1}^n u_i \leq 1$: The total utilization of a certain set of containers for a given host cannot utilize more than 100\%. And with the previous requirement, its lower-bound is 0 (exclusive). As the total waste is computed as $1 - \sum_{i=1}^n u_i$, it can be concluded that the waste is bounded by 0 (inclusive) and 1 (exclusive).
 \end{itemize}
 
+\noindent
 Although the mathematical constraints are very trivial, it is important to state this beforehand. Using these utilization requirements, several approaches of computing the resource waste can be assessed. Also, stating these constraints are important as it affects the desired solution.
 
  
