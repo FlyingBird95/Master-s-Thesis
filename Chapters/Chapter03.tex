@@ -28,15 +28,27 @@ In \cite{aceto2013cloud} a number of properties are mentioned. These apply to a 
 Both lists in this section are considered relevant, and the desired solution should be able to meet all these properties. For the implemented solution, the decision has been made to monitor only Docker containers, as this provides a way of abstracting a certain deployment. Therefore, the underlying operating system is not that important. This ensures that the solution will be functional across all OS's that are capable of running Docker containers. 
 
 \section{Architecture} \label{sec:architecture}
-As mentioned in \autoref{sec:related_technologies}.
+As mentioned in \autoref{sec:related_technologies}, the proposed architecture uses state-of-the-art open-source technologies. Several design patterns have been evaluated, such as a Client-Server network and a peer-to-peer network. the latter is considered more scalable, as the number of resources grow with the number of nodes. Additionally, a peer-to-peer system does not have a single point of failure. Therefore, this system is desired over a client-server network. However, as the data is stored in a Prometheus database, and this cannot operate in a peer-to-peer system, another solution is needed. Using the federation technique of Prometheus \cite{prometheus_federation}, the decision has been made to go for a hierarchical network. This proposed network consists of only one root, a number of supernodes, and optional a number of nodes.\\
 
+\noindent
+An architectural overview of the three node types, as well as the technologies that are included, can be found in \autoref{fig:architecture}. The only difference between a node and a super node is the Prometheus database. Furthermore, the root is only used to visualize the collected metric data in the Grafana dashboard. Each node type is shortly described below.
 
+\begin{figure}
+    \centering
+    \includegraphics[width=0.3\textwidth]{gfx/architecture.png}
+    \caption{Architectural overview}
+    \label{fig:architecture}
+\end{figure}
 
+\subsection{Root}
+The root is a single access point for the displaying the obtained results. Its Prometheus database is dynamically configured, such that it scrapes data from all the super nodes deployed in the system. 
+In order to successfully deploy the entire system, the root needs to be deployed first, as it provides an access point for the nodes as well. This access point is implemented in the connect API and further described in ....\todo{add reference}. The connect API distributed the nodes over the available super nodes and ensures that $\floor*{\frac{n}{m}} \leq \frac{n}{m} \leq \ceil*{\frac{n}{m}}$ holds for which $n$ is the number of nodes and $m$ the number of super nodes.
 
+\subsection{Super node}
+As explained before, there is only a slight difference between the node and the super node, as the latter deploys Prometheus. This database is automatically configured, such that is scrapes from a set of nodes. The metrics that a super node collects are the same as for a node and are therefore described in the following section.
 
-
-
-
+\subsection{Node}
+The node consists of three processes. Resource metrics are collected using the cAdvisor process and internet packets are collected using Tcpdump \cite{tcpdump}.
 
 
 \section{Waste requirements} \label{sec:waste_requirements}
