@@ -31,7 +31,7 @@ Both lists in this section are considered relevant, and the desired solution sho
 As mentioned in \autoref{sec:related_technologies}, the proposed architecture uses state-of-the-art open-source technologies. Several design patterns have been evaluated, such as a Client-Server network and a peer-to-peer network. the latter is considered more scalable, as the number of resources grow with the number of nodes. Additionally, a peer-to-peer system does not have a single point of failure. Therefore, this system is desired over a client-server network. However, as the data is stored in a Prometheus database, and this cannot operate in a peer-to-peer system, another solution is needed. Using the federation technique of Prometheus \cite{prometheus_federation}, the decision has been made to go for a hierarchical network. This proposed network consists of only one root, a number of supernodes, and optional a number of nodes.\\
 
 \noindent
-An architectural overview of the three node types, as well as the technologies that are included, can be found in \autoref{fig:architecture}. The only difference between a node and a super node is the Prometheus database. Furthermore, the root is only used to visualize the collected metric data in the Grafana dashboard. Each node type is shortly described below.
+An architectural overview of the three node types, as well as the technologies that are included, can be found in \autoref{fig:architecture}. Several processes are listed in bold as this denotes a custom created process. The only difference between a node and a super node is the Prometheus database. Furthermore, the root is only used to visualize the collected metric data in the Grafana dashboard. Each node type is shortly described below.
 
 \begin{figure}
     \centering
@@ -48,14 +48,14 @@ In order to successfully deploy the entire system, the root needs to be deployed
 As explained before, there is only a slight difference between the node and the super node, as the latter deploys Prometheus. This database is automatically configured, such that is scrapes from a set of nodes. The metrics that a super node collects are the same as for a node and are therefore described in the following section.
 
 \subsection{Node}
-The node consists of three processes. Resource metrics are collected using the cAdvisor process and internet packets are collected using Tcpdump \cite{tcpdump}.
+The node consists of three processes. Resource metrics (i.e. CPU and memory) are collected using the cAdvisor process and internet packets are collected using Tcpdump \cite{tcpdump}. This data is collected using the dAdvisor process, which acts as an aggregator. This process ensures that the data is correctly formatted, and makes it available for Prometheus.
 
 
 \section{Waste requirements} \label{sec:waste_requirements}
-As explained in the previous subsection, the architectural requirements lead to a solution that is capable of monitoring a set of Docker containers in a SOA. However, there are a few restrictions for the resource utilization of these containers. This is mathematically stated as:
+The CPU and memory are resource metrics that can be specified per Docker container. For a specific node, the sum of these metrics over all containers on that node is denoted as the total utilization. For these totals, there are a few restrictions, which are mathematically stated below.
 
 \begin{itemize}
-    \item $0 < u_i \leq 1$ for $1 \leq i \leq n$: Every container within a host utilizes a value between 0 (exclusive) and 1 (inclusive). The desired solution will also be a running container, but this resource utilization is filtered from the rest of the utilization values, such that the monitoring solution only collects data about the deployed system.
+    \item $0 < u_i \leq 1$ for $1 \leq i \leq n$: Every container on a node utilizes a value between 0 (exclusive) and 1 (inclusive). The desired solution will also be a running container, but the utilization is filtered out of the collected utilization values, such that the monitoring solution only collects data about the deployed system.
     \item $\sum_{i=1}^n u_i \leq 1$: The total utilization of a certain set of containers for a given host cannot utilize more than 100\%. And with the previous requirement, its lower-bound is 0 (exclusive). As the total waste is computed as $1 - \sum_{i=1}^n u_i$, it can be concluded that the waste is bounded by 0 (inclusive) and 1 (exclusive).
 \end{itemize}
 
