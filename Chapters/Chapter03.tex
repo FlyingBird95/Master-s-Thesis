@@ -42,10 +42,10 @@ An architectural overview of the three node types, as well as the technologies t
 
 \subsection{Root}
 The root is a single access point for the displaying the obtained results. Its Prometheus database is dynamically configured, such that it scrapes data from all the super nodes deployed in the system. 
-In order to successfully deploy the entire system, the root needs to be deployed first, as it provides an access point for the nodes as well. This access point is implemented in the connect API and further described in ....\todo{add reference}. The connect API distributed the nodes over the available super nodes and ensures that $\floor*{\frac{n}{m}} \leq \frac{n}{m} \leq \ceil*{\frac{n}{m}}$ holds for which $n$ is the number of nodes and $m$ the number of super nodes.
+In order to successfully deploy the entire system, the root needs to be deployed first, as it provides an access point for the nodes as well. This access point is implemented in the connect API and further described in ....\todo{add reference}. The connect API distributes the available nodes over the available super nodes and ensures that $\floor*{\frac{n}{m}} \leq \frac{n}{m} \leq \ceil*{\frac{n}{m}}$ holds for which $n$ is the number of nodes and $m$ the number of super nodes.
 
 \subsection{Super node}
-As explained before, there is only a slight difference between the node and the super node, as the latter deploys Prometheus. This database is automatically configured, such that is scrapes from a set of nodes. The metrics that a super node collects are the same as for a node and are therefore described in the following section.
+As explained before, there is only a slight difference between a node and a super node, as the latter deploys Prometheus. This database is automatically configured such that is scrapes from a set of nodes (as received from the root). The metrics that a super node collects are the same as for a node and are therefore described in the following section.
 
 \subsection{Node}
 The node consists of three processes. Resource metrics (i.e. CPU and memory) are collected using the cAdvisor process and internet packets are collected using Tcpdump \cite{tcpdump}. This data is collected using the dAdvisor process, which acts as an aggregator. This process ensures that the data is correctly formatted, and makes it available for Prometheus.
