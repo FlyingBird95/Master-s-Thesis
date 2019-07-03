@@ -40,33 +40,6 @@ c_\text{waste} = p \sum_{i=1}^n w_i
 \noindent
 Where $w_i$ is the average resource waste for one hour. Note that \autoref{eq:effective} and \autoref{eq:waste} both determine the cost for a specific host. In case the deployed system consists of multiple hosts, the values need to be summed. Furthermore, these costs are for a period of one hour. In case the system is deployed for a longer period of time, than this computation needs to be recomputed every hour, and the collected values must be summed. 
 
-\subsection{Pricing model} \label{sec:pricing}
-As the previous sub-section shows, both costs are dependent on the price of a host, which is denoted by $p$. It is therefore important to provide an accurate estimation of $p$. According to \cite{bulla2014cloud} there exists different schemes and models for pricing for different service providers. However, the most common model employed in cloud computing is the ``pay-as-you go'' model. Customers pay a fixed price per unit of use. Amazon\footnote{\url{https://aws.amazon.com/}}, considered the market leader in cloud computing, utilizes such a model by charging a fixed price for each hour of virtual machine usage. 
-Another common scheme employed by these leading enterprises is the ``pay-per-use'' model. A customer pays for the amount of bandwidth or storage utilized.\\
-
-\noindent
-\cite{mazrekaj2016pricing} provides an overview of the pricing model for the three most popular public cloud providers:
-\begin{itemize}
-    \item \textbf{Google / App engine: }Charges on monthly basis, per user, and pricing is based on hourly basis.
-    \item \textbf{Amazon Web Services / Elastic Compute Cloud (EC2): }It allows for the reservation of units.
-    \item \textbf{Microsoft Azure: }Charges on monthly basis, depending on the number of transactions, and on a monthly basis for their database subscription.
-\end{itemize}
-
-Using the literature above and the Google Compute Engine Pricing\footnote{See \url{https://cloud.google.com/compute/pricing}. They bill each vCPU and each GB of memory on Compute Engine separately.}, the decision has been made to estimate the pricing model $p$ by the following formula:
-
-\begin{equation} \label{eq:p}
-p =  n_\text{CPU} * p_\text{CPU} + n_\text{GB} * p_\text{GB}
-\end{equation}
-
-\noindent
-Where $n_\text{CPU}$ is the amount of CPU used for a specific host. $p_\text{CPU}$ is the price per CPU per hour. The same notion applies to $n_\text{GB}$ and $p_\text{GB}$. There are different prices per cloud provider, and it even differs per cloud provider itself, as the cloud provider might provide a discount for longer use. It is therefore not desired to implement a fixed price. Instead, the solution provides the possibility to dynamically change the prices, such that the total cost can be affected. However, to provide an easy-to-use solution, the following default prices are used:
-\begin{itemize}
-    \item $p_\text{CPU}$: USD 0.021925 per hour per CPU per host.
-    \item $p_\text{GB}$: USD 0.002938 per hour per GB memory per host.
-\end{itemize}
-
-\subsection{Conclusion}
-The pricing model proposed in \autoref{eq:p} might be too simplistic to represent an accurate pricing model for computing the cloud deployment costs. Therefore, the desired solution also provides a way to update the price per host. Using the adaptability of this model, it can be concluded that an accurate pricing model can successfully be estimated.
 
 \section{Computing the waste distribution} \label{sec:waste_into}
 In the sections below, the waste computation will be explained, as well as the decision that have been made that are relevant for computing the waste, given the utlization values for a given host. To rephrase, the research question that will be answered is:

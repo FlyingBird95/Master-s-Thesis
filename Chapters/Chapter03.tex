@@ -52,7 +52,7 @@ The node consists of three processes. Resource metrics (i.e. CPU and memory) are
 
 
 \section{Waste requirements} \label{sec:waste_requirements}
-The CPU and memory are resource metrics that can be specified per Docker container. For a specific node, the sum of these metrics over all containers on that node is denoted as the total utilization. For these totals, there are a few restrictions, which are mathematically stated below.
+The CPU and memory are resource metrics that can be specified per Docker container. For a specific node, the sum of these metrics over all containers is denoted as the total utilization. For these utilization values, there are a few restrictions, which are mathematically stated below.
 
 \begin{itemize}
     \item $0 < u_i \leq 1$ for $1 \leq i \leq n$: Every container on a node utilizes a value between 0 (exclusive) and 1 (inclusive). The desired solution will also be a running container, but the utilization is filtered out of the collected utilization values, such that the monitoring solution only collects data about the deployed system.
@@ -62,6 +62,7 @@ The CPU and memory are resource metrics that can be specified per Docker contain
 \noindent
 Although the mathematical constraints are very trivial, it is important to state this beforehand. Using these utilization requirements, several approaches of computing the resource waste can be assessed. Also, stating these constraints are important as it affects the desired solution.\\
 
+\noindent
 There are several ways in which the utilization values can be used to compute the waste. In this research, the following three properties are used for finding an optimal waste distribution:
 \begin{enumerate}
     \item \textbf{$\sum_{i=1}^n w_i = 1 - \sum_{i=1}^n u_i $}: The sum of the elements of the waste and the sum of the elements of the utilization values should sum up to 1, as it implies that a resource is either used (this is $u$) or being wasted (this is $w$).
@@ -70,7 +71,8 @@ There are several ways in which the utilization values can be used to compute th
     \item \textbf{$w_i = w_j \iff u_i = u_j$}: If two containers utilizes the same amount of resources, than they should also waste the same amount of resources. The opposite should also hold. If two containers utilizes both a different amount of resources, than it should also have a different amount of waste.
 \end{enumerate}
 
-The following section contains several different approaches for computing the waste distribution. In the section that follows this, the approaches are evaluated against the properties above.
+\noindent
+The following section contains several approaches for computing the waste distribution. These three approaches are evaluated in \autoref{ch:evaluation}.
 
 \section{Approaches for computing the waste distribution} \label{sec:approaches}
 In this section, the following three waste distributions will be evaluated: equal distribution, linear inverse distribution and proportional inverse distribution. They are all described in a different subsection below.
@@ -181,4 +183,35 @@ In general, the following two properties needs to hold to have a unique solution
 \end{itemize}
 Therefore, the matrix $A$ is invertible. This also implies that its determinant is non-zero. This also holds and is proven in \autoref{ch:proof}. Thus, $A^{-1}$ can always be constructed, and this implies that $w$ can always be solved.
 
- 
+\subsection{Conclusion}
+In the previous section, three approaches for distributing the waste resources over the containers have been proposed. They all successfully meet the set of requirements, as stated in \autoref{sec:waste_requirements}. In ... the approaches will be evaluated to find out the optimal distributing that will be implemented.
+
+
+\subsection{Pricing model} \label{sec:pricing}
+Another design decision is to propose an accurate pricing model for estimating the price of a VM based on its resources.
+This pricing model will then be used with the consumed resources to estimate the cost of running a container. According to \cite{bulla2014cloud} there exists different schemes and models for pricing for different service providers. However, the most common model employed in cloud computing is the ``pay-as-you go'' model. Customers pay a fixed price per unit of use. Amazon\footnote{\url{https://aws.amazon.com/}}, considered the market leader in cloud computing, utilizes such a model by charging a fixed price for each hour of virtual machine usage. 
+Another common scheme employed by these leading enterprises is the ``pay-per-use'' model. A customer pays for the amount of bandwidth or storage utilized.\\
+
+\noindent
+\cite{mazrekaj2016pricing} provides an overview of the pricing model for the three most popular public cloud providers:
+\begin{itemize}
+    \item \textbf{Google / App engine: }Charges on monthly basis, per user, and pricing is based on hourly basis.
+    \item \textbf{Amazon Web Services / Elastic Compute Cloud (EC2): }It allows for the reservation of units.
+    \item \textbf{Microsoft Azure: }Charges on monthly basis, depending on the number of transactions, and on a monthly basis for their database subscription.
+\end{itemize}
+
+Using the literature above and the Google Compute Engine Pricing\footnote{See \url{https://cloud.google.com/compute/pricing}. They bill each vCPU and each GB of memory on Compute Engine separately.}, the decision has been made to estimate the pricing model $p$ by the following formula:
+
+\begin{equation} \label{eq:p}
+p =  n_\text{CPU} * p_\text{CPU} + n_\text{GB} * p_\text{GB}
+\end{equation}
+
+\noindent
+Where $n_\text{CPU}$ is the amount of CPU used for a specific host. $p_\text{CPU}$ is the price per CPU per hour. The same notion applies to $n_\text{GB}$ and $p_\text{GB}$. There are different prices per cloud provider, and it even differs per cloud provider itself, as the cloud provider might provide a discount for longer use. It is therefore not desired to implement a fixed price. Instead, the solution provides the possibility to dynamically change the prices, such that the total cost can be affected. However, to provide an easy-to-use solution, the following default prices are used:
+\begin{itemize}
+    \item $p_\text{CPU}$: USD 0.021925 per hour per CPU per host.
+    \item $p_\text{GB}$: USD 0.002938 per hour per GB memory per host.
+\end{itemize}
+
+\subsection{Conclusion}
+The pricing model proposed in \autoref{eq:p} might be too simplistic to represent an accurate pricing model for computing the cloud deployment costs. Therefore, the desired solution also provides a way to update the price per host. Using the flexibility of this model, it can be concluded that an accurate pricing model can successfully be estimated.
