@@ -7,7 +7,7 @@ This chapter explains the implementation of the proposed solution in \autoref{ch
 As explained in \autoref{sec:architecture}, the proposed solution consists of three different types. This section provides an overview of each type and the communication between them.
 
 \subsection{Root}
-The root contains the connect API which is used as an access point for other nodes. It contains the following endpoints:
+The root contains the connect API which is used as an access point for other nodes. Its interface contains the following relevant endpoints:
 
 \begin{itemize}
     \item \textbf{/root/add}: accepts POST-requests for adding nodes to keep track of. A node consists of an IP-address, including a port, and a boolean value indicating whether it is a super-node or a normal node.
@@ -16,12 +16,13 @@ The root contains the connect API which is used as an access point for other nod
 \end{itemize}
 
 \noindent
-The root service is a rather small service as it only has to keep track of the available (super-)nodes and distribute them over the available super-nodes. This service is implemented at \url{https://github.com/dadvisor/root}. The root service also provides a dynamic configuration of the Prometheus service. This is implemented by generating a configuration file with the addresses of the super-nodes. Prometheus is configured by reading the configuration from this file.\\
+The root service is a rather small service as it only has to keep track of the available (super-)nodes and distribute them over the available super-nodes. This service is implemented at \url{https://github.com/dadvisor/root}. The root service also provides a dynamic configuration of the Prometheus service. This is implemented by generating a configuration file with the addresses of the super-nodes. Prometheus is configured by reading his configuration from this file.\\
 
 \noindent
 Lastly, the root-type contains the Grafana dashboard. This service uses a custom designed dashboard, which is publicly available at \url{https://grafana.com/dashboards/10286}. Grafana is configured in such a way that it automatically adds the local Prometheus service as a data source and installs the dashboard mentioned above. The dashboard uses not only existing visualization tools like graphs and singlestat-panels, but it also visualizes the cost and waste data in a custom designed panel.\\
 
 \noindent
-This panel is implemented in typescript and can be found at \url{https://github.com/dadvisor/containers-panel}. It generates 17 different graphs that can all be used to investigate which services (or group of services) are responsible for consuming the most cost or waste. This can also be generated per resource metric as explained in the pricing model (\autoref{sec:pricing}). The graphs for a demo application are presented in \autoref{sec:demo_app}.
+This panel is implemented in the typescript programming language and can its source code can be found at \url{https://github.com/dadvisor/containers-panel}. It generates 17 different graphs that can all be used to investigate which services (or group of services) are responsible for consuming the most cost or waste. This can also be generated per resource metric as explained in the pricing model (\autoref{sec:pricing}). The graphs for a demo application are presented in \autoref{sec:demo_app}.
 
 \subsection{node}
+The node is the probe that collects information about the host that serves the cloud application. Therefore, the node must be deployed on every host that belongs to this cloud application. 
