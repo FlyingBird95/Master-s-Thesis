@@ -4,4 +4,24 @@
 This chapter explains the implementation of the proposed solution in \autoref{ch:design}. The first section of this chapter explains the relevant technologies with several details about the communication. Additionally, several decisions are described in \autoref{sec:decisions}. This chapter is finished with a deployed demo application which verifies the effectiveness of the implemented solution.
 
 \section{Interface} \label{sec:interface}
-As explained in \autoref{sec:architecture}, the
+As explained in \autoref{sec:architecture}, the proposed solution consists of three different types. This section provides an overview of each type and the communication between them.
+
+\subsection{Root}
+The root contains the connect API which is used as an access point for other nodes. It contains the following endpoints:
+
+\begin{itemize}
+    \item \textbf{/root/add}: accepts POST-requests for adding nodes to keep track of. A node consists of an IP-address, including a port, and a boolean value indicating whether it is a super-node or a normal node.
+    \item \textbf{/root/remove}: accepts POST-requests for removing nodes from the list. All properties from the previous endpoint must be equivalent before the node is removed. Additionally, this service pings every node once in a while to ensure that the node can still be accessed. If a node cannot be accessed for $X$ pings in a row (with an interval of $Y$ seconds), the node is removed from the list.
+    \item \textbf{/root/distribution}: accepts a GET-request for returning the distribution. The endpoints returns therefore a list of all super-nodes with a list of all the nodes that are scraped by the super-nodes. Note that each super-node is also updated with the new distribution as soon as a new (super-)node is added to the list. 
+\end{itemize}
+
+\noindent
+The root service is a rather small service as it only has to keep track of the available (super-)nodes and distribute them over the available super-nodes. This service is implemented at \url{https://github.com/dadvisor/root}. The root service also provides a dynamic configuration of the Prometheus service. This is implemented by generating a configuration file with the addresses of the super-nodes. Prometheus is configured by reading the configuration from this file.\\
+
+\noindent
+Lastly, the root-type contains the Grafana dashboard. This service uses a custom designed dashboard, which is publicly available at \url{https://grafana.com/dashboards/10286}. Grafana is configured in such a way that it automatically adds the local Prometheus service as a data source and installs the dashboard mentioned above. The dashboard uses not only existing visualization tools like graphs and singlestat-panels, but it also visualizes the cost and waste data in a custom designed panel.\\
+
+\noindent
+This panel is implemented in typescript and can be found at \url{https://github.com/dadvisor/containers-panel}. It generates 17 different graphs that can all be used to investigate which services (or group of services) are responsible for consuming the most cost or waste. This can also be generated per resource metric as explained in the pricing model (\autoref{sec:pricing}). The graphs for a demo application are presented in \autoref{sec:demo_app}.
+
+\subsection{node}
