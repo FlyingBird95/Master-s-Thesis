@@ -37,5 +37,44 @@ The node is the probe that collects information about the host that serves the c
 In case of being a supernode, it also needs to known its children for scraping data. Therefore, it needs to communicate with the root to find out this information. Below is a short overview of each of the tasks defined above.
 
 \subsubsection{Identify internet traffic}
+The internet traffic monitoring needs to be optimized as much as possible, as it is not unusual to send thousands of packets a second per host. Therefore, several optimizations are used, which are described below.\\
+
+\noindent
+First of all, the TCPdump command uses several arguments to filter out messages that cannot be resolved. It's entire command is the following.
+\begin{verbatim}
+tcpdump -c 1000 -i any -nn ip and -l -t not port 14100 and
+tcp and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2))
+ != 0)
+\end{verbatim}
+An explanation of the arguments can be found below:
+\begin{itemize}
+    \item \textbf{-c 1000}: collect 1000 packets and then stop. This number is configurable.
+    \item \textbf{-i any}: Any interface \cite{tcpmanpage}.
+    \item \textbf{-nn ip}: Don't convert addresses (i.e., host addresses, port numbers, etc.) to names \cite{tcpmanpage}.
+    \item \textbf{-l}: Make the output line buffered.
+    \item \textbf{-t}: Don't print the timestamp, as this is not used.
+    \item \textbf{not port 14100}: this port is filtered, as this is the default port for communicating with the node. This option can be configured, such that is contains more ports.
+    \item \textbf{tcp} Only retrieve TCP data.
+    \item \textbf{$(\dots~~!= 0)$}: Filter packets with a content length of 0 \cite{tcpdump-filter}.
+\end{itemize}
+An example of the output of this command is the following.
+\begin{verbatim}
+IP 145.97.131.77.53210 > 162.125.34.6.443: Flags [.], seq
+865:2293, ack 3662, win 2048, options [nop,nop,TS val
+958254525 ecr 4134920334], length 1428
+\end{verbatim}
+From this line, the following information is extracted:
+\begin{itemize}
+    \item The source of this TCP packet is: 145.97.131.77 with port 53210.
+    \item The destination of this TCP packet is: 162.125.34.6 with port 443.
+    \item The content length of this message is 1428 bytes.
+\end{itemize}
+It is important to understand the IP addresses of the TCP packet, as this reveals the direction of the packet. There are three cases possible:
+\begin{itemize}
+    \item The source is a remote location and the destination is local. In this case, the destination needs to be resolved into a container ID.
+    \item The source is local and the destination is remote. In this case, the source needs to be resolved into a container ID.
+    \item Both the source and destination are local. Now, both addresses need to be resolved into a container ID.
+\end{itemize}
+
 
 It uses cAdvisor\footnote{See \url{https://github.com/google/cadvisor}} for collecting statistics about the 
