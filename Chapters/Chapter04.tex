@@ -57,24 +57,45 @@ An explanation of the arguments can be found below:
     \item \textbf{tcp} Only retrieve TCP data.
     \item \textbf{$(\dots~~!= 0)$}: Filter packets with a content length of 0 \cite{tcpdump-filter}.
 \end{itemize}
-An example of the output of this command is the following.
+For development purposes, a small demo system has been setup. There are two containers in this system. The first container continuously sends a request, while the second container answers this. Monitoring this demo system reveals the following information.
 \begin{verbatim}
-IP 145.97.131.77.53210 > 162.125.34.6.443: Flags [.], seq
-865:2293, ack 3662, win 2048, options [nop,nop,TS val
-958254525 ecr 4134920334], length 1428
+IP 172.18.0.3.36754 > 172.18.0.2.6000: Flags [P.], seq
+1926123634:1926123773, ack 2643836746, win 229, option
+[nop,nop,TS val 132941 ecr 132941], length 139
+
+IP 172.18.0.2.6000 > 172.18.0.3.36754: Flags [P.], seq
+154:156, ack 139, win 235, options [nop,nop,TS val 132940 
+ecr 132937], length 2
 \end{verbatim}
-From this line, the following information is extracted:
+From this data, the following information can be extracted:
 \begin{itemize}
-    \item The source of this TCP packet is: 145.97.131.77 with port 53210.
-    \item The destination of this TCP packet is: 162.125.34.6 with port 443.
-    \item The content length of this message is 1428 bytes.
+    \item The first line of data contains the request-message, while the second line of data contains the response message.    
+    \item The request opens port 36754 for sending the request.
+    \item The web-service reads and answers on port 6000.
+    \item Now it can be concluded that port 6000 belongs to the web-service, with IP 172.18.0.2. Therefore, the request container must use IP 172.18.0.3.
 \end{itemize}
 It is important to understand the IP addresses of the TCP packet, as this reveals the direction of the packet. There are three cases possible:
 \begin{itemize}
+    \item Both the source and destination are local. Now, both addresses need to be resolved into a container ID. This is already shown in the example above.
     \item The source is a remote location and the destination is local. In this case, the destination needs to be resolved into a container ID.
     \item The source is local and the destination is remote. In this case, the source needs to be resolved into a container ID.
-    \item Both the source and destination are local. Now, both addresses need to be resolved into a container ID.
 \end{itemize}
+
+\noindent
+In case of a remote address, it either originates from another node in the system, or originates from an external address. In the former, the system can communicate with the node to verify the container ID. In the latter, it is not necessary to investigate further. In order to find out whether the data is internal, a list of internal nodes must be known.\\
+
+\noindent
+The decision whether data is internal or external is not sufficient. In the former case, the data needs to be connected to a container ID. In order to do so, each node must keep track of a list of containers and ports. Given the following example, the list containers the following item: port 6000 belongs to IP 172.18.0.2.
+\begin{verbatim}
+IP 10.164.0.8.53512 > 172.18.0.2.6000 ... length 82
+\end{verbatim}
+
+\noindent
+This example above also shows that if the IP address is remote (and from another node), then the nodes can communicate with each other to find out which container ID belongs to port 53512.\\
+
+\noindent
+To summarize, each node needs to keep track of two mappings. First of all, a mapping from port to IP address. Using the IP address, the node can find out which container belongs this. This is the second mapping.
+
 
 
 It uses cAdvisor\footnote{See \url{https://github.com/google/cadvisor}} for collecting statistics about the 
