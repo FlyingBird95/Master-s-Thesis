@@ -1,7 +1,7 @@
 %************************************************
 \chapter{Design}\label{ch:design} % $\mathbb{ZNR}$
 %************************************************
-As stated in the introduction (\autoref{ch:introduction}), the research question is the following: ``How can the cost and waste monitoring of a Cloud Computing application be offered in a scalable and resilient manner?''. In order to investigate the characteristics of the solution for monitoring a Cloud Computing application, it is important to determine the requirements before. The requirements are divided into architectural requirements and waste requirements. The architectural requirements will lead to the proposed architecture, while the waste requirements will lead to a specified algorithm.
+As stated in the introduction (\autoref{ch:introduction}), the research question is the following: ``How can the cost and waste monitoring of a Cloud Computing application be offered in a scalable and resilient manner?''. In order to investigate the characteristics of the solution for monitoring a Cloud Computing application, it is important to determine the requirements before. The requirements are divided into architectural requirements and waste requirements. The architectural requirements will lead to the proposed architecture, while the waste requirements will lead to a specified algorithm. This chapter ends with proposing a model for estimating the costs (\autoref{sec:pricing}).
 
 \section{Architectural requirements} \label{sec:architectural_req}
 As this research is the successor of the work: `Visualizing Computational Waste in Cloud Computing' by A. Spina \cite{spina}, there is some similarity with his architectural requirements. However, his architecture is based on a solution for which a probe collects data from monitored instances, and an aggregator that represents this data into a human-readable format. His relevant requirements are:
@@ -42,7 +42,7 @@ An architectural overview of the three node types, as well as the technologies t
 
 \subsection{Root}
 The root is a single access point for the displaying the obtained results. Its Prometheus database is dynamically configured, such that it scrapes data from all the super nodes deployed in the system. 
-In order to successfully deploy the entire system, the root needs to be deployed first, as it provides an access point for the nodes as well. This access point is implemented in the connect API and further described in ....\todo{add reference}. The connect API distributes the available nodes over the available super nodes and ensures that $\floor*{\frac{n}{m}} \leq \frac{n}{m} \leq \ceil*{\frac{n}{m}}$ holds for which $n$ is the number of nodes and $m$ the number of super nodes.
+In order to successfully deploy the entire system, the root needs to be deployed first, as it provides an access point for the nodes as well. This access point is implemented in the connect API and further described in \autoref{sec:impl-root}. The connect API distributes the available nodes over the available super nodes and ensures that $\floor*{\frac{n}{m}} \leq \frac{n}{m} \leq \ceil*{\frac{n}{m}}$ holds for which $n$ is the number of nodes and $m$ the number of super nodes.
 
 \subsection{Super node}
 As explained before, there is only a slight difference between a node and a super node, as the latter deploys Prometheus. This database is automatically configured such that is scrapes from a set of nodes (as received from the root). The metrics that a super node collects are the same as for a node and are therefore described in the following section.
@@ -190,7 +190,8 @@ In the previous section, three approaches for distributing the waste resources o
 
 \section{Pricing model} \label{sec:pricing}
 Another design decision is to propose an accurate pricing model for estimating the price of a VM based on its resources.
-This pricing model will then be used with the consumed resources to estimate the cost of running a container. According to \cite{bulla2014cloud} there exists different schemes and models for pricing for different service providers. However, the most common model employed in cloud computing is the ``pay-as-you go'' model. Customers pay a fixed price per unit of use. Amazon\footnote{\url{https://aws.amazon.com/}}, considered the market leader in cloud computing, utilizes such a model by charging a fixed price for each hour of virtual machine usage. 
+This pricing model will then be used with the consumed resources to estimate the cost of running a container.
+Different schemes and models exists for different service providers \cite{bulla2014cloud}. However, the most common model employed in cloud computing is the ``pay-as-you go'' model. Customers pay a fixed price per unit of use. Amazon\footnote{\url{https://aws.amazon.com/}}, considered the market leader in cloud computing, utilizes such a model by charging a fixed price for each hour of virtual machine usage. 
 Another common scheme employed by these leading enterprises is the ``pay-per-use'' model. A customer pays for the amount of bandwidth or storage utilized.\\
 
 \noindent
@@ -204,7 +205,7 @@ The authors of \cite{mazrekaj2016pricing} provide an overview of the pricing mod
 Using the literature above and the Google Compute Engine Pricing\footnote{See \url{https://cloud.google.com/compute/pricing}. They bill each vCPU and each GB of memory on Compute Engine separately.}, the decision has been made to estimate the pricing model $p$ by the following formula:
 
 \begin{equation} \label{eq:p}
-p =  n_\text{CPU} * p_\text{CPU} + n_\text{GB} * p_\text{GB} + n_text{network} * p_\text{network}
+p =  n_\text{CPU} * p_\text{CPU} + n_\text{GB} * p_\text{GB} + n_\text{network} * p_\text{network}
 \end{equation}
 
 \noindent

@@ -6,7 +6,7 @@ This chapter explains the implementation of the proposed solution in \autoref{ch
 \section{Interface} \label{sec:interface}
 As explained in \autoref{sec:architecture}, the proposed solution consists of three different types. This section provides an overview of each type and the communication between them.
 
-\subsection{Root}
+\subsection{Root} \label{sec:impl-root}
 The root contains the connect API which is used as an access point for other nodes. Its interface contains the following relevant endpoints:
 
 \begin{itemize}
@@ -25,4 +25,17 @@ Lastly, the root-type contains the Grafana dashboard. This service uses a custom
 This panel is implemented in the typescript programming language and can its source code can be found at \url{https://github.com/dadvisor/containers-panel}. It generates 17 different graphs that can all be used to investigate which services (or group of services) are responsible for consuming the most cost or waste. This can also be generated per resource metric as explained in the pricing model (\autoref{sec:pricing}). The graphs for a demo application are presented in \autoref{sec:demo_app}.
 
 \subsection{node}
-The node is the probe that collects information about the host that serves the cloud application. Therefore, the node must be deployed on every host that belongs to this cloud application. 
+The node is the probe that collects information about the host that serves the cloud application. Therefore, the node must be deployed on every host that belongs to the cloud system. To summarize, its responsibilities are the following:
+\begin{enumerate}
+    \item Inspect internet packets and analyse these to find out which containers are communicating with each other.
+    \item Identify the running containers, including their IP addresses.
+    \item Communicate with the other nodes for resolving the internet packets.
+    \item Collect resource statistics about the running containers
+    \item Expose the collected data in a specific format, such that it can be used by Prometheus.
+\end{enumerate}
+
+In case of being a supernode, it also needs to known its children for scraping data. Therefore, it needs to communicate with the root to find out this information. Below is a short overview of each of the tasks defined above.
+
+\subsubsection{Identify internet traffic}
+
+It uses cAdvisor\footnote{See \url{https://github.com/google/cadvisor}} for collecting statistics about the 
