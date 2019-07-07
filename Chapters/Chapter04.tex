@@ -1,7 +1,7 @@
 %************************************************
 \chapter{Implementation}\label{ch:implementation}
 %************************************************
-This chapter explains the implementation of the proposed solution in \autoref{ch:design}. The first section of this chapter explains the relevant technologies with several details about the communication. Additionally, several decisions are described in \autoref{sec:decisions}. This chapter is finished with a deployed demo application which verifies the effectiveness of the implemented solution.
+This chapter explains the implementation of the proposed solution in \autoref{ch:design}. The first section of this chapter explains the relevant technologies with several details about the communication. Additionally, several decisions are described in \autoref{sec:decisions}. This chapter is finished with a deployed demo application which verifies the effectiveness of the implemented solution (\autoref{sec:demo_app}).
 
 \section{Interface} \label{sec:interface}
 As explained in \autoref{sec:architecture}, the proposed solution consists of three different types. This section provides an overview of each type and the communication between them.
@@ -28,16 +28,15 @@ This panel is implemented in the typescript programming language and can its sou
 The node is the probe that collects information about the host that serves the cloud application. Therefore, the node must be deployed on every host that belongs to the cloud system. To summarize, its responsibilities are the following:
 \begin{enumerate}
     \item Inspect internet packets and analyse these to find out which containers are communicating with each other.
-    \item Identify the running containers, including their IP addresses.
-    \item Communicate with the other nodes for resolving the internet packets.
-    \item Collect resource statistics about the running containers
+    \item Identify the running containers, including their IP addresses. Collect resource statistics about the running containers.
     \item Expose the collected data in a specific format, such that it can be used by Prometheus.
 \end{enumerate}
 
+\noindent
 In case of being a supernode, it also needs to known its children for scraping data. Therefore, it needs to communicate with the root to find out this information. Below is a short overview of each of the tasks defined above.
 
-\subsubsection{Identify internet traffic}
-The internet traffic monitoring needs to be optimized as much as possible, as it is not unusual to send thousands of packets a second per host. Therefore, several optimizations are used, which are described below.\\
+\subsubsection{Identify internet traffic} \label{sec:identify-traffic}
+Internet traffic monitoring needs to be optimized as much as possible, as it is not unusual to send thousands of packets a second per node. Therefore, several optimizations are used, which are described below.\\
 
 \noindent
 First of all, the TCPdump command uses several arguments to filter out messages that cannot be resolved. It's entire command is the following.
@@ -70,7 +69,7 @@ ecr 132937], length 2
 From this data, the following information can be extracted:
 \begin{itemize}
     \item The first line of data contains the request-message, while the second line of data contains the response message.    
-    \item The request opens port 36754 for sending the request.
+    \item The container opens port 36754 for sending the request.
     \item The web-service reads and answers on port 6000.
     \item Now it can be concluded that port 6000 belongs to the web-service, with IP 172.18.0.2. Therefore, the request container must use IP 172.18.0.3.
 \end{itemize}
@@ -96,6 +95,47 @@ This example above also shows that if the IP address is remote (and from another
 \noindent
 To summarize, each node needs to keep track of two mappings. First of all, a mapping from port to IP address. Using the IP address, the node can find out which container belongs this. This is the second mapping.
 
+\subsubsection{Identify containers}
+In order to find out the containers that are currently running, the following command is used:
+\begin{verbatim}
+curl -s --unix-socket 
+/var/run/docker.sock http://localhost/containers/json
+\end{verbatim}
 
+\noindent
+This command communicates with the Docker API and returns a list of containers, including their properties. In order to find out the amount of resources that the containers utilize, the node communicates with cAdvisor\footnote{See \url{https://github.com/google/cadvisor}} using the following API call:
+\begin{verbatim}
+http://localhost:14104/api/v2.0/summary?type=docker&recursive=true
+\end{verbatim}
 
-It uses cAdvisor\footnote{See \url{https://github.com/google/cadvisor}} for collecting statistics about the 
+\noindent
+The total amount of internet traffic per container is determined by another API call with cAdvisor:
+\begin{verbatim}
+http://localhost:14104/api/v2.0/stats/?type=docker&recursive=true&count=1
+\end{verbatim}
+
+\noindent
+The previous section explained how the traffic is being monitored and resolved between containers within the system. In order to determine the external communication, the following formula is used:
+\begin{align} \label{formula:traffic}
+n_\text{network} = n_\text{total} - n_\text{internal}
+\end{align}
+
+\noindent
+This concludes how the three resources are collected and can be used for the cost computation as described in \autoref{eq:p}.
+
+\subsubsection{Exposing the data}
+As explained in \autoref{sec:supernode}, the supernode scrapes data from all the nodes. This is a rather simple process, as the collected data from the previous section can be easily transformed into Prometheus Counters (see \autoref{sec:prometheus}). Using the Prometheus Client Library \footnote{See \url{https://github.com/prometheus/client_python}}, the data is automatically exposed on a configurable endpoint.\\
+
+\noindent
+This section can be concluded with a list of endpoints on which the nodes communicate with each other. They are listed below:
+\begin{itemize}
+    \item \textbf{/dadvisor/metrics}: For exposing the data
+    \item \textbf{/dadvisor/get$\_$info}: For retrieving node specific information, such as the amount of memory and CPU's.
+    \item \textbf{/dadvisor/mapping}: For returning both the port to IP mapping and the IP to container mapping. This endpoint is used in \autoref{sec:sec:identify-traffic}.
+\end{itemize}
+
+\section{Decisions} \label{sec:decisions}
+TODO: describe decision, such as sub sampling, and caching the internet traffic.
+
+\section{Demo application} \label{sec:demo_app}
+TODO: deploy a demo app and collect data about the communication

@@ -97,7 +97,7 @@ Relevant technologies for the research in this thesis are cAdvisor, Prometheus a
 \subsection{cAdvisor}
 CAdvisor is hosted on Github\footnote{\url{https://github.com/google/cadvisor}} and aims to provide container users an understanding of the resource usage and performance characteristics of their running containers. It is a running daemon that collects, aggregates, processes, and exports information about running containers. Specifically, for each container it keeps resource isolation parameters, historical resource usage, histograms of complete historical resource usage and network statistics. This data is exported by container and machine-wide. The collected statistics are both exposed using their remote REST API, or can be scraped by Prometheus.
 
-\subsection{Prometheus} 
+\subsection{Prometheus} \label{sec:prometheus}
 Prometheus\footnote{\url{https://github.com/prometheus/prometheus/}} is a system originally developed by SoundCloud as part of a move towards a microservice architecture. It is a Time Series Database (TSDB) and a subset of its main features as compared to other monitoring systems are: 
 
 \begin{itemize}

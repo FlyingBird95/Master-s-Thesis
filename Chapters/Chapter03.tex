@@ -1,7 +1,7 @@
 %************************************************
 \chapter{Design}\label{ch:design} % $\mathbb{ZNR}$
 %************************************************
-As stated in the introduction (\autoref{ch:introduction}), the research question is the following: ``How can the cost and waste monitoring of a Cloud Computing application be offered in a scalable and resilient manner?''. In order to investigate the characteristics of the solution for monitoring a Cloud Computing application, it is important to determine the requirements before. The requirements are divided into architectural requirements and waste requirements. The architectural requirements will lead to the proposed architecture, while the waste requirements will lead to a specified algorithm. This chapter ends with proposing a model for estimating the costs (\autoref{sec:pricing}).
+As stated in the introduction (\autoref{ch:introduction}), the research question is the following: ``How can the cost and waste monitoring of a Cloud Computing application be offered in a scalable and resilient manner?''. In order to investigate the characteristics of the solution for monitoring a Cloud Computing application, it is important to determine the requirements beforehand. The requirements are divided into architectural requirements and waste requirements. The architectural requirements will lead to the proposed architecture, while the waste requirements will lead to a specific algorithm. This chapter ends with proposing a model for estimating the costs (\autoref{sec:pricing}).
 
 \section{Architectural requirements} \label{sec:architectural_req}
 As this research is the successor of the work: `Visualizing Computational Waste in Cloud Computing' by A. Spina \cite{spina}, there is some similarity with his architectural requirements. However, his architecture is based on a solution for which a probe collects data from monitored instances, and an aggregator that represents this data into a human-readable format. His relevant requirements are:
@@ -25,13 +25,13 @@ In \cite{aceto2013cloud} a number of properties are mentioned. These apply to a 
 \end{itemize}
 
 \noindent
-Both lists in this section are considered relevant, and the desired solution should be able to meet all these properties. For the implemented solution, the decision has been made to monitor only Docker containers, as this provides a way of abstracting a certain deployment. Therefore, the underlying operating system is not that important. This ensures that the solution will be functional across all OS's that are capable of running Docker containers. 
+Both lists with requirements above are relevant, and the desired solution should be able to meet all these properties. For the implemented solution, the decision has been made to monitor only Docker containers, as this provides a way of abstracting a certain deployment. Therefore, the underlying operating system is insignificant. This ensures that the solution will be functional across all OS's that are capable of running Docker containers. 
 
 \section{Architecture} \label{sec:architecture}
 As mentioned in \autoref{sec:related_technologies}, the proposed architecture uses state-of-the-art open-source technologies. Several design patterns have been evaluated, such as a Client-Server network and a peer-to-peer network. the latter is considered more scalable, as the number of resources grow with the number of nodes. Additionally, a peer-to-peer system does not have a single point of failure. Therefore, this system is desired over a client-server network. However, as the data is stored in a Prometheus database, and this cannot operate in a peer-to-peer system, another solution is needed. Using the federation technique of Prometheus \cite{prometheus_federation}, the decision has been made to go for a hierarchical network. This proposed network consists of only one root, a number of supernodes, and optional a number of nodes.\\
 
 \noindent
-An architectural overview of the three node types, as well as the technologies that are included, can be found in \autoref{fig:architecture}. Several processes are listed in bold as this denotes a custom created process. The only difference between a node and a super node is the Prometheus database. Furthermore, the root is only used to visualize the collected metric data in the Grafana dashboard. Each node type is shortly described below.
+An architectural overview of the three node types, as well as the technologies that are included, can be found in \autoref{fig:architecture}. Several processes are listed in bold as this denotes a custom created process. The only difference between a node and a supernode is the Prometheus database. Furthermore, the root is only used to visualize the collected metric data in the Grafana dashboard. Each node type is shortly described below.
 
 \begin{figure}
     \centering
@@ -41,10 +41,10 @@ An architectural overview of the three node types, as well as the technologies t
 \end{figure}
 
 \subsection{Root}
-The root is a single access point for the displaying the obtained results. Its Prometheus database is dynamically configured, such that it scrapes data from all the super nodes deployed in the system. 
+The root is a single access point for the displaying the obtained results. The corresponding Prometheus database is dynamically configured, such that it scrapes data from all the super nodes deployed in the system. 
 In order to successfully deploy the entire system, the root needs to be deployed first, as it provides an access point for the nodes as well. This access point is implemented in the connect API and further described in \autoref{sec:impl-root}. The connect API distributes the available nodes over the available super nodes and ensures that $\floor*{\frac{n}{m}} \leq \frac{n}{m} \leq \ceil*{\frac{n}{m}}$ holds for which $n$ is the number of nodes and $m$ the number of super nodes.
 
-\subsection{Super node}
+\subsection{Super node} \label{sec:supernode}
 As explained before, there is only a slight difference between a node and a super node, as the latter deploys Prometheus. This database is automatically configured such that is scrapes from a set of nodes (as received from the root). The metrics that a super node collects are the same as for a node and are therefore described in the following section.
 
 \subsection{Node}
