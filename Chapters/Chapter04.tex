@@ -136,8 +136,8 @@ This section can be concluded with a list of endpoints on which the nodes commun
     \item \textbf{/dadvisor/mapping}: For returning both the port to IP mapping and the IP to container mapping. This endpoint is used in \autoref{sec:identify-traffic}.
 \end{itemize}
 
-\subsection{Implementation limitations} \label{sec:imp_limitations}
-The implementation described above contains several limitations. First of all, \autoref{sec:identify-traffic} explains how traffic can be resolved between containers on the same node, or between different nodes. This process requires several steps, which have to be repeated for all internet packets. It is therefore unfeasible to continuously this process. In order to avoid this, the decision has been made to use sub-sampling. This subsampling uses the following variables:
+\section{Decisions} \label{sec:decisions}
+The implementation described in \autoref{sec:identify-traffic} contains several limitations. First of all, \autoref{sec:identify-traffic} explains how traffic can be resolved between containers on the same node, or between different nodes. This process requires several steps, which have to be repeated for all internet packets. It is therefore unfeasible to continuously this process. In order to avoid this, the decision has been made to use sub-sampling. This subsampling uses the following variables:
 
 \begin{itemize}
     \item \textbf{TRAFFIC\_SAMPLE}: This is the amount of traffic samples that are collected using the tcpdump command. In \autoref{sec:identify-traffic} its value is 1000.
@@ -146,12 +146,11 @@ The implementation described above contains several limitations. First of all, \
     \item \textbf{TRAFFIC\_SLEEP\_MAX}: This is the maximum amount of sampling period skipped.
 \end{itemize}
 
-\section{Decisions} \label{sec:decisions}
-Several decision have been made, as there were some optimization issues related to the internet monitoring. 
+A default sleep factor (i.e. $K$) is 9, which means that 1 out of the 10 packets is monitored. Therefore, the size of a monitored packet is multiplied with 10. The traffic monitoring has now been changed from monitoring actual values to an estimated value. \autoref{sec:eval} provides an overview of the accuracy of this $K$ factor. In general, when $K$ increases, the accuracy of the monitored packets decreases. It is therefore configurable to choice between accuracy and performance. Note that this can be configured per monitoring node.\\
 
+\noindent
+Another limitation of the internet monitoring is to do near real-time analysis instead of real-time analysis. In case of monitoring a packet that is send between two nodes, it is not possible to send a request directly to resolve the remote address of this packet. Therefore, a number of packets are collected together, and resolved after a certain amount of time. By using this optimization, the number of requests needed to resolve the communication is reduced. However, using this caching method, the database cannot be updated in real time, which results in a small delay of the stored data. 
 
-
-TODO: describe decision, such as sub sampling, and caching the internet traffic.
 
 \section{Demo application} \label{sec:demo_app}
 TODO: deploy a demo app and collect data about the communication
