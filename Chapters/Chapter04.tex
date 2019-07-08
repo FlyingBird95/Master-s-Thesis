@@ -39,7 +39,7 @@ In case of being a supernode, it also needs to known its children for scraping d
 Internet traffic monitoring needs to be optimized as much as possible, as it is not unusual to send thousands of packets a second per node. Therefore, several optimizations are used, which are described below.\\
 
 \noindent
-First of all, the TCPdump command uses several arguments to filter out messages that cannot be resolved. It's entire command is the following.
+First of all, the TCPdump command uses several arguments to filter out messages that cannot be resolved. The entire command can be found below.
 \begin{verbatim}
 tcpdump -c 1000 -i any -nn ip and -l -t not port 14100 and
 tcp and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2))
@@ -153,4 +153,7 @@ Another limitation of the internet monitoring is to do near real-time analysis i
 
 
 \section{Demo application} \label{sec:demo_app}
-TODO: deploy a demo app and collect data about the communication
+In order to visualize the results, a demo application has been setup. This demo application uses one root node, one super node and two other nodes. All commands including the containers that they run, are explained in \autoref{ch:demo_application}. The demo application uses three services (excluding the nodes).\\
+
+\noindent
+A web-service is used to validate the communication traffic between the containers across different nodes. 
