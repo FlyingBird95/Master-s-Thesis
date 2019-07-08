@@ -24,7 +24,7 @@ Lastly, the root-type contains the Grafana dashboard. This service uses a custom
 \noindent
 This panel is implemented in the typescript programming language and can its source code can be found at \url{https://github.com/dadvisor/containers-panel}. It generates 17 different graphs that can all be used to investigate which services (or group of services) are responsible for consuming the most cost or waste. This can also be generated per resource metric as explained in the pricing model (\autoref{sec:pricing}). The graphs for a demo application are presented in \autoref{sec:demo_app}.
 
-\subsection{node}
+\subsection{node} \label{sec:node_imp}
 The node is the probe that collects information about the host that serves the cloud application. Therefore, the node must be deployed on every host that belongs to the cloud system. To summarize, its responsibilities are the following:
 \begin{enumerate}
     \item Inspect internet packets and analyse these to find out which containers are communicating with each other.
@@ -54,7 +54,7 @@ An explanation of the arguments can be found below:
     \item \textbf{-t}: Don't print the timestamp, as this is not used.
     \item \textbf{not port 14100}: this port is filtered, as this is the default port for communicating with the node. This option can be configured, such that is contains more ports.
     \item \textbf{tcp} Only retrieve TCP data.
-    \item \textbf{$(\dots~~!= 0)$}: Filter packets with a content length of 0 \cite{tcpdump-filter}.
+    \item \textbf{$(\dots~~!= 0)$}: Filter packets with a content length of $0$ \cite{tcpdump-filter}.
 \end{itemize}
 For development purposes, a small demo system has been setup. There are two containers in this system. The first container continuously sends a request, while the second container answers this. Monitoring this demo system reveals the following information.
 \begin{verbatim}
@@ -105,13 +105,15 @@ curl -s --unix-socket
 \noindent
 This command communicates with the Docker API and returns a list of containers, including their properties. In order to find out the amount of resources that the containers utilize, the node communicates with cAdvisor\footnote{See \url{https://github.com/google/cadvisor}} using the following API call:
 \begin{verbatim}
-http://localhost:14104/api/v2.0/summary?type=docker&recursive=true
+http://localhost:14104/api/v2.0/summary?type=docker
+&recursive=true
 \end{verbatim}
 
 \noindent
 The total amount of internet traffic per container is determined by another API call with cAdvisor:
 \begin{verbatim}
-http://localhost:14104/api/v2.0/stats/?type=docker&recursive=true&count=1
+http://localhost:14104/api/v2.0/stats/?type=docker
+&recursive=true&count=1
 \end{verbatim}
 
 \noindent
@@ -134,7 +136,21 @@ This section can be concluded with a list of endpoints on which the nodes commun
     \item \textbf{/dadvisor/mapping}: For returning both the port to IP mapping and the IP to container mapping. This endpoint is used in \autoref{sec:identify-traffic}.
 \end{itemize}
 
+\subsection{Implementation limitations} \label{sec:imp_limitations}
+The implementation described above contains several limitations. First of all, \autoref{sec:identify-traffic} explains how traffic can be resolved between containers on the same node, or between different nodes. This process requires several steps, which have to be repeated for all internet packets. It is therefore unfeasible to continuously this process. In order to avoid this, the decision has been made to use sub-sampling. This subsampling uses the following variables:
+
+\begin{itemize}
+    \item \textbf{TRAFFIC\_SAMPLE}: This is the amount of traffic samples that are collected using the tcpdump command. In \autoref{sec:identify-traffic} its value is 1000.
+    \item \textbf{TRAFFIC\_K}: This is the factor of sampling that is skipped. Thus, if $1000$ samples are collected in $x$ seconds, than $x * \text{TRAFFIC\_K}$ seconds is skipped.
+    \item \textbf{TRAFFIC\_SLEEP\_MIN}: This is the minimum amount of sampling period skipped.
+    \item \textbf{TRAFFIC\_SLEEP\_MAX}: This is the maximum amount of sampling period skipped.
+\end{itemize}
+
 \section{Decisions} \label{sec:decisions}
+Several decision have been made, as there were some optimization issues related to the internet monitoring. 
+
+
+
 TODO: describe decision, such as sub sampling, and caching the internet traffic.
 
 \section{Demo application} \label{sec:demo_app}

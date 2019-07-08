@@ -40,16 +40,18 @@ An architectural overview of the three node types, as well as the technologies t
     \label{fig:architecture}
 \end{figure}
 
-\subsection{Root}
+\subsection{Root} \label{sec:root}
 The root is a single access point for the displaying the obtained results. The corresponding Prometheus database is dynamically configured, such that it scrapes data from all the super nodes deployed in the system. 
 In order to successfully deploy the entire system, the root needs to be deployed first, as it provides an access point for the nodes as well. This access point is implemented in the connect API and further described in \autoref{sec:impl-root}. The connect API distributes the available nodes over the available super nodes and ensures that $\floor*{\frac{n}{m}} \leq \frac{n}{m} \leq \ceil*{\frac{n}{m}}$ holds for which $n$ is the number of nodes and $m$ the number of super nodes.
 
 \subsection{Super node} \label{sec:supernode}
 As explained before, there is only a slight difference between a node and a super node, as the latter deploys Prometheus. This database is automatically configured such that is scrapes from a set of nodes (as received from the root). The metrics that a super node collects are the same as for a node and are therefore described in the following section.
 
-\subsection{Node}
+\subsection{Node} \label{sec:node}
 The node consists of three processes. Resource metrics (i.e. CPU and memory) are collected using the cAdvisor process and internet packets are collected using Tcpdump \cite{tcpdump}. This data is collected using the dAdvisor process, which acts as an aggregator. This process ensures that the data is correctly formatted, and makes it available for Prometheus.
 
+\subsection{Conclusion}
+The architecture is proposed in \autoref{sec:root}, \autoref{sec:supernode} and \autoref{sec:node}. According to the Prometheus documentation, this architecture can scale up to ''tens of data centers and millions of nodes`` \cite{prometheus_federation}. Therefore, it provides a scalable way of monitoring the infrastructure. However, the dAdvisor component restricts the scalability a bit. This is analysis is described in \autoref{sec:imp_limitations}.
 
 \section{Waste requirements} \label{sec:waste_requirements}
 The CPU and memory are resource metrics that can be specified per Docker container. For a specific node, the sum of these metrics over all containers is denoted as the total utilization. For these utilization values, there are a few restrictions, which are mathematically stated below.
@@ -209,7 +211,7 @@ p =  n_\text{CPU} * p_\text{CPU} + n_\text{GB} * p_\text{GB} + n_\text{network} 
 \end{equation}
 
 \noindent
-Where $n_\text{CPU}$ is the amount of CPU used for a specific host. $p_\text{CPU}$ is the price per CPU per hour. The same notion applies to $n_\text{GB}$ and $p_\text{GB}$. $n_text{network}$ represents the amount of outgoing network in GB. Note that all cloud providers only charge for network traffic flowing out of their system, and not for communication between internal services. $p_\text{network}$ is the price of this outgoing network per GB.\\
+Where $n_\text{CPU}$ is the amount of CPU used for a specific host. $p_\text{CPU}$ is the price per CPU per hour. The same notion applies to $n_\text{GB}$ and $p_\text{GB}$. $n_\text{network}$ represents the amount of outgoing network in GB. Note that all cloud providers only charge for network traffic flowing out of their system, and not for communication between internal services. $p_\text{network}$ is the price of this outgoing network per GB.\\
 
 \noindent 
 There are different prices per cloud provider, and it even differs per cloud provider itself, as the cloud provider might provide a discount for longer use. It is therefore not desired to implement a fixed price. Instead, the solution provides the possibility to dynamically change the prices, such that the total cost can be affected. However, to provide an easy-to-use solution, the following default prices are used:
