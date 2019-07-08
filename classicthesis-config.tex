@@ -155,7 +155,19 @@
   belowcaptionskip=.75\baselineskip
   %frame=L
 }
-% ****************************************************************************************************
+\usepackage[dvipsnames]{xcolor}
+\definecolor{backcolor}{rgb}{0.95,0.95,0.95}
+\lstset{
+    basicstyle=\ttfamily,
+    showstringspaces=false,
+    morekeywords={PassOptionsToPackage,selectlanguage},
+    commentstyle=\color{Green}\ttfamily,
+    keywordstyle=\color{RoyalBlue},%\bfseries,
+    stringstyle=\rmfamily,
+    stepnumber=5,
+    frame=single,
+    backgroundcolor=\color{backcolor},
+}% ****************************************************************************************************
 
 
 
