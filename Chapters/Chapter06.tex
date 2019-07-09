@@ -133,10 +133,15 @@ Several analyses have been made for different K values, as proposed in \autoref{
 
 \begin{table}[ht]
     \centering
-    \begin{tabular}{r|rrr}
-        K-value & minimum accuracy & maximum accuracy & CPU usage \\ \hline
-        9 & 2.7 & 3.3 & 2.2\% \\
-        
+    \begin{tabular}{r|rrr|r}
+        \multirow{2}{*}{K-value} & \multicolumn{3}{|c|}{Accuracy} & \multirow{2}{*}{CPU Usage} \\
+        & Min & Max & average & \\ \hline        
+        0 &     &     &     & \% \\
+        3 &     &     &     & \% \\
+        6 &     &     &     & \% \\
+        9 & 2.7 & 3.3 & 3.0 &2.2\% \\
+        12&     &     &     & \% \\
+        15&     &     &     & \% \\        
     \end{tabular}
     \caption{Network traffic accuracy results for different K-values}
     \label{tab:accuracy_results}
