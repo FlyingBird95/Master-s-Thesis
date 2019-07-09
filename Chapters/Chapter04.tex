@@ -125,7 +125,7 @@ n_\text{network} = n_\text{total} - n_\text{internal}
 \noindent
 This concludes how the three resources are collected and can be used for the cost computation as described in \autoref{eq:p}.
 
-\subsubsection{Exposing the data}
+\subsubsection{Exposing the data} \label{sec:exposing_data}
 As explained in \autoref{sec:supernode}, the supernode scrapes data from all the nodes. This is a rather simple process, as the collected data from the previous section can be easily transformed into Prometheus Counters (see \autoref{sec:prometheus}). Using the Prometheus Client Library \footnote{See \url{https://github.com/prometheus/client_python}}, the data is automatically exposed on a configurable endpoint.\\
 
 \noindent
@@ -147,7 +147,7 @@ The implementation described in \autoref{sec:identify-traffic} contains several 
 \end{itemize}
 
 \noindent
-A default sleep factor (i.e. $K$) is 9, which means that 1 out of the 10 packets is monitored. Therefore, the size of a monitored packet is multiplied with 10. The traffic monitoring has now been changed from monitoring actual values to an estimated value. \autoref{sec:eval} provides an overview of the accuracy of this $K$ factor. In general, when $K$ increases, the accuracy of the monitored packets decreases. It is therefore configurable to choice between accuracy and performance. Note that this can be configured per monitoring node.\\
+A default sleep factor (i.e. $K$) is 9, which means that 1 out of the 10 packets is monitored. Therefore, the size of a monitored packet is multiplied with 10. The traffic monitoring has now been changed from monitoring actual values to an estimated value. \autoref{sec:eval_k} provides an overview of the accuracy of this $K$ factor. In general, when $K$ increases, the accuracy of the monitored packets decreases. It is therefore configurable to choice between accuracy and performance. Note that this can be configured per monitoring node.\\
 
 \noindent
 Another limitation of the internet monitoring is to do near real-time analysis instead of real-time analysis. In case of monitoring a packet that is send between two nodes, it is not possible to send a request directly to resolve the remote address of this packet. Therefore, a number of packets are collected together, and resolved after a certain amount of time. By using this optimization, the number of requests needed to resolve the communication is reduced. However, using this caching method, the database cannot be updated in real time, which results in a small delay of the stored data. 

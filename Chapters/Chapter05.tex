@@ -118,8 +118,7 @@ In order to solve the issue described in the previous sub-section, a sub samplin
 In order to solve the issue from the second meeting, the decision was made to implement a caching functionality. This means that the program resolves the internet traffic packets afterwards instead of real-time. The decision was made to implement a caching time limit of one minute, such that the obtained results are near real-time. The system therefore only communicates with its other nodes once per minute. This leads to a more efficient CPU usage, which can be seen in \autoref{fig:deployment}. This figure shows the CPU usage during the lifetime of the system. It can be concluded that the overall  CPU percentage is low, around 4\% for the nodes, and the root. However, for an unknown reason, the Jotunheim supernode linearly grows until 40\%, while the others stay constant. The Jotunheim root shows an average of 2.5\% CPU.
 
 \section{Results}
-In order to simply the results, several containers are grouped together using a regular expression. If a certain container name matches a regular expression, then this container is assigned to a certain group. If a container is not matched to a certain group, it is assigned to the `other'-group. \autoref{tab:reqex} shows the groups that are proposed, as well as the number of containers in this group.
-
+In order to simply the results, several containers are grouped together using a regular expression. If a certain container name matches a regular expression, then this container is assigned to a certain group. If a container is not matched to a certain group, it is assigned to the `other'-group. \autoref{tab:regex} shows the groups that are proposed, as well as the number of containers in this group.
 
 
 \begin{table}
@@ -150,8 +149,8 @@ In order to simply the results, several containers are grouped together using a 
 The system proposed in \autoref{ch:design} is able to monitor the CPU and memory usage on a container level. Using TCPDump, a subsampling procedure has been implemented that monitors the packets on a host level. Then, the system assigns this packets to a container by resolving their IP address. However, almost all their communication of their services are configured using Weave Net\footnote{See \url{https://github.com/weaveworks/weave}}. Weave Net creates a virtual network that connects Docker containers across multiple hosts and enables their automatic discovery. To application containers, the network established by Weave resembles a giant Ethernet switch, where all containers are connected and can easily access services from one another. \cite{weave}.\\
 
 \noindent
-Using the weave network, the containers don't communicate over their exposed IP address. Therefore, the proposed system is unable to resolve the internet packets. This leads to a lower estimate of $n_\text{internal}$ in \autoref{formula:traffic}, which results in a higher $n_\text{network}$. Therefore, the estimated cost using \autoref{eq:p} is also too high.
+When using the weave network, the containers don't communicate by their exposed IP address. Therefore, the proposed system is unable to resolve the internet packets. This leads to a lower estimate of $n_\text{internal}$ in \autoref{formula:traffic}, which results in a higher $n_\text{network}$. Therefore, the estimated cost using \autoref{eq:p} is also too high. Further work is needed to resolve the IP addresses according to the weave network.
 
 
-\section{Evaluation} \label{sec:sb-evaluation}
-In order to evaluate the deployment of the system, the decision has been made to perform an interview with one of the employees of the company. The entire interview can be found in \autoref{ch:interview}.
+\section{Conclusion} \label{sec:sb-evaluation}
+In order to evaluate the deployment of the system, the decision has been made to perform an interview with one of the employees of the company. The entire interview can be found in \autoref{ch:interview}. From this interview it can be concluded that ....

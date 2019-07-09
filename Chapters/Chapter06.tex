@@ -1,43 +1,11 @@
 %************************************************
 \chapter{Evaluation}\label{ch:evaluation}
 %************************************************
-
-As stated in the introduction, the actual cost of running a virtual machine can be formulated by \autoref{eq:intro}. It is therefore important to develop an accurate model for determining $c_\text{effective}$ and $c_\text{waste}$. Therefore, this section is divided into a number of sub-sections. First, \autoref{sec:model} shows how these cost-values can be computed. Second, the pricing model is computed in \autoref{sec:pricing}.
-
-% I want to answer this question by explaining that the price of a VM can be estimated by a simple formula, for which the data is based on GCE. Additionally, I want to do some research that this price is more or less equivalent across multiple Cloud Providers
-%
-\subsection{Computing the cost and waste} \label{sec:model}
-The effective cost and waste can be monitored per billing time unit (BTU). For most public cloud providers, this BTU is one second. However, it is computationally to intensive to compute the effective cost and waste every second. Instead, an average over a time period of one hour is taken. This leads to the same results as computing it every second. However, the disadvantage is that the desired solution must be up for one hour before a result can be obtained. Additionally, the effective cost are related to the part of the VM that is utilized. Therefore, for a time period of one hour, the effective costs are:
-
-\begin{equation} \label{eq:effective}
-c_\text{effective} = p \sum_{i=1}^n u_i
-\end{equation}
-
-\noindent
-Where $p$ is the price of the actual cost for one hour, and $u_i$ is the average utilization for one hour. This formula can be repeated for expressing the waste in terms of the price for a host and the resource waste:
-
-\begin{equation} \label{eq:waste}
-c_\text{waste} = p \sum_{i=1}^n w_i
-\end{equation}
-
-\noindent
-Where $w_i$ is the average resource waste for one hour. Note that \autoref{eq:effective} and \autoref{eq:waste} both determine the cost for a specific host. In case the deployed system consists of multiple hosts, the values need to be summed. Furthermore, these costs are for a period of one hour. In case the system is deployed for a longer period of time, than this computation needs to be recomputed every hour, and the collected values must be summed. 
-
-
-\section{Computing the waste distribution} \label{sec:waste_into}
-In the sections below, the waste computation will be explained, as well as the decision that have been made that are relevant for computing the waste, given the utlization values for a given host. To rephrase, the research question that will be answered is:
-
-\begin{quote}
-    \textbf{Q4: }\textit{What is an effective approach for computing the waste of a Cloud application?}\\
-\end{quote}
-
-\noindent
-This question can be considered as a mathematical question, as it consists of a fixed set of input variables, and results in a fixed set of output variables. In order to answer this question it is therefore important to determine the properties of the waste distribution before. The next section comes up with three strategies for computing the waste distribution, that all meet the requirements of the properties below. The last section tries to find the optimal approach, by evaluating the approaches against several properties.
-
+This chapter evaluates the three waste algorithms, as proposed in \autoref{sec:approaches}. This evaluation is based on their complexity and accuracy. Furthermore, the demo application is evaluated in \autoref{sec:demo_eval}.
 
 
 \section{Optimal approach} \label{sec:optimal_approach}
-\autoref{sec:approaches} describes three different approaches for computing the waste distribution, given the utilization values. This section evaluates the approaches against several properties, and chooses the best approach for the remainder of this chapter.
+In this section, three approaches from \autoref{sec:approaches} are evaluated using their complexity and accuracy. 
 
 \subsection{Complexity}
 The complexity can be expressed in terms of memory complexity and computational complexity. They are all listed in \autoref{tab:complexity}. The minimal complexity for both memory and computational is $\mathcal{O}(n)$, as a host runs $n$ containers. Approach 2 has a memory complexity of $\mathcal{O}(n)$ as this algorithm only iterates the utilization values as well. Approach 3 has a computational complexity of $\mathcal{O}(n^3)$ as this is necessary for solving a system of linear equations in the worst case. However, \cite{pan1991complexity} explains that there exists several optimization and thus may be usually be done in $\mathcal{O}(n^2)$.\\
@@ -57,7 +25,7 @@ As approach \ref{sec:proportional} is clearly the worst in terms of memory and c
     \label{tab:complexity}
 \end{table}
 
-\subsection{Data interpretation} \label{sec:data}
+\subsection{Accuracy} \label{sec:data}
 As the previous section has shown that the computational and memory complexity is not significant in choosing the best approach, it is interesting to investigate the difference in their results. This section shows the actual values and whether these can be justified. In order to do so, several utilization distributions have been generated and have been listed in \autoref{tab:values}. This table provides two examples with $n = 2$, and two examples with $n = 3$. In the first row, the waste for all three approaches are approximately equivalent. However, in the second row, the waste varies a lot between the different approaches. It doesn't feel natural that, if a container utilizes 4 times more than another container, its corresponding waste is the same. Therefore, the computations from the approach described in \autoref{sec:equal} feel to simplistic.\\
 
 \noindent
@@ -121,8 +89,13 @@ Apart from presenting the data in a table, it is also possible to visualize this
 \end{figure}
 
 
-\section{Conclusion} \label{sec:conclusion4}
-One of the properties of the utilization values (as stated in \autoref{sec:utilization}) is that $u_i > 0$ for all $i$. However, while deploying the system, it turned out that the utilization of a certain container was zero. In the first two approaches (\autoref{sec:equal} and \autoref{sec:linear}), this is not a problem. However, this is a problem for the last approach (\autoref{sec:proportional}). An example can be seen for $n = 3$ with $u_1 = 0.3, u_2 = 0, u_3 = 0.2$. This results in the waste values: $w_1 = 0, w_2 = 0.5, w_3 = 0$. Therefore, if $u_1 = 0$, then $w_i = 1 - u$.\\
+\subsection{Conclusion} \label{sec:conclusion4}
+One of the properties of the utilization values (as stated in \autoref{sec:waste_requirements}) is that $u_i > 0$ for all $i$. However, while deploying the system, it turned out that the utilization of a certain container was zero. In the first two approaches (\autoref{sec:equal} and \autoref{sec:linear}), this is not a problem. However, this is a problem for the last approach (\autoref{sec:proportional}). An example can be seen for $n = 3$ with $u_1 = 0.3, u_2 = 0, u_3 = 0.2$. This results in the waste values: $w_1 = 0, w_2 = 0.5, w_3 = 0$. Therefore, if $u_1 = 0$, then $w_i = 1 - u$.\\
 
 \noindent
 In case there are two containers that have a zero utilization, than the waste cannot be computed for the third approach. This is due to the fact that the matrix $A_n$ does not have a full rank anymore (as two rows are the same). This problem can be avoided by adding a small utilization value $\Delta$ to the $u_i$-values that are $0$. This value can then be removed from the corresponding $w_i$ value, to ensure that property 1 still holds. However, as explained in \autoref{sec:data}, the corresponding $w_i$ will be close to $\sum_{j=1}^n w_j$ and will lead to abnormal results. This leads to the conclusion that only the approach from \autoref{sec:linear} is sufficient for the implementation. Thus, Algorithm \ref{alg:linear} will be used to compute the waste values given the utilization values.
+
+
+\section{Demo app evaluation} \label{sec:demo_eval}
+
+\section{Internet traffic accuracy evaluation} \label{sec:eval_k}
