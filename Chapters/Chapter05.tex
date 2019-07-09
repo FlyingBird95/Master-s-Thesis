@@ -39,14 +39,14 @@ The six virtual machines work together as one system. Each virtual machine is re
             grow=south,
             rectangle, draw, minimum size=3ex, inner sep=1pt,s sep=7mm
         }
-        [Jotunheim 
-        [Vanaheim 
-          [Asgard]
-          [Alfheim]
+        [~~Jotunheim~~~ 
+        [~~Vanaheim~~~ 
+          [~~Asgard~~~]
+          [~~Alfheim~~~]
         ]
-        [Jotunheim
-          [Midgard]
-          [Niffelheim]
+        [~~Jotunheim~~~
+          [~~Midgard~~~]
+          [~~Niffelheim~~~]
         ]
         ]
     \end{forest}
@@ -115,21 +115,42 @@ In order to solve the issue described in the previous sub-section, a sub samplin
 \end{figure}
 
 \subsection{Third meeting}
-In order to solve the issue from the second meeting, the decision was made to implement a caching functionality. This means that the program resolves the internet traffic packets afterwards instead of real-time. The decision was made to implement a caching time limit of one minute, such that the obtained results are near real-time. The system therefore only communicates with its other nodes once per minute. This leads to a more efficient CPU usage, which can be seen in \autoref{fig:deployment}. In this figure, a moment from 9 AM to 11 AM on July 9th, 2019 was taken to show that the components are sufficient efficient. For an unknown reason, the Jotunheim supernode reaches around 40\%, while the others reach approximately 4\% CPU. \autoref{fig:jotunheim} shows the CPU usage of the Jotunheim throughout the entire lifetime of the project. From this figure it becomes clear that there is a linear growth in CPU usage of Jotunheim, which seems to reach an equilibrium at 40\% during the last days. 
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{gfx/jotunheim-2weeks}
-    \caption{CPU usage of Jotunheim between June 26 and July 10}
-    \label{fig:jotunheim}
-\end{figure}
+In order to solve the issue from the second meeting, the decision was made to implement a caching functionality. This means that the program resolves the internet traffic packets afterwards instead of real-time. The decision was made to implement a caching time limit of one minute, such that the obtained results are near real-time. The system therefore only communicates with its other nodes once per minute. This leads to a more efficient CPU usage, which can be seen in \autoref{fig:deployment}. This figure shows the CPU usage during the lifetime of the system. It can be concluded that the overall  CPU percentage is low, around 4\% for the nodes, and the root. However, for an unknown reason, the Jotunheim supernode linearly grows until 40\%, while the others stay constant. The Jotunheim root shows an average of 2.5\% CPU.
 
 \section{Results}
+In order to simply the results, several containers are grouped together using a regular expression. If a certain container name matches a regular expression, then this container is assigned to a certain group. If a container is not matched to a certain group, it is assigned to the `other'-group. \autoref{tab:reqex} shows the groups that are proposed, as well as the number of containers in this group.
 
+
+
+\begin{table}
+    \centering
+    \begin{tabular}{l|lr}
+        Regular expression & Group name & Containers \\ \hline
+        / & other & 42 \\
+        spark & sparkthings & 24\\
+        flink & flinkthings & 4\\
+        zookeeper & zookeeper & 5\\
+        kafka & kafka & 11\\
+        exporter & node-exporter & 5\\
+        socat & socats & 6\\
+        cassandra & cassandra & 3\\
+        rest & timeseriest-rest & 3\\
+        vault & vault & 6\\
+        hadoop & hadoop & 4\\
+        airflow & airflow & 3\\
+        orchestrator & orchestrator & 2\\
+        mw & middlewares & 12\\
+    \end{tabular}
+    \caption{Assigning container groups}
+    \label{tab:regex}
+\end{table}
 
 
 \section{Limitation}
-The system proposed in \autoref{ch:design} is able to monitor the CPU and memory usage on a container level. Using TCPDump, a subsampling procedure has been implemented that monitors the packets on a host level. Then, the system assigns this packets to a container by resolving their IP address. However, most communication in the Sustainable Buildings company is configured using Weave Net\footnote{See \url{https://github.com/weaveworks/weave}}. Weave Net creates a virtual network that connects Docker containers across multiple hosts and enables their automatic discovery. To application containers, the network established by Weave resembles a giant Ethernet switch, where all containers are connected and can easily access services from one another. \cite{weave}.
+The system proposed in \autoref{ch:design} is able to monitor the CPU and memory usage on a container level. Using TCPDump, a subsampling procedure has been implemented that monitors the packets on a host level. Then, the system assigns this packets to a container by resolving their IP address. However, almost all their communication of their services are configured using Weave Net\footnote{See \url{https://github.com/weaveworks/weave}}. Weave Net creates a virtual network that connects Docker containers across multiple hosts and enables their automatic discovery. To application containers, the network established by Weave resembles a giant Ethernet switch, where all containers are connected and can easily access services from one another. \cite{weave}.\\
+
+\noindent
+Using the weave network, the containers don't communicate over their exposed IP address. Therefore, the proposed system is unable to resolve the internet packets. This leads to a lower estimate of $n_\text{internal}$ in \autoref{formula:traffic}, which results in a higher $n_\text{network}$. Therefore, the estimated cost using \autoref{eq:p} is also too high.
 
 
 \section{Evaluation} \label{sec:sb-evaluation}
