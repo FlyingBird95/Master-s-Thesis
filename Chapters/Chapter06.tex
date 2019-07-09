@@ -99,15 +99,16 @@ In case there are two containers that have a zero utilization, than the waste ca
 \section{Demo app evaluation} \label{sec:demo_eval}
 
 \section{Internet traffic accuracy evaluation} \label{sec:eval_k}
-This section provides a small research about the accuracy of the internet traffic monitoring. In order to do so, a supernode was deployed to monitor two local containers. One container acting as a web-service, and one container continuously sending requests. The command for deploying the supernode can be found in \autoref{sec:deploy_supernode}. The other two containers are deployed using the following command:
+This section provides a small research about the accuracy of the internet traffic monitoring. In order to do so, a supernode was deployed to monitor two local containers. One container acting as a web-service, and one container continuously sending requests. The command for collecting all values can be found below:
 
 \begin{lstlisting}[language=bash, caption=Docker-compose]
-curl -sS https://raw.githubusercontent.com/dadvisor/docker-compose/master/docker-compose.yml > docker-compose.yml
-docker-compose up -d 
+git clone htts://github.com/dadvisor/util
+cd util
+./accuracy.sh
 \end{lstlisting}
 
 \noindent
-The idea behind evaluating the accuracy is to allow only one container to communicate with the web-service. By doing so, the total amount of data that a container sends is equivalent to its internal amount of data. Thus, the following variables should hold the same value:
+The idea behind this evaluation is to allow only one container to communicate with the web-service. By doing so, the total amount of data that a container sends is equivalent to its internal amount of data. Thus, the following variables should hold the same value:
 \begin{itemize}
     \item \textbf{network\_container\_total}: This metric receives a value by scraping data from cAdvisor.
     \item \textbf{bytes\_send\_total}: This metrics has a key-value pair with both `src' and `dst'. This is the amount of data sent between the source container and the destination container by reading the Tcpdump data.
