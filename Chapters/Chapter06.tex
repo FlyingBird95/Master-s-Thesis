@@ -99,3 +99,9 @@ In case there are two containers that have a zero utilization, than the waste ca
 \section{Demo app evaluation} \label{sec:demo_eval}
 
 \section{Internet traffic accuracy evaluation} \label{sec:eval_k}
+This section provides a small research about the accuracy of the internet traffic monitoring. In order to do so, a supernode was deployed to monitor two local containers. One container acting as a web-service, and one container continuously sending requests. The command for deploying the supernode can be found in \autoref{sec:deploy_supernode}. The other two containers are deployed using the following command:
+
+\begin{lstlisting}[language=bash, caption=Docker-compose]
+curl -sS https://raw.githubusercontent.com/dadvisor/docker-compose/master/docker-compose.yml > docker-compose.yml
+docker-compose up -d 
+\end{lstlisting}
