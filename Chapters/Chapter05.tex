@@ -4,13 +4,10 @@
 Part of the evaluation of the developed tool is to verify the functionality with an industrial company. In order to do so, a company closely related to the University of Groningen has been found. This company is named `Sustainable Buildings' and sells products to monitor the users electricity and gas consumption in real-time. This leads to an increase in building-users awareness by providing real-time feedback through public dashboards \cite{sb}.\\
 
 \noindent
-In order to provide this monitoring, they have allocated a physical server consisting of 40 cores and 128 GB of RAM. Additionally, they have 900 GB of storage data. This host machine is divided into 6 virtual machines. A brief overview of their architecture is described in \autoref{sec:sb-architecture}. The decision has been made to deploy the developed tool at their system, because it is a relatively large system with many load. Additionally, the tool might be useful for them, as they are now missing insights into their performance. The process of deploying this system has been described in \autoref{sec:sb-process}. At the end, an evaluation has been performed. This evaluation consists of an interview and is described in \autoref{sec:sb-evaluation}.
+In order to serve their customers, they have allocated a physical server consisting of 40 cores and 128 GB of RAM. Additionally, they have 900 GB of storage data. This host machine is divided into 6 virtual machines. A brief overview of their architecture is described in \autoref{sec:sb-architecture}. This company perfectly meets the requirements for evaluating the tool, because it is a relatively large system with many load. Additionally, the tool might be useful for them, as they are now missing insights into their performance. The process of deploying this system has been described in \autoref{sec:sb-process}. At the end, an evaluation has been performed. This evaluation consists of an interview and is described in \autoref{sec:sb-evaluation}.
 
 \section{Architecture} \label{sec:sb-architecture}
-The six virtual machines work together as one system. Each virtual machine is responsible for running a number of services. These services can be found in \autoref{fig:sb-architecture}. In order to simplify the deployment, the decided to assign a name to every VM. The names are also presented in the architecture diagram. A small overview of the number of CPU, RAM and memory per VM can be found in \autoref{tab:vms}.\\
-
-\noindent
-As described in \autoref{sec:collect_utilization}, the architecture is a fully connected peer-to-peer system, as well as a hierarchical structure for the data replication. For the latter, the structure can be found in \autoref{fig:sb-tree}.
+The six virtual machines work together as one system. Each virtual machine is responsible for running a number of services. These services can be found in \autoref{fig:sb-architecture}. In order to simplify the deployment, the employees of the company decided to assign a name to every VM. The names are also presented in the architecture diagram. A small overview of the number of CPU, RAM and memory per VM can be found in \autoref{tab:vms}. As described in \autoref{sec:architecture}, the architecture consists of a single root-node, two super-nodes and three nodes. The structure can be found in \autoref{fig:sb-tree}.
 
 
 \begin{figure}
@@ -22,14 +19,14 @@ As described in \autoref{sec:collect_utilization}, the architecture is a fully c
 
 \begin{table}
     \centering
-    \begin{tabular}{l|rrr}
-        Virtual Machine & Cores & RAM & Memory \\ \hline
-        Midgard & 4 & 8 GB & 20 GB \\
-        Niflheim & 4 & 8 GB & 20 GB \\
-        Jotunheim & 8 & 16 GB & 100 GB \\
-        Asgard & 8 & 16 GB & 100 GB \\
-        Vanaheim & 8 & 16 GB & 100 GB \\
-        Alfheim & 8 & 16 GB & 100 GB \\
+    \begin{tabular}{l|lrrr}
+        Virtual Machine &IP & Cores & RAM & Memory \\ \hline
+        Asgard & 192.168.1.10 &8 & 16 GB & 100 GB \\
+        Vanaheim & 192.168.1.11 &8 & 16 GB & 100 GB \\
+        Alfheim & 192.168.1.12  &8 & 16 GB & 100 GB \\
+        Jotunheim & 192.168.1.13 &8 & 16 GB & 100 GB \\
+        Midgard & 192.168.1.14 &4 & 8 GB & 20 GB \\
+        Niflheim & 192.168.1.15 &4 & 8 GB & 20 GB \\
     \end{tabular}
     \caption{Overview of their architecture}
     \label{tab:vms}
@@ -42,9 +39,9 @@ As described in \autoref{sec:collect_utilization}, the architecture is a fully c
             grow=south,
             rectangle, draw, minimum size=3ex, inner sep=1pt,s sep=7mm
         }
-        [Alfheim 
+        [Jotunheim 
         [Vanaheim 
-        [Asgard]
+        [Jotunheim]
         ]
         [Midgard
         [Jotunheim]
