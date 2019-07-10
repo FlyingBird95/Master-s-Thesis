@@ -1,10 +1,10 @@
 %************************************************
 \chapter{Design}\label{ch:design} % $\mathbb{ZNR}$
 %************************************************
-As stated in the introduction (\autoref{ch:introduction}), the research question is the following: ``How can the cost and waste monitoring of a Cloud Computing application be offered in a scalable and resilient manner?''. In order to investigate the characteristics of the solution for monitoring a Cloud Computing application, it is important to determine the requirements beforehand. The requirements are divided into architectural requirements and waste requirements. The architectural requirements will lead to the proposed architecture, while the waste requirements will lead to a specific algorithm. This chapter ends with proposing a model for estimating the costs (\autoref{sec:pricing}).
+As stated in the introduction (\autoref{ch:introduction}), the research question is the following: ``How can the cost and waste monitoring of a Cloud Computing application be offered in a scalable manner?''. In order to investigate the characteristics of the solution for monitoring a Cloud Computing application, it is important to determine the requirements beforehand. The requirements are divided into architectural requirements, cost requirement and waste requirements. The architectural requirements will lead to the proposed architecture. The cost requirements lead to the pricing model, and the waste requirements will lead to a specific algorithm. This chapter ends with proposing a model for estimating the costs (\autoref{sec:pricing}).
 
 \section{Architectural requirements} \label{sec:architectural_req}
-As this research is the successor of the work: `Visualizing Computational Waste in Cloud Computing' by A. Spina \cite{spina}, there is some similarity with his architectural requirements. However, his architecture is based on a solution for which a probe collects data from monitored instances, and an aggregator that represents this data into a human-readable format. His relevant requirements are:
+As this research is the successor of the work: `Visualizing Computational Waste in Cloud Computing' by A. Spina \cite{spina}, there is some similarity with his architectural requirements. However, his architecture is based on a solution for which a probe collects data from monitored instances, and an aggregator that represents this data into a human-readable format. Relevant requirements are:
 \begin{itemize}
     \item The solution should be functional across command cloud providers.
     \item The data should be considered sensitive and secured accordingly.
@@ -42,7 +42,7 @@ An architectural overview of the three node types, as well as the technologies t
 
 \subsection{Root} \label{sec:root}
 The root is a single access point for the displaying the obtained results. The corresponding Prometheus database is dynamically configured, such that it scrapes data from all the super nodes deployed in the system. 
-In order to successfully deploy the entire system, the root needs to be deployed first, as it provides an access point for the nodes as well. This access point is implemented in the connect API and further described in \autoref{sec:impl-root}. The connect API distributes the available nodes over the available super nodes and ensures that $\floor*{\frac{n}{m}} \leq \frac{n}{m} \leq \ceil*{\frac{n}{m}}$ holds for which $n$ is the number of nodes and $m$ the number of super nodes.
+In order to successfully deploy the entire system, the root needs to be deployed first, as it provides an access point for the nodes as well. This access point is implemented in the connect API and further described in \autoref{sec:impl-root}. The connect API distributes the available nodes over the available super nodes.
 
 \subsection{Super node} \label{sec:supernode}
 As explained before, there is only a slight difference between a node and a super node, as the latter deploys Prometheus. This database is automatically configured such that is scrapes from a set of nodes (as received from the root). The metrics that a super node collects are the same as for a node and are therefore described in the following section.
@@ -53,7 +53,7 @@ The node consists of three processes. Resource metrics (i.e. CPU and memory) are
 \subsection{Conclusion}
 The architecture is proposed in \autoref{sec:root}, \autoref{sec:supernode} and \autoref{sec:node}. According to the Prometheus documentation, this architecture can scale up to ''tens of data centers and millions of nodes`` \cite{prometheus_federation}. Therefore, it provides a scalable way of monitoring the infrastructure. However, the dAdvisor component restricts the scalability a bit. This is analysis is described in \autoref{sec:exposing_data}.
 
-\section{Waste requirements} \label{sec:waste_requirements}
+\section{Cost requirements} \label{sec:cost_req}
 The CPU and memory are resource metrics that can be specified per Docker container. For a specific node, the sum of these metrics over all containers is denoted as the total utilization. For these utilization values, there are a few restrictions, which are mathematically stated below.
 
 \begin{itemize}
@@ -61,10 +61,44 @@ The CPU and memory are resource metrics that can be specified per Docker contain
     \item $\sum_{i=1}^n u_i \leq 1$: The total utilization of a certain set of containers for a given host cannot utilize more than 100\%. And with the previous requirement, its lower-bound is 0 (exclusive). As the total waste is computed as $1 - \sum_{i=1}^n u_i$, it can be concluded that the waste is bounded by 0 (inclusive) and 1 (exclusive).
 \end{itemize}
 
-\noindent
-Although the mathematical constraints are very trivial, it is important to state this beforehand. Using these utilization requirements, several approaches of computing the resource waste can be assessed. Also, stating these constraints are important as it affects the desired solution.\\
+\section{Pricing model} \label{sec:pricing}
+
+Another design decision is to propose an accurate pricing model for estimating the price of a VM based on its resources.
+This pricing model will then be used with the consumed resources to estimate the cost of running a container.
+Different schemes and models exists for different service providers \cite{bulla2014cloud}. However, the most common model employed in cloud computing is the ``pay-as-you go'' model. Customers pay a fixed price per unit of use. Amazon\footnote{\url{https://aws.amazon.com/}}, considered the market leader in cloud computing, utilizes such a model by charging a fixed price for each hour of virtual machine usage. 
+Another common scheme employed by these leading enterprises is the ``pay-per-use'' model. A customer pays for the amount of bandwidth or storage utilized.\\
 
 \noindent
+The authors of \cite{mazrekaj2016pricing} provide an overview of the pricing model for the three most popular public cloud providers:
+\begin{itemize}
+    \item \textbf{Google Cloud / App engine: }Charges on monthly basis, per user, and pricing is based on hourly basis.
+    \item \textbf{Amazon Web Services / Elastic Compute Cloud (EC2): }It allows for the reservation of units.
+    \item \textbf{Microsoft Azure: }Charges on monthly basis, depending on the number of transactions, and on a monthly basis for their database subscription.
+\end{itemize}
+
+Using the literature above and the Google Compute Engine Pricing\footnote{See \url{https://cloud.google.com/compute/pricing}. They bill each vCPU and each GB of memory on Compute Engine separately.}, the decision has been made to estimate the pricing model $p$ by the following formula:
+
+\begin{equation} \label{eq:p}
+p =  n_\text{CPU} * p_\text{CPU} + n_\text{GB} * p_\text{GB} + n_\text{network} * p_\text{network}
+\end{equation}
+
+\noindent
+Where $n_\text{CPU}$ is the amount of CPU used for a specific host. $p_\text{CPU}$ is the price per CPU per hour. The same notion applies to $n_\text{GB}$ and $p_\text{GB}$. $n_\text{network}$ represents the amount of outgoing network in GB. Note that all cloud providers only charge for network traffic flowing out of their system, and not for communication between internal services. $p_\text{network}$ is the price of this outgoing network per GB.\\
+
+\noindent 
+There are different prices per cloud provider, and it even differs per cloud provider itself, as the cloud provider might provide a discount for longer use. It is therefore not desired to implement a fixed price. Instead, the solution provides the possibility to dynamically change the prices, such that the total cost can be affected. However, to provide an easy-to-use solution, the following default prices are used:
+\begin{itemize}
+    \item $p_\text{CPU}$: USD 0.021925 per hour per CPU per host.
+    \item $p_\text{GB}$: USD 0.002938 per hour per GB memory per host.
+    \item $p_\text{network}$: USD 0.10 per GB of network traffic going out of their system.
+\end{itemize}
+
+\subsection{Conclusion}
+The pricing model proposed in \autoref{eq:p} might be too simplistic to represent an accurate pricing model for computing the cloud deployment costs. Therefore, the desired solution also provides a way to update the price per host. Using the flexibility of this model, it can be concluded that an accurate pricing model can successfully be estimated.
+
+
+
+\section{Waste requirements} \label{sec:waste_requirements}
 There are several ways in which the utilization values can be used to compute the waste. In this research, the following three properties are used for finding an optimal waste distribution:
 \begin{enumerate}
     \item \textbf{$\sum_{i=1}^n w_i = 1 - \sum_{i=1}^n u_i $}: The sum of the elements of the waste and the sum of the elements of the utilization values should sum up to 1, as it implies that a resource is either used (this is $u$) or being wasted (this is $w$).
@@ -188,42 +222,6 @@ Therefore, the matrix $A$ is invertible. This also implies that its determinant 
 
 \subsection{Conclusion}
 In the previous section, three approaches for distributing the waste resources over the containers have been proposed. They all successfully meet the set of requirements, as stated in \autoref{sec:waste_requirements}. In ... the approaches will be evaluated to find out the optimal distributing that will be implemented.
-
-
-\section{Pricing model} \label{sec:pricing}
-Another design decision is to propose an accurate pricing model for estimating the price of a VM based on its resources.
-This pricing model will then be used with the consumed resources to estimate the cost of running a container.
-Different schemes and models exists for different service providers \cite{bulla2014cloud}. However, the most common model employed in cloud computing is the ``pay-as-you go'' model. Customers pay a fixed price per unit of use. Amazon\footnote{\url{https://aws.amazon.com/}}, considered the market leader in cloud computing, utilizes such a model by charging a fixed price for each hour of virtual machine usage. 
-Another common scheme employed by these leading enterprises is the ``pay-per-use'' model. A customer pays for the amount of bandwidth or storage utilized.\\
-
-\noindent
-The authors of \cite{mazrekaj2016pricing} provide an overview of the pricing model for the three most popular public cloud providers:
-\begin{itemize}
-    \item \textbf{Google Cloud / App engine: }Charges on monthly basis, per user, and pricing is based on hourly basis.
-    \item \textbf{Amazon Web Services / Elastic Compute Cloud (EC2): }It allows for the reservation of units.
-    \item \textbf{Microsoft Azure: }Charges on monthly basis, depending on the number of transactions, and on a monthly basis for their database subscription.
-\end{itemize}
-
-Using the literature above and the Google Compute Engine Pricing\footnote{See \url{https://cloud.google.com/compute/pricing}. They bill each vCPU and each GB of memory on Compute Engine separately.}, the decision has been made to estimate the pricing model $p$ by the following formula:
-
-\begin{equation} \label{eq:p}
-p =  n_\text{CPU} * p_\text{CPU} + n_\text{GB} * p_\text{GB} + n_\text{network} * p_\text{network}
-\end{equation}
-
-\noindent
-Where $n_\text{CPU}$ is the amount of CPU used for a specific host. $p_\text{CPU}$ is the price per CPU per hour. The same notion applies to $n_\text{GB}$ and $p_\text{GB}$. $n_\text{network}$ represents the amount of outgoing network in GB. Note that all cloud providers only charge for network traffic flowing out of their system, and not for communication between internal services. $p_\text{network}$ is the price of this outgoing network per GB.\\
-
-\noindent 
-There are different prices per cloud provider, and it even differs per cloud provider itself, as the cloud provider might provide a discount for longer use. It is therefore not desired to implement a fixed price. Instead, the solution provides the possibility to dynamically change the prices, such that the total cost can be affected. However, to provide an easy-to-use solution, the following default prices are used:
-\begin{itemize}
-    \item $p_\text{CPU}$: USD 0.021925 per hour per CPU per host.
-    \item $p_\text{GB}$: USD 0.002938 per hour per GB memory per host.
-    \item $p_\text{network}$: USD 0.10 per GB of network traffic going out of their system.
-\end{itemize}
-
-\subsection{Conclusion}
-The pricing model proposed in \autoref{eq:p} might be too simplistic to represent an accurate pricing model for computing the cloud deployment costs. Therefore, the desired solution also provides a way to update the price per host. Using the flexibility of this model, it can be concluded that an accurate pricing model can successfully be estimated.
-
 
 \section{Overall conclusion}
 In \autoref{sec:architectural_req} several requirements have been proposed for the desired solution. Using these requirements, an architecture has been proposed (\autoref{sec:architecture}) that provides a scalable way of estimating the cost and the waste of the solution. This estimate makes use of an overall pricing model per node. This pricing model is explained in \autoref{sec:pricing}.

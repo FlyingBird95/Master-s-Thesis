@@ -1,0 +1,107 @@
+%********************************************************************
+% Appendix
+%*******************************************************
+\chapter{Demo application} 
+\label{ch:demo_application}
+The proposed demo application described in \autoref{sec:demo_app} uses three different nodes and a root.
+
+\section{Root}
+In order to start the root, the following command is used. Note that the dashboard can be viewed at \texttt{http://localhost:14100}, or using a public IP address.
+
+\begin{lstlisting}[language=bash, caption={Root command}]
+#!/bin/bash
+docker run --rm -d \
+  --name root \
+  -p 14100:14100 \
+  -e TYPE=ROOT \
+  dadvisor/container
+\end{lstlisting}
+
+\section{Supernode} \label{sec:deploy_supernode}
+In order to start one supernode with two web-services, use the following command.
+
+\begin{lstlisting}[language=bash, caption={Supernode command}]
+#!/bin/bash
+docker run --rm -d \
+  --name=dadvisor \
+  --net=host \
+  --volume=/:/rootfs:ro \
+  --volume=/var/run:/var/run:ro \
+  --volume=/sys:/sys:ro \
+  --volume=/var/lib/docker/:/var/lib/docker:ro \
+  --volume=/dev/disk/:/dev/disk:ro \
+  --env TRACKER=http://root:14100 \ # configurable
+  --env TYPE=SUPERNODE \
+  dadvisor/container
+
+docker run --rm -d \
+  --name web1 \
+  -p 1000:6000 \
+  -e ITERATIONS=10000000 \
+  dadvisor/web
+
+docker run --rm -d \
+  --name web3 \
+  -p 2000:6000 \
+  -e ITERATIONS=10000000 \
+  dadvisor/web
+\end{lstlisting}
+
+\section{Node 1}
+The following commands can be used for deploying a node with two request-services. Node that one request communicates with the supernode and one request communicates with node 2.
+\begin{lstlisting}[language=bash, caption={Node 1 command}]
+#!/bin/bash
+docker run --rm -d \
+--name=dadvisor \
+--net=host \
+--volume=/:/rootfs:ro \
+--volume=/var/run:/var/run:ro \
+--volume=/sys:/sys:ro \
+--volume=/var/lib/docker/:/var/lib/docker:ro \
+--volume=/dev/disk/:/dev/disk:ro \
+--env TRACKER=http://root:14100 \ # configurable
+--env TYPE=NODE \
+dadvisor/container
+
+docker run --rm -d \
+  --name req1 \
+  -e HOST=http://supernode:1000 \ # configurable
+  dadvisor/req
+
+docker run --rm -d \
+  --name req2 \
+  -e HOST=http://node2:3000 \
+  dadvisor/req
+\end{lstlisting}
+
+\section{Node 2}
+The following commands can be used for deploying a node with one request-service and one web service. Additional, three Cassandra containers are started, as they are known to use a lot of memory.
+\begin{lstlisting}[language=bash, caption={Node 2 command}]
+#!/bin/bash
+docker run --rm -d \
+  --name=dadvisor \
+  --net=host \
+  --volume=/:/rootfs:ro \
+  --volume=/var/run:/var/run:ro \
+  --volume=/sys:/sys:ro \
+  --volume=/var/lib/docker/:/var/lib/docker:ro \
+  --volume=/dev/disk/:/dev/disk:ro \
+  --env TRACKER=http://root:14100 \ # configurable
+  --env TYPE=NODE \
+  dadvisor/container
+
+docker run --rm -d \
+  --name req3 \
+  -e HOST=http://supernode:2000 \ # configurable
+  dadvisor/req
+
+docker run --rm -d \
+  --name web2 \
+  -p 3000:6000 \
+  -e ITERATIONS=10000000 \
+  dadvisor/web
+
+curl -sS https://gist.githubusercontent.com/naumanbadar/aad6a25974b30adcb3c89b5f868627da/raw/b72129a8b3d5eff7597c4daf01267060dc1c30c7/docker-compose-cassandra-cluster.yml > docker-compose.yml
+
+docker-compose up -d
+\end{lstlisting}
