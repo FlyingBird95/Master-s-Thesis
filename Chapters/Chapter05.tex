@@ -118,15 +118,14 @@ In order to solve the issue described in the previous sub-section, a sub samplin
 In order to solve the issue from the second meeting, the decision was made to implement a caching functionality. This means that the program resolves the internet traffic packets afterwards instead of real-time. The decision was made to implement a caching time limit of one minute, such that the obtained results are near real-time. The system therefore only communicates with its other nodes once per minute. This leads to a more efficient CPU usage, which can be seen in \autoref{fig:deployment}. This figure shows the CPU usage during the lifetime of the system. It can be concluded that the overall  CPU percentage is low, around 4\% for the nodes, and the root. However, for an unknown reason, the Jotunheim supernode linearly grows until 40\%, while the others stay constant. The Jotunheim root shows an average of 2.5\% CPU.
 
 \section{Results}
-In order to simply the results, several containers are grouped together using a regular expression. If a certain container name matches a regular expression, then this container is assigned to a certain group. If a container is not matched to a certain group, it is assigned to the `other'-group. \autoref{tab:regex} shows the groups that are proposed, as well as the number of containers in this group.
-
+In order to simply the results, several containers are grouped together using a regular expression. If a certain container name matches a regular expression, then this container is assigned to a certain group. The `other' group acts as a wildcard, matching every container that doesn't belong to a group. \autoref{tab:regex} shows the groups that are proposed, as well as the number of containers in this group.\\
 
 \begin{table}
     \centering
     \begin{tabular}{l|lr}
         Regular expression & Group name & Containers \\ \hline
         / & other & 42 \\
-        spark & sparkthings & 24\\
+        spark & sparkthings & 5\\
         flink & flinkthings & 4\\
         zookeeper & zookeeper & 5\\
         kafka & kafka & 11\\
@@ -144,8 +143,51 @@ In order to simply the results, several containers are grouped together using a 
     \label{tab:regex}
 \end{table}
 
+\noindent
+The services at the Sustainable Buildings Company have been monitored for exactly 14 days (from June 26, 11 AM UTC until July 10, 11 AM UTC). During these days, the resources have been monitored on a containerized level, and the waste cost is distributed over the running containers. The results of the cost and waste computation is summarized in \autoref{fig:stats}. This computation is based on the prices proposed in \autoref{sec:pricing}, except for the $p_\text{network}$. In \autoref{sec:sb-limitations}, it is described that the traffic monitoring has several limitations. Therefore, the network price has been updated to $p_\text{network} = 0.05$, which is half of the proposed pricing. This is based on the assumption that half of the network traffic is internal (between their services), and other half of the network traffic is external.\\
 
-\section{Limitation}
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/stats.png}
+    \caption{Overall stats of the Sustainability Buildings Company}
+    \label{fig:stats}
+\end{figure}
+
+\noindent
+The total cost is interesting, but only grows. It is therefore also interesting to see which services are responsible for the most cost. This is monitored for a time period of one hour, and can be seen in \autoref{fig:sb-cost}.\\
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/sb-cost.png}
+    \caption{Cost per service of the Sustainability Buildings Company for one hour}
+    \label{fig:sb-cost}
+\end{figure}
+
+\noindent
+This computation is based on the equation described in \autoref{eq:p}. By using this formula, it is also interesting to see the distribution of the CPU usage and memory usage. This is shown in \autoref{fig:sb-cost-cpu} and \autoref{sb-cost-mem}. Lastly, the waste distribution shows which services are responsible for the most waste cost. This is shown in \autoref{fig:sb-waste}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/sb-cost-cpu.png}
+    \caption{CPU usage cost per service of the Sustainability Buildings Company for one hour}
+    \label{fig:sb-cost-cpu}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/sb-cost-mem.png}
+    \caption{Memory usage cost per service of the Sustainability Buildings Company for one hour}
+    \label{fig:sb-cost-mem}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/sb-waste.png}
+    \caption{Waste cost per service of the Sustainability Buildings Company for one hour}
+    \label{fig:sb-waste}
+\end{figure}
+
+\section{Limitation} \label{sec:sb-limitation}
 The system proposed in \autoref{ch:design} is able to monitor the CPU and memory usage on a container level. Using TCPDump, a subsampling procedure has been implemented that monitors the packets on a host level. Then, the system assigns this packets to a container by resolving their IP address. However, almost all their communication of their services are configured using Weave Net\footnote{See \url{https://github.com/weaveworks/weave}}. Weave Net creates a virtual network that connects Docker containers across multiple hosts and enables their automatic discovery. To application containers, the network established by Weave resembles a giant Ethernet switch, where all containers are connected and can easily access services from one another. \cite{weave}.\\
 
 \noindent
@@ -153,4 +195,7 @@ When using the weave network, the containers don't communicate by their exposed 
 
 
 \section{Conclusion} \label{sec:sb-evaluation}
-In order to evaluate the deployment of the system, the decision has been made to perform an interview with one of the employees of the company. The entire interview can be found in \autoref{ch:interview}. From this interview it can be concluded that ....
+In order to evaluate the deployment of the system, the decision has been made to perform an interview with one of the employees of the company. The entire interview can be found in \autoref{ch:interview}. From this interview it can be concluded that ....\\
+
+\noindent
+For the reproducibility of the case study, the data has been made publicly available\footnote{Get the data from \url{https://drive.google.com/file/d/1SUy_j3WpSjCaZ54KeotaE4xhF87rrjwh/view?usp=sharing}}. This file is the compressed data folder from the Prometheus database. This can therefore be used to generate the visualizations above.
