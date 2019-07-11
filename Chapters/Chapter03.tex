@@ -104,7 +104,7 @@ There are several ways in which the utilization values can be used to compute th
     \item \textbf{$\sum_{i=1}^n w_i = 1 - \sum_{i=1}^n u_i $}: The sum of the elements of the waste and the sum of the elements of the utilization values should sum up to 1, as it implies that a resource is either used (this is $u$) or being wasted (this is $w$).
     \item \textbf{$w_i \geq 0$} for $1 \leq i \leq n$: The waste of every certain container is non negative. Thus, it is impossible for a container to have a negative waste. As the waste distribution is used for computing the amount of money to be wasted, this would imply that money is being earned, while running a certain container.
     \item \textbf{$\max w_i \Rightarrow \min u_i$}: The container that utilizes the most resources, should be responsible for wasting the least amount of resources. This property implies that the order of containers from lowest utilization to highest utilization is the same as the order of containers from highest waste to lowest waste. 
-    \item \textbf{$w_i = w_j \iff u_i = u_j$}: If two containers utilizes the same amount of resources, than they should also waste the same amount of resources. The opposite should also hold. If two containers utilizes both a different amount of resources, than it should also have a different amount of waste.
+    \item \textbf{$u_i = u_j \Rightarrow w_i = w_j $}: If two containers utilizes the same amount of resources, than they should also waste the same amount of resources. The inverse does not necessarily hold. If two containers utilizes both a different amount of resources, than it is not guaranteed that they have a different amount of waste.
 \end{enumerate}
 
 \noindent
