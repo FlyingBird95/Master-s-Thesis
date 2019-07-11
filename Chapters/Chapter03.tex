@@ -1,7 +1,7 @@
 %************************************************
 \chapter{Design}\label{ch:design} % $\mathbb{ZNR}$
 %************************************************
-As stated in the introduction (\autoref{ch:introduction}), the research question is the following: ``How can the cost and waste monitoring of a Cloud Computing application be offered in a scalable manner?''. In order to investigate the characteristics of the solution for monitoring a Cloud Computing application, it is important to determine the requirements beforehand. The requirements are divided into architectural requirements, cost requirement and waste requirements. The architectural requirements will lead to the proposed architecture. The cost requirements lead to the pricing model, and the waste requirements will lead to a specific algorithm. This chapter ends with proposing a model for estimating the costs (\autoref{sec:pricing}).
+As stated in the introduction (\autoref{ch:introduction}), the research question is the following: ``How can the cost and waste monitoring of a Cloud Computing application be offered in a scalable manner?''. In order to investigate the characteristics of the solution for monitoring a Cloud Computing application, it is important to determine the requirements beforehand. The architectural requirements lead to a proposed architecture. The pricing model leads to specific utilization requirements, which will on their turn be used for waste requirements. The waste requirements will lead to a specific algorithm. This chapter ends with proposing a model for estimating the costs (\autoref{sec:pricing}).
 
 \section{Architectural requirements} \label{sec:architectural_req}
 As this research is the successor of the work: `Visualizing Computational Waste in Cloud Computing' by A. Spina \cite{spina}, there is some similarity with his architectural requirements. However, his architecture is based on a solution for which a probe collects data from monitored instances, and an aggregator that represents this data into a human-readable format. Relevant requirements are:
@@ -71,14 +71,14 @@ The authors of \cite{mazrekaj2016pricing} provide an overview of the pricing mod
 Using the literature above and the Google Compute Engine Pricing\footnote{See \url{https://cloud.google.com/compute/pricing}. They bill each vCPU and each GB of memory on Compute Engine separately.}, we propose a pricing model $p$ by the following formula:
 
 \begin{equation} \label{eq:p}
-c =  n_\text{CPU} * p_\text{CPU} + n_\text{memory} * p_\text{memory} + n_\text{network} * p_\text{network}
+p(t) = n_\text{CPU}(t) * p_\text{CPU} + n_\text{memory}(t) * p_\text{memory} + n_\text{network}(t) * p_\text{network}
 \end{equation}
 
 \noindent
-Where $n_\text{CPU}$ is the amount of CPU requested on a specific host. $p_\text{CPU}$ is the price per CPU per hour. The same notion applies to $n_\text{GB}$ and $p_\text{GB}$. $n_\text{network}$ represents the amount of outgoing network in GB. Note that all cloud providers only charge for network traffic flowing out of their system, and not for communication between internal services. $p_\text{network}$ is the price of this outgoing network per GB.\\
+Where $n_\text{CPU}(t)$ is the amount of CPU cores requested per hour on a specific host over time $t$. Thus, if 2 CPU cores are requested for 3 hours, then $n_\text{CPU} = 6$. $p_\text{CPU}$ is the price per CPU per hour. The same notion applies to $n_\text{memory}(t)$ and $p_\text{memory}$. $n_\text{network}(t)$ represents the amount of outgoing network in GB over time $t$. Note that all cloud providers only charge for network traffic flowing out of their system, and not for communication between internal services. $p_\text{network}$ is the price of this outgoing network per GB.\\
 
 \noindent
-The pricing model $c$ can be categorized into a pricing model for used resources, and a pricing model for unused resources. This implies that $n_\text{used CPU} + n_\text{unused CPU} = n_\text{CPU}$. When it comes to the network cost, we decide that all external network are used, and therefore there is no network cost modelled in $c_\text{waste}$. 
+The pricing model $p(t)$ can be used to compute the actual cost by summing over all time instances $t$: $c_\text{actual} = \sum_t p(t)$. This cost model can be split into effective cost, meaning the cost for used resources, and waste cost, a cost model for unused resources. This implies that $n_\text{used CPU} + n_\text{unused CPU} = n_\text{CPU}$. When it comes to the network cost, we decide that all external network are used, and therefore there is no network cost modelled in $c_\text{waste}$. 
 
 \begin{equation} \label{eq:cost_and_waste}
 \begin{split}
@@ -88,7 +88,7 @@ c_\text{waste} &=  n_\text{unused CPU} * p_\text{CPU} + n_\text{unused memory} *
 \end{equation}
 
 \noindent 
-There are different prices per cloud provider, and it even differs per cloud provider itself, as the cloud provider might provide a discount for longer use. It is therefore not desired to implement a fixed price. Instead, the solution provides the possibility to dynamically change the prices, such that the total cost can be affected. However, to provide an easy-to-use solution, the following default prices are used:
+Although not stated, the $c_\text{effective}$ and $c_\text{waste}$ are computed for a specific time $t$ and then summed to get the total $c_\text{effective}$ and $c_\text{waste}$. There are different prices per cloud provider, and it even differs per cloud provider itself, as the cloud provider might provide a discount for longer use. It is therefore not desired to implement a fixed price. Instead, the solution provides the possibility to dynamically change the prices, such that the total cost can be affected. However, to provide an easy-to-use solution, the following default prices are used:
 \begin{itemize}
     \item $p_\text{CPU}$: USD 0.021925 per hour per CPU per host.
     \item $p_\text{memory}$: USD 0.002938 per hour per GB memory per host.
@@ -99,8 +99,8 @@ There are different prices per cloud provider, and it even differs per cloud pro
 The pricing model proposed in \autoref{eq:p} might be too simplistic to represent an accurate pricing model for computing the cloud deployment costs. Therefore, the desired solution also provides a way to update the price per host. Using the flexibility of this model, it can be concluded that an accurate pricing model can successfully be estimated.
 
 
-\section{Cost requirements} \label{sec:cost_req}
-The CPU and memory are resource metrics that are specified per Docker container. They are either used, or unused as described in \autoref{sec:pricing}. In this section, the used resource (which is either the CPU or memory) is denoted by $u_i$, which represents the percentage of used resource for a specific container. We assume in this model that $n_\text{cpu} * \sum_{i=1}^n u_i = n_\text{used CPU}$. Additionally, $n_\text{cpu} * \sum_{i=1}^n w_i = n_\text{unused CPU}$. The same formula can be specified for the memory resource.\\
+\section{Utilization requirements} \label{sec:util_req}
+The CPU and memory are resource metrics that are specified per Docker container. They are either used, or unused as described in \autoref{sec:pricing}. In this section, the used resource (which is either the CPU or memory) is denoted by $u_i$, which represents the percentage of used resource for a specific container. We assume in this model that $n_\text{cpu} * \sum_{i=1}^n u_i = n_\text{used CPU}$. Additionally, $n_\text{cpu} * \sum_{i=1}^n w_i = n_\text{unused CPU}$. The same formulas can be specified for the memory resource.\\xxx
 
 \noindent
 For a specific node, the sum of these metrics over all containers is denoted as the total utilization. For these utilization values, there are a few restrictions, which are mathematically stated below.
