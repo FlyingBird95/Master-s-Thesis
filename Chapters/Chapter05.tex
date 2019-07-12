@@ -144,13 +144,20 @@ In order to simply the results, several containers are grouped together using a 
 \end{table}
 
 \noindent
-The services at the Sustainable Buildings Company have been monitored for exactly 14 days (from June 26, 11 AM UTC until July 10, 11 AM UTC). During these days, the resources have been monitored on a containerized level, and the waste cost is distributed over the running containers. The results of the cost and waste computation is summarized in \autoref{fig:stats}. This computation is based on the prices proposed in \autoref{sec:pricing}, except for the $p_\text{network}$. In \autoref{sec:sb-limitations}, it is described that the traffic monitoring has several limitations. Therefore, the network price has been updated to $p_\text{network} = 0.05$, which is half of the proposed pricing. This is based on the assumption that half of the network traffic is internal (between their services), and other half of the network traffic is external.\\
+The services at the Sustainable Buildings Company have been monitored for exactly 14 days (from June 26, 11 AM UTC until July 10, 11 AM UTC). During these days, the resources have been monitored on a containerized level, and the waste cost is distributed over the running containers. The results of the cost and waste computation is summarized in \autoref{fig:stats}, leading to the percentages presented in \autoref{fig:stats_percentage}. This computation is based on the prices proposed in \autoref{sec:pricing}, except for the $p_\text{network}$. \autoref{sec:sb-limitation} describes the limitations with respect to the network traffic monitoring, resulting in an adjusted network price of $p_\text{network} = 0.05$. This is half of the proposed pricing. This is based on the assumption that half of the network traffic is internal (between their services), and other half of the network traffic is external.\\
 
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{gfx/stats.png}
     \caption{Overall stats of the Sustainability Buildings Company}
     \label{fig:stats}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/stats_percentage.png}
+    \caption{Percentage stats of the Sustainability Buildings Company}
+    \label{fig:stats_percentage}
 \end{figure}
 
 \noindent
@@ -164,7 +171,7 @@ The total cost is interesting, but only grows. It is therefore also interesting 
 \end{figure}
 
 \noindent
-This computation is based on the equation described in \autoref{eq:p}. By using this formula, it is also interesting to see the distribution of the CPU usage and memory usage. This is shown in \autoref{fig:sb-cost-cpu} and \autoref{sb-cost-mem}. Lastly, the waste distribution shows which services are responsible for the most waste cost. This is shown in \autoref{fig:sb-waste}.
+This computation is based on the equation described in \autoref{eq:p}. By using this formula, it is also interesting to see the distribution of the CPU usage and memory usage. This is shown in \autoref{fig:sb-cost-cpu} and \autoref{fig:sb-cost-mem}. Lastly, the waste distribution shows which services are responsible for the most waste cost. This is shown in \autoref{fig:sb-waste}.
 
 \begin{figure}
     \centering
@@ -198,4 +205,4 @@ When using the weave network, the containers don't communicate by their exposed 
 In order to evaluate the deployment of the system, the decision has been made to perform an interview with one of the employees of the company. The entire interview can be found in \autoref{ch:interview}. From this interview it can be concluded that ....\\
 
 \noindent
-For the reproducibility of the case study, the data has been made publicly available\footnote{Get the data from \url{https://drive.google.com/file/d/1SUy_j3WpSjCaZ54KeotaE4xhF87rrjwh/view?usp=sharing}}. This file is the compressed data folder from the Prometheus database. This can therefore be used to generate the visualizations above.
+For the reproducibility of the case study, the data has been made publicly available\footnote{The data can be downloaded from \url{https://drive.google.com/file/d/1SUy_j3WpSjCaZ54KeotaE4xhF87rrjwh/view?usp=sharing}}. This file is the compressed data folder from the Prometheus database. This can therefore be used to generate the visualizations above.

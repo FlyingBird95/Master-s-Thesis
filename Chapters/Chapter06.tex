@@ -1,17 +1,18 @@
 %************************************************
 \chapter{Evaluation}\label{ch:evaluation}
 %************************************************
-This chapter evaluates the three waste algorithms, as proposed in \autoref{sec:approaches}. This evaluation is based on their complexity and accuracy. Furthermore, the demo application is evaluated in \autoref{sec:demo_eval}.
+This chapter evaluates the system proposed in \autoref{ch:design}. An implementation of this system can be found in \autoref{sec:demo_app}.  This chapter starts by evaluating this implemented system. Furthermore, \autoref{sec:eval_k} analyses the consequences of the sub sampling by showing the accuracy and CPU usage of the system.
 
 \section{Demo app evaluation} \label{sec:demo_eval}
+The demo application 
+
 
 \section{Internet traffic accuracy evaluation} \label{sec:eval_k}
 This section provides a small research about the accuracy of the internet traffic monitoring. In order to do so, a supernode was deployed to monitor two local containers. One container acting as a web-service, and one container continuously sending requests. The command for collecting all values can be found below:
 
 \begin{lstlisting}[language=bash, caption=Docker-compose]
 git clone htts://github.com/dadvisor/util
-cd util
-./accuracy.sh
+./util/accuracy.sh
 \end{lstlisting}
 
 \noindent
@@ -30,7 +31,8 @@ rate(bytes_send_total[5m])
 \end{verbatim}
 
 \noindent
-Several analyses have been made for different K values, as proposed in \autoref{sec:decisions}. Apart from the K value, the average CPU usage of the supernode is also measured. The results can be found in \autoref{tab:accuracy_results}. The data obtained for $K = 9$ can be found in \autoref{fig:network_traffic_accuracy}. In this figure, the web-service is presented in green, while the request-service is denoted in yellow.
+The evaluation has been made for different K values, as proposed in \autoref{sec:decisions}. The data obtained for $K = 3$ can be found in \autoref{fig:network_traffic_accuracy}. This figure shows the accuracy of the network traffic monitoring evaluation. Note that this figure shows several spikes, which is due to the difference update frequency of 
+both variables. Therefore, the minimum and maximum value represent the boundaries of the accuracy. Furthermore, the accuracy is summarized by computing the average. The results for different K values can be found in \autoref{tab:accuracy_results}.
 
 \begin{figure}
     \centering
@@ -55,3 +57,8 @@ Several analyses have been made for different K values, as proposed in \autoref{
     \label{tab:accuracy_results}
 \end{table}
 
+\subsection{Conclusion}
+From \autoref{tab:accuracy_results} it can be concluded that there is not much variation in the accuracy across different K-values. A reason for this, is the fact that the network communication is not enough randomized. Thus, with a constant flow of traffic, the prediction of amount of network communication is too trivial.\\
+
+\noindent
+What can be concluded from this table, is the fact that the CPU usage drops if the K-value increases. This is due to a longer sleeping period. However, this number is not very accurate, as the analyses is performed on a single node. Therefore, the overhead of communicating with other nodes is not evaluated.
