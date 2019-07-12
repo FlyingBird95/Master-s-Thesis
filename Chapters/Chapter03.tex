@@ -75,7 +75,7 @@ p(t) = n_\text{CPU}(t) * p_\text{CPU} + n_\text{memory}(t) * p_\text{memory} + n
 \end{equation}
 
 \noindent
-Where $n_\text{CPU}(t)$ is the amount of CPU cores requested per hour on a specific host over time $t$. Thus, if 2 CPU cores are requested for 3 hours, then $n_\text{CPU} = 6$. $p_\text{CPU}$ is the price per CPU per hour. The same notion applies to $n_\text{memory}(t)$ and $p_\text{memory}$. $n_\text{network}(t)$ represents the amount of outgoing network in GB over time $t$. Note that all cloud providers only charge for network traffic flowing out of their system, and not for communication between internal services. $p_\text{network}$ is the price of this outgoing network per GB.\\
+Where $n_\text{CPU}(t)$ is the amount of CPU cores requested per hour on a specific host over time $t$. For example, if 2 CPU cores are requested for 3 hours, then $n_\text{CPU} = 6$. $p_\text{CPU}$ is the price per CPU per hour. The same notion applies to $n_\text{memory}(t)$ and $p_\text{memory}$. $n_\text{network}(t)$ represents the amount of outgoing network in GB over time $t$. Note that all cloud providers only charge for network traffic flowing out of their system, and not for communication between internal services. $p_\text{network}$ is the price of this outgoing network per GB.\\
 
 \noindent
 The pricing model $p(t)$ can be used to compute the actual cost by summing over all time instances $t$: $c_\text{actual} = \sum_t p(t)$. This cost model can be split into effective cost, meaning the cost for used resources, and waste cost, a cost model for unused resources. This implies that $n_\text{used CPU} + n_\text{unused CPU} = n_\text{CPU}$. When it comes to the network cost, we decide that all external network are used, and therefore there is no network cost modelled in $c_\text{waste}$. 
@@ -100,7 +100,7 @@ The pricing model proposed in \autoref{eq:p} might be too simplistic to represen
 
 
 \section{Utilization requirements} \label{sec:util_req}
-The CPU and memory are resource metrics that are specified per Docker container. They are either used, or unused as described in \autoref{sec:pricing}. In this section, the used resource (which is either the CPU or memory) is denoted by $u_i$, which represents the percentage of used resource for a specific container. We assume in this model that $n_\text{cpu} * \sum_{i=1}^n u_i = n_\text{used CPU}$. Additionally, $n_\text{cpu} * \sum_{i=1}^n w_i = n_\text{unused CPU}$. The same formulas can be specified for the memory resource.\\xxx
+The CPU and memory are resource metrics that are specified per Docker container. They are either used, or unused as described in \autoref{sec:pricing}. In this section, the used resource (which is either the CPU or memory) is denoted by $u_i$, which represents the percentage of used resource for a specific container. We assume in this model that $n_\text{cpu} * \sum_{i=1}^n u_i = n_\text{used CPU}$. Additionally, $n_\text{cpu} * \sum_{i=1}^n w_i = n_\text{unused CPU}$. The same formulas can be specified for the memory resource.\\
 
 \noindent
 For a specific node, the sum of these metrics over all containers is denoted as the total utilization. For these utilization values, there are a few restrictions, which are mathematically stated below.
