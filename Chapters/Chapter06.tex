@@ -4,7 +4,37 @@
 This chapter evaluates the system proposed in \autoref{ch:design}. An implementation of this system can be found in \autoref{sec:demo_app}.  This chapter starts by evaluating this implemented system. Furthermore, \autoref{sec:eval_k} analyses the consequences of the sub sampling by showing the accuracy and CPU usage of the system.
 
 \section{Demo app evaluation} \label{sec:demo_eval}
-The demo application 
+The demo application proposed in \autoref{sec:demo_app} consists of 9 containers, which are divided into three groups:
+\begin{itemize}
+    \item \textbf{Web-service} (3 containers): For receiving internal requests and generating CPU load.
+    \item \textbf{Request-service} (3 containers): For generating the requests for the web-services.
+    \item \textbf{Cassandra} (3 containers): For showing communication on a single node and generating a high memory consumption.
+\end{itemize}
+
+\noindent
+The demo application is distributed over three nodes. An overview of these three nodes can be found in \autoref{tab:node_stats}. The containers per node can be found \autoref{fig:demo_app}.
+
+\begin{table}
+    \centering
+    \begin{tabular}{l|lrr}
+        Virtual Machine &IP & Cores & RAM \\ \hline
+        Supernode & 10.164.0.2 & 1 & 3.9 GB \\
+        Node 1 & 10.164.0.3 & 1 & 3.6 GB \\
+        Node 2 & 10.164.0.7 & 2 & 7.3 GB \\
+    \end{tabular}
+    \caption{Overview of the nodes in the demo application}
+    \label{tab:node_stats}
+\end{table}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/demo_app}
+    \caption{All containers in the demo application}
+    \label{fig:demo_app}
+\end{figure}
+
+\noindent
+Interesting about this demo application is that it is easy to evaluate the cost model of the system. The supernode consumes almost all its CPU resources, but barely uses memory. Node 1 is low on memory and CPU, and can therefore be used to see how the waste is distributed. Node 2 consumes a lot of memory, but barely uses CPU. For a time period of one hour, the CPU usage is presented in \autoref{fig:demo_cpu}. From this figure, we conclude that the assumptions made above are correct. Note that the unit of the CPU usage is `CH', which means `core hour'. This represents $n_\text{CPU}$ from \autoref{eq:p}.
 
 
 \section{Internet traffic accuracy evaluation} \label{sec:eval_k}
