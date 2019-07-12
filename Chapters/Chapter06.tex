@@ -12,7 +12,7 @@ The demo application proposed in \autoref{sec:demo_app} consists of 9 containers
 \end{itemize}
 
 \noindent
-The demo application is distributed over three nodes. An overview of these three nodes can be found in \autoref{tab:node_stats}. The containers per node can be found \autoref{fig:demo_app}.
+The demo application is distributed over three nodes. An overview of these three nodes can be found in \autoref{tab:node_stats}. The containers per node can be found \autoref{fig:demo_app}.\\
 
 \begin{table}
     \centering
@@ -34,7 +34,85 @@ The demo application is distributed over three nodes. An overview of these three
 \end{figure}
 
 \noindent
-Interesting about this demo application is that it is easy to evaluate the cost model of the system. The supernode consumes almost all its CPU resources, but barely uses memory. Node 1 is low on memory and CPU, and can therefore be used to see how the waste is distributed. Node 2 consumes a lot of memory, but barely uses CPU. For a time period of one hour, the CPU usage is presented in \autoref{fig:demo_cpu}. From this figure, we conclude that the assumptions made above are correct. Note that the unit of the CPU usage is `CH', which means `core hour'. This represents $n_\text{CPU}$ from \autoref{eq:p}.
+Interesting about this demo application is that it is easy to evaluate the cost model of the system. The supernode consumes almost all its CPU resources, but barely uses memory. Node 1 is low on memory and CPU, and can therefore be used to see how the waste is distributed. Node 2 consumes a lot of memory, but barely uses CPU. For a time period of one hour, the CPU usage is presented in \autoref{fig:demo_cpu_cost}. From this figure, we conclude that the assumptions made above are correct. Note that the unit of the CPU usage is `CH', which means `core hour'. This represents $n_\text{CPU}$ from \autoref{eq:p}.\\
+
+\noindent
+From the CPU usage, the CPU waste is determined. This can be found in \autoref{fig:demo_cpu_waste}. Interesting is node 2 (10.164.0.7), which shows that all containers, except for the web-service, receive a lot of CPU waste. The supernode barely receives waste, as the CPU usage is near 100\%. Node 1 has two equivalent containers, and therefore the waste is equally divided over the nodes. \\
+
+\noindent
+The same analysis can be made for the memory usage- and waste-distribution. The memory usage is presented in \autoref{fig:demo_mem_cost}, and the memory waste is presented in \autoref{fig:demo_mem_cost}. As the web-services on the supernode are efficient in terms of memory usage, their corresponding waste is large. This also applies to the request-services on node 1. The memory waste distribution is interesting on node 2, as the three Cassandra services uses too much memory resources, and therefore don't receive any memory waste.\\
+
+\noindent
+The network traffic analysis is shown in \autoref{fig:demo_network}. However, as all communication is internally, the amount of outgoing network is nearly zero. Due to the inaccuracy of the network analysis, it is not exactly zero, which is described in \autoref{sec:eval_k}.\\
+
+\noindent
+The used resources as presented in \autoref{fig:demo_cpu_cost}, \autoref{fig:demo_mem_cost} and \autoref{fig:demo_network} are used for the cost computation, which is presented in \autoref{fig:demo_cost}. The unused resources as presented in \autoref{fig:demo_cpu_waste} and \autoref{fig:demo_mem_waste} are used for the waste computation, which is presented in \autoref{fig:demo_waste}. The cost and waste are computed using \autoref{eq:cost_and_waste}.\\
+
+\noindent
+In order to simplify the results, the visualizations can also be based on the groups, as determined above. However, this is presented in the industrial case study and is therefore not further described in this chapter. So far, the figures above show the resource usage and cost for a specific amount of time. This already provides interesting results, but aggregating provides further simplification. The aggregated results can be found in \autoref{fig:demo_stats}.
+
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/demo_cpu_cost}
+    \caption{Distribution of the CPU usage for 1 hour}
+    \label{fig:demo_cpu_cost}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/demo_cpu_waste}
+    \caption{Distribution of the unused CPU for 1 hour}
+    \label{fig:demo_cpu_waste}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/demo_mem_cost}
+    \caption{Distribution of the memory usage for 1 hour}
+    \label{fig:demo_mem_cost}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/demo_mem_waste}
+    \caption{Distribution of the unused memory for 1 hour}
+    \label{fig:demo_mem_waste}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/demo_network}
+    \caption{Amount of outgoing network traffic for 1 hour}
+    \label{fig:demo_network}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/demo_cost}
+    \caption{Cost per container for a period of 1 hour}
+    \label{fig:demo_cost}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/demo_app}
+    \caption{Waste cost per container for a period of 1 hour}
+    \label{fig:demo_waste}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \subfloat[Cost and waste values]{
+        \includegraphics[width=0.45\textwidth]{gfx/demo_stats1.png}
+    }
+    
+    \subfloat[Cost and waste ratios]{%
+        \includegraphics[width=0.45\textwidth]{gfx/demo_stats2.png}
+    }
+    \caption{Aggregated stats for the demo application approximately 1 hour}
+    \label{fig:demo_stats}
+\end{figure}
 
 
 \section{Internet traffic accuracy evaluation} \label{sec:eval_k}
