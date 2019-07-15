@@ -7,28 +7,46 @@ In order to evaluate the deployed system at an industrial company, an interview 
 
 \section{Process} \label{sec:process}
 \textit{Q1: How would you describe the process in general?}\\
+Good. After some initial testing on our testing environment and discussion with Patrick how the software works, I quickly felt confident to deploy the software in our production environment so it could collect realistic data.
+Whenever we ran into issues during our deployment sessions, Patrick knew almost immediately where to look. Larger issues were usually fixed the next week.\\
 
 \noindent
-\textit{Q2: How would you summarize the quality of the improvements that have been made?}\\
+\textit{Q2: How would you summarize the quality of the improvements that have been made?}
+The quality of the improvements was good. The problems we detected during our sessions were always resolved before the next session.
+Moreover, a lot of the improvements introduced new settings, which can be tweaked for other setups as well, making the tool suitable for more general use.\\
 
 \noindent
 \textit{Q3: How did you experience the collaboration?}\\
+I feel like the collaboration was smooth and effective. We had weekly sessions where Patrick explained the improvements made to the tool and we deployed the new version.
+We were able to efficiently debug problems during the deployment using the combined knowledge of Patrick about the tool and mine about the company's infrastructure and software components.
 
 \section{Final work} \label{sec:final_work}
 \noindent
 \textit{Q: How would you rate the quality of the final work?}\\
+I am happy with the quality of the final work. I believe it provides valuable insight into the resource utilization of the different VM's and how this relates to costs.
+Over the course of the case study, the software was quite stable.\\
 
 \noindent
 \textit{Q: How would you rate the accuracy of the final work?}\\
+The accuracy of the resource usage appears to be quite high and is in line with what we would expect to see.
+The pricing is of course configurable, so it can be adjusted to be more accurate for other scenarios.
+The metrics for inter-container networking did not fully work in the latest version, due to issues with linking the IP address back to the container ID. This is mainly caused by the company's use of the Weave overlay network for Docker, which manages its own set of IP addresses, which cannot be resolved using the Docker API.\\
 
 \noindent
 \textit{Q: How useful do you consider the cost estimation?}\\
+Quite useful,especially since it also allows to change the constants (like price per GB of memory etc.) which enables us to tweak the cost computation to accurately match the situation.\\
 
 \noindent
 \textit{Q: How useful do you consider the waste estimation?}\\
+Also quite useful. However, a high waste does not necessarily imply that this can be optimized, as the VM's may have peak loads which require the overhead which lead to waste when there is no peak load.
+Moreover, some VM's may have applications running which have high-memory requirements but low CPU requirements, which lead to a higher waste metric. In this case, due to the memory requirements, optimization in practice may not be possible.\\
 
 \noindent
 \textit{Q: To what extend would the deployed system help your company?}\\
+Knowing the CPU and memory utilization of the different containers will certainly be helpful when we scale up the number of VM's we use, by providing some metrics.
+It is also useful in increasing the understanding of how the system operates as a whole, as it provides a fairly complete picture of the usage of the resources, including the networking going on between containers. This is useful when trying to optimize the system, but also for detecting potential issues.\\
 
 \noindent
 \textit{Q: Are you interested into using this solution in the future?}\\	
+I believe especially the gathered information about network traffic between the hosts and network containers will be incredibly helpful in optimization (reduction of inter-vm networking) and also the detection of incorrect configuration (e.g. too much data written to the database), once this part works.
+Once the inter-container networking is working, I plan to deploy the dAdvisor to the production environment again for a longer period of time. This will provide us with more metrics, and can be the basis for a discussion about if we can further optimize our current infrastructure and also how our infrastructure should scale up once the resource requirements will grow.\\

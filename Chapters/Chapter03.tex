@@ -106,7 +106,7 @@ The CPU and memory are resource metrics that are specified per Docker container.
 For a specific node, the sum of these metrics over all containers is denoted as the total utilization. For these utilization values, there are a few restrictions, which are mathematically stated below.
 
 \begin{itemize}
-    \item $0 < u_i \leq 1$ for $1 \leq i \leq n$: Every container on a node utilizes a value between 0 (exclusive) and 1 (inclusive). The desired solution will also be a running container, but the utilization is filtered out of the collected utilization values, such that the monitoring solution only collects data about the deployed system.
+    \item $0 < u_i \leq 1$ for $1 \leq i \leq n$: Every container on a node utilizes a value between $0$ (exclusive) and 1 (inclusive). The desired solution will also be a running container, but the utilization is filtered out of the collected utilization values, such that the monitoring solution only collects data about the deployed system.
     \item $\sum_{i=1}^n u_i \leq 1$: The total utilization of a certain set of containers for a given host cannot utilize more than 100\%. And with the previous requirement, its lower-bound is 0 (exclusive). As the total waste is computed as $1 - \sum_{i=1}^n u_i$, it can be concluded that the waste is bounded by 0 (inclusive) and 1 (exclusive).
 \end{itemize}
 
