@@ -57,7 +57,7 @@ The architecture is proposed in \autoref{sec:root}, \autoref{sec:supernode} and 
 
 Another design decision is to propose an accurate pricing model for estimating the price of a VM based on its resources.
 This pricing model will then be used with the consumed resources to estimate the cost of running a container.
-Different schemes and models exists for different service providers \cite{bulla2014cloud}. However, the most common model employed in cloud computing is the ``pay-as-you go'' model. Customers pay a fixed price per unit of use. Amazon\footnote{\url{https://aws.amazon.com/}}, considered the market leader in cloud computing, utilizes such a model by charging a fixed price for each hour of virtual machine usage. 
+Different schemes and models exist for different service providers \cite{bulla2014cloud}. However, the most common model employed in cloud computing is the ``pay-as-you go'' model. Customers pay a fixed price per unit of use. Amazon\footnote{\url{https://aws.amazon.com/}}, considered the market leader in cloud computing, utilizes such a model by charging a fixed price for each hour of virtual machine usage. 
 Another common scheme employed by these leading enterprises is the ``pay-per-use'' model. A customer pays for the amount of bandwidth or storage utilized.\\
 
 \noindent
@@ -78,7 +78,7 @@ p(t) = n_\text{CPU}(t) * p_\text{CPU} + n_\text{memory}(t) * p_\text{memory} + n
 Where $n_\text{CPU}(t)$ is the amount of CPU cores requested per hour on a specific host over time $t$. For example, if 2 CPU cores are requested for 3 hours, then $n_\text{CPU} = 6$. $p_\text{CPU}$ is the price per CPU per hour. The same notion applies to $n_\text{memory}(t)$ and $p_\text{memory}$. $n_\text{network}(t)$ represents the amount of outgoing network in GB over time $t$. Note that all cloud providers only charge for network traffic flowing out of their system, and not for communication between internal services. $p_\text{network}$ is the price of this outgoing network per GB.\\
 
 \noindent
-The pricing model $p(t)$ can be used to compute the actual cost by summing over all time instances $t$: $c_\text{actual} = \sum_t p(t)$. This cost model can be split into effective cost, meaning the cost for used resources, and waste cost, a cost model for unused resources. This implies that $n_\text{used CPU} + n_\text{unused CPU} = n_\text{CPU}$. When it comes to the network cost, we decide that all external network are used, and therefore there is no network cost modelled in $c_\text{waste}$. 
+The pricing model $p(t)$ can be used to compute the actual cost by summing over all time instances $t$: $c_\text{actual} = \sum_t p(t)$. This cost model can be split into \textit{effective cost}, meaning the cost for used resources, and \textit{waste cost}, a cost model for unused resources. This implies that $n_\text{used CPU} + n_\text{unused CPU} = n_\text{CPU}$. When it comes to the network cost, all the external network is used, and therefore there is no network cost modelled in $c_\text{waste}$. 
 
 \begin{equation} \label{eq:cost_and_waste}
 \begin{split}
@@ -88,32 +88,31 @@ c_\text{waste} &=  n_\text{unused CPU} * p_\text{CPU} + n_\text{unused memory} *
 \end{equation}
 
 \noindent 
-Although not stated, the $c_\text{effective}$ and $c_\text{waste}$ are computed for a specific time $t$ and then summed to get the total $c_\text{effective}$ and $c_\text{waste}$. There are different prices per cloud provider, and it even differs per cloud provider itself, as the cloud provider might provide a discount for longer use. It is therefore not desired to implement a fixed price. Instead, the solution provides the possibility to dynamically change the prices, such that the total cost can be affected. However, to provide an easy-to-use solution, the following default prices are used:
-\begin{itemize}
-    \item $p_\text{CPU}$: USD 0.021925 per hour per CPU per host.
-    \item $p_\text{memory}$: USD 0.002938 per hour per GB memory per host.
-    \item $p_\text{network}$: USD 0.10 per GB of network traffic going out of their system.
-\end{itemize}
+Although not stated, the $c_\text{effective}$ and $c_\text{waste}$ are computed for a specific time $t$ and then summed to get the total $c_\text{effective}$ and $c_\text{waste}$. There are different prices per cloud provider, and it even differs per cloud provider itself, as the cloud provider might provide a discount for longer use. It is therefore not desired to implement a fixed price. Instead, the solution provides the possibility to dynamically change the prices, such that the total cost can be affected. 
 
-\subsection{Conclusion}
-The pricing model proposed in \autoref{eq:p} might be too simplistic to represent an accurate pricing model for computing the cloud deployment costs. Therefore, the desired solution also provides a way to update the price per host. Using the flexibility of this model, it can be concluded that an accurate pricing model can successfully be estimated.
+%However, to provide an easy-to-use solution, the following default prices are used:
+%\begin{itemize}
+%    \item $p_\text{CPU}$: USD 0.021925 per hour per CPU per host.
+%    \item $p_\text{memory}$: USD 0.002938 per hour per GB memory per host.
+%    \item $p_\text{network}$: USD 0.10 per GB of network traffic going out of their system.
+%\end{itemize}
 
 
 \section{Utilization requirements} \label{sec:util_req}
-The CPU and memory are resource metrics that are specified per Docker container. They are either used, or unused as described in \autoref{sec:pricing}. In this section, the used resource (which is either the CPU or memory) is denoted by $u_i$, which represents the percentage of used resource for a specific container. We assume in this model that $n_\text{used CPU} = n_\text{cpu} * \sum_{i=1}^n u_i$. Additionally, $n_\text{unused CPU} = n_\text{cpu} * \sum_{i=1}^n w_i$. The same formulas can be specified for the memory resource.\\
+The CPU and memory are resource metrics that are specified per Docker container. They are either used, or unused as described in \autoref{sec:pricing}. In this section, the used resource (which is either the CPU or memory\footnote{Note that the network resource is excluded, as this is all \textit{effective cost}. Therefore, there is no distribution of the network for the \textit{waste cost}.}) is denoted by $u_i$, which represents the percentage of used resource for a specific container. We assume in this model that $n_\text{used CPU} = n_\text{cpu} * \sum_{i=1}^n u_i$. Additionally, $n_\text{unused CPU} = n_\text{cpu} * \sum_{i=1}^n w_i$. The same formulas can be specified for the memory resource.\\
 
 \noindent
 For a specific node, the sum of these metrics over all containers is denoted as the total utilization. For these utilization values, there are a few restrictions, which are mathematically stated below.
 
 \begin{itemize}
     \item $0 < u_i \leq 1$ for $1 \leq i \leq n$: Every container on a node utilizes a value between $0$ (exclusive) and 1 (inclusive). The desired solution will also be a running container, but the utilization is filtered out of the collected utilization values, such that the monitoring solution only collects data about the deployed system.
-    \item $\sum_{i=1}^n u_i \leq 1$: The total utilization of a certain set of containers for a given host cannot utilize more than 100\%. And with the previous requirement, its lower-bound is 0 (exclusive). As the total waste is computed as $1 - \sum_{i=1}^n u_i$, it can be concluded that the waste is bounded by 0 (inclusive) and 1 (exclusive).
+    \item $\sum_{i=1}^n u_i \leq 1$: The total utilization of containers for a given host cannot utilize more than 100\%. And with the previous requirement, its lower-bound is 0 (exclusive). As the total waste is computed as $1 - \sum_{i=1}^n u_i$, it can be concluded that the waste is bounded by 0 (inclusive) and 1 (exclusive).
 \end{itemize}
 
 
 
 \section{Waste requirements} \label{sec:waste_requirements}
-There are several ways in which the utilization values can be used to compute the waste. In this research, the following four properties are used for finding an optimal waste distribution. The waste distribution is computed per node, as is the same for the cost requirements above.
+There are several ways in which the utilization values can be used to compute the waste. In this, the following four properties are used for finding an optimal waste distribution. The waste distribution is computed per node, as is the same for the cost requirements above.
 \begin{enumerate}
     \item \textbf{$\sum_{i=1}^n w_i = 1 - \sum_{i=1}^n u_i $}: The sum of the elements of the waste and the sum of the elements of the utilization values should sum up to 1, as it implies that a resource is either used (this is $u$) or being wasted (this is $w$).
     \item \textbf{$w_i \geq 0$} for $1 \leq i \leq n$: The waste of every certain container is non negative. Thus, it is impossible for a container to have a negative waste. As the waste distribution is used for computing the amount of money wasted, this would imply that money is being earned, while running a certain container.
@@ -125,10 +124,10 @@ There are several ways in which the utilization values can be used to compute th
 The following section contains several approaches for computing the waste distribution. These three approaches are evaluated in \autoref{sec:optimal_approach}.
 
 \section{Approaches for computing the waste distribution} \label{sec:approaches}
-In this section, the following three waste distributions will be evaluated: equal distribution, linear inverse distribution and proportional inverse distribution. They are all described in a different subsection below.
+In this section, the following three waste distributions will be evaluated: uniform distribution, linear inverse distribution and proportional inverse distribution. They are all described in a different subsection below.
 
-\subsection{Distribution} \label{sec:equal}
-Using a distribution, the waste is the same for every container on a certain host, i.e. $w_1 = w_2 = \dots = w_n$. The idea behind this approach is that a set of containers together wastes the same part of the host and therefore the waste should be distributed over every container in a fair manner. This approach can be computed by the following formula:
+\subsection{Uniform distribution} \label{sec:equal}
+Using a uniform distribution, the waste is the same for every container on a certain host, i.e. $w_1 = w_2 = \dots = w_n$. The idea behind this approach is that a set of containers together wastes the same part of the host and therefore the waste should be distributed over every container in a fair manner. This approach can be computed by the following formula:
 \begin{equation}
 w_i = \frac{1 - \sum_{i=1}^n u_i}{n}
 \end{equation}
@@ -205,6 +204,7 @@ w_1 \\ w_2 \\ w_3
 \end{split}
 \end{equation}
 
+\noindent
 \autoref{eq:matrix} can be generalized for $n$ containers. The matrix $A_n$, as well as vectors $w$ (was $x$ in \autoref{eq:matrix}) and $b$ are expressed below:
 \begin{equation} \label{eq:general_matrix}
 \begin{split}
@@ -226,6 +226,7 @@ b = \begin{bmatrix}
 \end{split}
 \end{equation}
 
+\noindent
 Thus, the waste values can be computed by solving $A_n w = b$. 
 In general, the following two properties needs to hold to have a unique solution given by $w = A_n^{-1} b$:
 \begin{itemize}
@@ -239,71 +240,71 @@ In the previous section, three approaches for distributing the waste resources o
 This section analyses the three approaches according to their complexity and accuracy. 
 
 \subsection{Complexity}
-The complexity can be expressed in terms of memory complexity and computational complexity. They are all listed in \autoref{tab:complexity}. The minimal computational complexity is $\mathcal{O}(n)$, as a host runs $n$ containers. Approach 1 has a memory complexity of $\mathcal{O}(n)$, as the result can be stored in the same variable for all containers. Approach 2 has a memory complexity of $\mathcal{O}(n)$, as this algorithm only iterates the utilization values as well. Approach 3 has a computational complexity of $\mathcal{O}(n^3)$ as this is necessary for solving a system of linear equations in the worst case. However, \cite{pan1991complexity} explains that there exists several optimization and thus may be usually be done in $\mathcal{O}(n^2)$.\\
+The complexity can be expressed in terms of memory complexity and computational complexity. They are all listed in \autoref{tab:complexity}. The minimal computational complexity is $\mathcal{O}(n)$, as a host runs $n$ containers. Approach 1 has a memory complexity of $\mathcal{O}(n)$, as the result can be stored in the same variable for all containers. Approach 2 has a memory complexity of $\mathcal{O}(n)$, as this algorithm only iterates the utilization values as well. The \textit{Linear inverse distribution} has a computational complexity of $\mathcal{O}(n^3)$ as this is necessary for solving a system of linear equations in the worst case. However, \cite{pan1991complexity} explains that there exists several optimization and thus may be usually be done in $\mathcal{O}(n^2)$.\\
 
 \noindent
-As approach \ref{sec:proportional} is clearly the worst in terms of memory and computational complexity it can be argued that $n$ is usually not a very large number, as it represents the number of containers for a specific host. According to a survey from 2017 \cite{docker_report}, the median number of containers per host is 10. However, this survey also stated that they have a response with 95 containers per host. In both cases, the waste can be easily computed. On an average machine, computing the waste for for $n = 100$ takes less than 1 millisecond. Given that this needs to be computed only once an hour, all three approaches are sufficient.
+As the \textit{Proportional inverse distribution} (\autoref{sec:proportional}) is clearly the worst in terms of memory and computational complexity it can be argued that $n$ is usually not a very large number, as it represents the number of containers for a specific host. According to a survey from 2017 \cite{docker_report}, the median number of containers per host is 10. However, this survey also stated that they have a response with 95 containers per host. In both cases, the waste can be easily computed. On an average machine, computing the waste for for $n = 100$ takes less than 1 millisecond. Given that this needs to be computed only once an hour, all three approaches are sufficient.
 
-\begin{table}[ht]
+\begin{table}
     \centering
-    \begin{tabular}{l|c|c}
-        \textbf{Approach} & \textbf{Memory} & \textbf{Computational} \\ \hline
-        \ref{sec:equal} & $\mathcal{O}(1)$ & $\mathcal{O}(n)$ \\
-        \ref{sec:linear} & $\mathcal{O}(n)$ & $\mathcal{O}(n)$ \\
-        \ref{sec:proportional} & $\mathcal{O}(n^2)$ & $\mathcal{O}(n^3)$ \\
+    \begin{tabular}{l|r|c|c}
+        \textbf{Approach} & \textbf{\#} & \textbf{Memory} & \textbf{Computational} \\ \hline
+        Uniform distribution & 1 & $\mathcal{O}(1)$ & $\mathcal{O}(n)$ \\
+        Linear inverse distribution & 2 & $\mathcal{O}(n)$ & $\mathcal{O}(n)$ \\
+        Proportional inverse distribution & 3 & $\mathcal{O}(n^2)$ & $\mathcal{O}(n^3)$ \\
     \end{tabular}
     \caption{Memory and Computational complexity for the three different approaches}
     \label{tab:complexity}
 \end{table}
 
+\begin{table}
+    \centering
+    \begin{tabular}{|r|r|r|r|r|r|r|r|r|}
+        \hline
+        \multicolumn{4}{|c|}{\textbf{Utilization}} & \multirow{2}{*}{\textbf{Approach \#}} & \multicolumn{4}{|c|}{\textbf{Waste}} \\ 
+        $u_1$ & $u_2$ & $u_3$ & $\sum$ & \multirow{2}{*}{} & $w_1$ & $w_2$ & $w_3$ & $\sum$ \\ \hline
+        
+        \multirow{3}{*}{0.10} & \multirow{3}{*}{0.15} &  & \multirow{3}{*}{0.25} 
+        & 1 & 0.375 & 0.375 & &                            \multirow{3}{*}{0.75} \\
+        \multirow{3}{*}{}     & \multirow{3}{*}{}     & & \multirow{3}{*}{}
+        & 2 & 0.4 & 0.35 & & \multirow{3}{*}{} \\
+        \multirow{3}{*}{}     & \multirow{3}{*}{}     & & \multirow{3}{*}{}
+        & 3 & 0.45 & 0.3 & & \multirow{3}{*}{} \\ \hline
+        
+        \multirow{3}{*}{0.60} & \multirow{3}{*}{0.15} &  & \multirow{3}{*}{0.75} 
+        & 1 & 0.125 & 0.125 & &                            \multirow{3}{*}{0.25} \\
+        \multirow{3}{*}{}     & \multirow{3}{*}{}     & & \multirow{3}{*}{}
+        & 2 & 0 & 0.25 & & \multirow{3}{*}{} \\
+        \multirow{3}{*}{}     & \multirow{3}{*}{}     & & \multirow{3}{*}{}
+        & 3 & 0.05 & 0.20 & & \multirow{3}{*}{} \\ \hline
+        
+        \multirow{3}{*}{0.10} & \multirow{3}{*}{0.35} & \multirow{3}{*}{0.35} & \multirow{3}{*}{0.80} 
+        & 1 & 0.067 & 0.067 & 0.067 & \multirow{3}{*}{0.20} \\
+        \multirow{3}{*}{}     & \multirow{3}{*}{}     & \multirow{3}{*}{} & \multirow{3}{*}{}
+        & 2 & 0.20 & 0 & 0 & \multirow{3}{*}{} \\
+        \multirow{3}{*}{}     & \multirow{3}{*}{}     & \multirow{3}{*}{} & \multirow{3}{*}{}
+        & 3 & 0.127 & 0.036 & 0.036 & \multirow{3}{*}{} \\ \hline
+        
+        \multirow{3}{*}{0.05} & \multirow{3}{*}{0.05} & \multirow{3}{*}{0.45} & \multirow{3}{*}{0.55} 
+        & 1 & 0.15 & 0.15 & 0.15 & \multirow{3}{*}{0.45} \\
+        \multirow{3}{*}{}     & \multirow{3}{*}{}     & \multirow{3}{*}{} & \multirow{3}{*}{}
+        & 2 & 0.225 & 0.225 & 0 & \multirow{3}{*}{} \\
+        \multirow{3}{*}{}     & \multirow{3}{*}{}     & \multirow{3}{*}{} & \multirow{3}{*}{}
+        & 3 & 0.213 & 0.213 & 0.023 & \multirow{3}{*}{} \\ \hline
+        
+    \end{tabular}
+    \caption{Several utilization values and the waste values that are computed using the three approaches}
+    \label{tab:values}
+\end{table}
+
 \subsection{Accuracy} \label{sec:data}
-As the previous section has shown that the computational and memory complexity is not significant in choosing the best approach, it is interesting to investigate the difference in their results. This section shows the actual values and whether these can be justified. In order to do so, several utilization distributions have been generated and have been listed in \autoref{tab:values}. This table provides two examples with $n = 2$, and two examples with $n = 3$. In the first row, the waste for all three approaches are approximately equivalent. However, in the second row, the waste varies a lot between the different approaches. It doesn't feel natural that, if a container utilizes 4 times more than another container, its corresponding waste is the same. Therefore, the computations from the approach described in \autoref{sec:equal} feel to simplistic.\\
+As the previous section has shown that the computational and memory complexity is not significant in choosing the best approach, it is interesting to investigate the difference in their results. This section shows the actual values and whether these can be justified. In order to do so, several utilization distributions have been generated and have been listed in \autoref{tab:values}. This table provides two examples with $n = 2$, and two examples with $n = 3$. In the first row, the waste for all three approaches are approximately equivalent. However, in the second row, the waste varies a lot between the different approaches. It feels unnatural that, if a container utilizes 4 times more than another container, its corresponding waste is the same. Therefore, the computations from the approach described in \autoref{sec:equal} feel to simplistic.\\
 
 \noindent
 In the case of $n = 3$, the table provides two examples. It can be observed that the approach describes in \autoref{sec:linear} returns $0$ if the utilization is too high. However, this might also feel unnatural, as there is the notion that every container might be able to reduce its waste. It also needs to be stated that the approach from \autoref{sec:proportional} might seem incorrect as well, as the it is based on the assumption that every container utilizes and wastes the same amount ($u_i * w_i = c$). Although it is required that $u_i > 0$, it can be close to $0$. This leads to the fact that this container utilizes almost every waste, i.e. $w_i \approx \sum_{i=1}^n w_i$.\\
 
 \noindent
 Apart from presenting the data in a table, it is also possible to visualize this in a graph. This visualization can be found in Figure \ref{fig:approaches}. It consists of two examples of utilization distributions, each consisting of two utilization values. This visualization should be interpreted by drawing a vertical line from the utilization values to the waste values. For example, in \autoref{fig:approaches:A}, the utilization values in the left most position are $u_1 = 0.2$ and $u_2 = 0$. This results in $w_1 = w_2 = 0.4$ for approach 1, $w_1 = 0.3, w_2 = 0.5$ for approach 2, and $w_1 = 0, w_2 = 0.8$ for approach 3. Using \autoref{fig:approaches:A}, it can be observed how the waste values change if one utilization value remains constant, while the other utilization value increases. In \autoref{fig:approaches:B} it can be observed how the waste values change while one utilization value increases and another decreases. In this figure, the sum of the utilization values remains constant, while it increases in \autoref{fig:approaches:A}.
-
-\begin{table}
-    \centering
-    \begin{tabular}{|r|r|r|r|c|r|r|r|r|}
-        \hline
-        \multicolumn{4}{|c|}{\textbf{Utilization}} & \multirow{2}{*}{\textbf{Approach}} & \multicolumn{4}{|c|}{\textbf{Waste}} \\ 
-        $u_1$ & $u_2$ & $u_3$ & $\sum$ & \multirow{2}{*}{} & $w_1$ & $w_2$ & $w_3$ & $\sum$ \\ \hline
-        
-        \multirow{3}{*}{0.10} & \multirow{3}{*}{0.15} &  & \multirow{3}{*}{0.25} 
-        & \ref{sec:equal} & 0.375 & 0.375 & &                            \multirow{3}{*}{0.75} \\
-        \multirow{3}{*}{}     & \multirow{3}{*}{}     & & \multirow{3}{*}{}
-        & \ref{sec:linear} & 0.4 & 0.35 & & \multirow{3}{*}{} \\
-        \multirow{3}{*}{}     & \multirow{3}{*}{}     & & \multirow{3}{*}{}
-        & \ref{sec:proportional} & 0.45 & 0.3 & & \multirow{3}{*}{} \\ \hline
-        
-        \multirow{3}{*}{0.60} & \multirow{3}{*}{0.15} &  & \multirow{3}{*}{0.75} 
-        & \ref{sec:equal} & 0.125 & 0.125 & &                            \multirow{3}{*}{0.25} \\
-        \multirow{3}{*}{}     & \multirow{3}{*}{}     & & \multirow{3}{*}{}
-        & \ref{sec:linear} & 0 & 0.25 & & \multirow{3}{*}{} \\
-        \multirow{3}{*}{}     & \multirow{3}{*}{}     & & \multirow{3}{*}{}
-        & \ref{sec:proportional} & 0.05 & 0.20 & & \multirow{3}{*}{} \\ \hline
-        
-        \multirow{3}{*}{0.10} & \multirow{3}{*}{0.35} & \multirow{3}{*}{0.35} & \multirow{3}{*}{0.80} 
-        & \ref{sec:equal} & 0.067 & 0.067 & 0.067 & \multirow{3}{*}{0.20} \\
-        \multirow{3}{*}{}     & \multirow{3}{*}{}     & \multirow{3}{*}{} & \multirow{3}{*}{}
-        & \ref{sec:linear} & 0.20 & 0 & 0 & \multirow{3}{*}{} \\
-        \multirow{3}{*}{}     & \multirow{3}{*}{}     & \multirow{3}{*}{} & \multirow{3}{*}{}
-        & \ref{sec:proportional} & 0.127 & 0.036 & 0.036 & \multirow{3}{*}{} \\ \hline
-        
-        \multirow{3}{*}{0.05} & \multirow{3}{*}{0.05} & \multirow{3}{*}{0.45} & \multirow{3}{*}{0.55} 
-        & \ref{sec:equal} & 0.15 & 0.15 & 0.15 & \multirow{3}{*}{0.45} \\
-        \multirow{3}{*}{}     & \multirow{3}{*}{}     & \multirow{3}{*}{} & \multirow{3}{*}{}
-        & \ref{sec:linear} & 0.225 & 0.225 & 0 & \multirow{3}{*}{} \\
-        \multirow{3}{*}{}     & \multirow{3}{*}{}     & \multirow{3}{*}{} & \multirow{3}{*}{}
-        & \ref{sec:proportional} & 0.213 & 0.213 & 0.023 & \multirow{3}{*}{} \\ \hline
-        
-    \end{tabular}
-    \caption{Several utilization values and the waste values that are computed using the three approaches}
-    \label{tab:values}
-\end{table}
 
 
 \begin{figure}
@@ -324,7 +325,7 @@ Apart from presenting the data in a table, it is also possible to visualize this
 One of the properties of the utilization values (as stated in \autoref{sec:waste_requirements}) is that $u_i > 0$ for all $i$. However, while deploying the system, it turned out that the utilization of a certain container was zero. In the first two approaches (\autoref{sec:equal} and \autoref{sec:linear}), this is not a problem. However, this is a problem for the last approach (\autoref{sec:proportional}). An example can be seen for $n = 3$ with $u_1 = 0.3, u_2 = 0, u_3 = 0.2$. This results in the waste values: $w_1 = 0, w_2 = 0.5, w_3 = 0$. Therefore, if $u_1 = 0$, then $w_i = 1 - u$.\\
 
 \noindent
-In case there are two containers that have a zero utilization, than the waste cannot be computed for the third approach. This is due to the fact that the matrix $A_n$ does not have a full rank anymore (as two rows are the same). This problem can be avoided by adding a small utilization value $\Delta$ to the $u_i$-values that are $0$. This value can then be removed from the corresponding $w_i$ value, to ensure that property 1 still holds. However, as explained in \autoref{sec:data}, the corresponding $w_i$ will be close to $\sum_{j=1}^n w_j$ and will lead to abnormal results. This leads to the conclusion that only the approach from \autoref{sec:linear} is sufficient for the implementation. Thus, Algorithm \ref{alg:linear} will be used to compute the waste values given the utilization values.
+In case there are two containers that have a zero utilization, than the waste cannot be computed for the third approach. This is due to the fact that the matrix $A_n$ does not have a full rank anymore (as two rows are the same). This problem can be avoided by adding a small utilization value $\Delta$ to the $u_i$-values that are $0$. This value can then be removed from the corresponding $w_i$ value, to ensure that property 1 still holds. However, as explained in \autoref{sec:data}, the corresponding $w_i$ will be close to $\sum_{j=1}^n w_j$ and will lead to abnormal results. This leads to the conclusion that the \textit{linear inverse distribution} (described in \autoref{sec:linear}) is sufficient for the implementation. Thus, Algorithm \ref{alg:linear} will be used to compute the waste values given the utilization values.
 
 \section{Conclusion}
 In \autoref{sec:architecture} a system is proposed that meet the architectural requirements from \autoref{sec:architectural_req}. With this system, the used an unused cost can be modelled on a containerized level. This is model is proposed in \autoref{sec:pricing}. This model is based on several variables, for which some of them are unknown. For resolving the unknown variables, thee algorithms have been proposed in \autoref{sec:approaches}. One of these algorithms is chosen in \autoref{sec:optimal_approach}.
