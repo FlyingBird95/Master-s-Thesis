@@ -161,7 +161,7 @@ A web-service is used to validate the communication traffic between the containe
 A request service is used to generate load for the web-services. Each request-service contains a postfix number that is inline with the postfix number of the web-service. This service is small in terms of CPU and memory and should therefore generate a lot of waste.\\
 
 \noindent
-Cassandra nodes are known for consuming a lot of memory. Therefore, node 2 runs three Cassandra nodes. The Cassandra nodes do not communicate with the web or request service, but are configured to communicate internally. The memory cost wasted should be high on the supernode and node 1, but not on node 2.
+Cassandra nodes are known for consuming a lot of memory. Therefore, node 2 runs three Cassandra nodes. The Cassandra nodes do not communicate with the web or request service, but are configured to communicate internally. The memory cost wasted should be high on the supernode and node 1, but not on node 2.\\
 
-\subsection{Conclusion}
+\noindent
 The demo application proposed in this section is perfect for evaluating the system. The web-services are consuming a lot of resources, and can therefore be used to test the CPU waste distribution. The same argument holds for the Cassandra nodes, which consumes a lot of memory. By using two nodes and one supernode, the scalability is also verified.

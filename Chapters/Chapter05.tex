@@ -1,18 +1,15 @@
 %************************************************
 \chapter{Case Study}\label{ch:case_study}
 %************************************************
-Part of the evaluation of the developed tool is to verify the functionality with an industrial company. In order to do so, a company closely related to the University of Groningen has been found. This company is named `Sustainable Buildings' and sells products to monitor the users electricity and gas consumption in real-time. This leads to an increase in building-users awareness by providing real-time feedback through public dashboards \cite{sb}.\\
-
-\noindent
-In order to serve their customers, they have allocated a physical server consisting of 40 cores and 128 GB of RAM. Additionally, they have 900 GB of storage data. This host machine is divided into 6 virtual machines. A brief overview of their architecture is described in \autoref{sec:sb-architecture}. This company perfectly meets the requirements for evaluating the tool, because it is a relatively large system with many load. Additionally, the tool might be useful for them, as they are now missing insights into their performance. The process of deploying this system has been described in \autoref{sec:sb-process}. At the end, an evaluation has been performed. This evaluation consists of an interview and is described in \autoref{sec:sb-evaluation}.
+In order to partially evaluate the proposed solution empirically, the tool has been deployed at an industrial company. This is a smart buildings company, which runs their services on the cloud. The company offers products to monitor the users electricity and gas consumption in real-time. This leads to an increase in building-users awareness by providing real-time feedback through public dashboards \cite{sb}. A brief overview of their architecture is described in \autoref{sec:sb-architecture}. This company perfectly meets the requirements for evaluating the tool, because it is a relatively large system with load. Additionally, the tool might be useful for them, as they are now missing insights into their performance. The process of deploying this system has been described in \autoref{sec:sb-process}. At the end, an interview has been performed. The purpose of the interview with stakeholders is to collect data with respect to their perception of the solution. This interview is described in \autoref{sec:sb-evaluation}.
 
 \section{Architecture} \label{sec:sb-architecture}
-The six virtual machines work together as one system. Each virtual machine is responsible for running a number of services. These services can be found in \autoref{fig:sb-architecture}. In order to simplify the deployment, the employees of the company decided to assign a name to every VM. The names are also presented in the architecture diagram. A small overview of the number of CPU, RAM and memory per VM can be found in \autoref{tab:vms}. As described in \autoref{sec:architecture}, the architecture consists of a single root-node, two super-nodes and three nodes. The structure can be found in \autoref{fig:sb-tree}. From this figure it becomes clear that Jotunheim consumes two roles. Both as a root, and as a supernode.
+In order to serve their customers, the company has allocated a physical server consisting of 40 cores and 128 GB of RAM. Additionally, they have 900 GB of storage data. This host machine is divided into 6 virtual machines. The six virtual machines work together as one system. Each virtual machine is responsible for running a number of services. These services can be found in \autoref{fig:sb-architecture}. In order to simplify the deployment, the employees of the company decided to assign a name to every VM\footnote{Note that the names are randomized to not reveal the exact details.}. The host are also presented in the architecture diagram. A small overview of the number of CPU, RAM and memory per VM can be found in \autoref{tab:vms}. As described in \autoref{sec:architecture}, the architecture consists of a single root-node, two super-nodes and three nodes. The structure can be found in \autoref{fig:sb-tree}. From this figure it becomes clear that host $0$ consumes two roles. Both as a root, and as a supernode.
 
 
 \begin{figure}
     \centering
-    \includegraphics[width=\textwidth]{gfx/sb-architecture.png}
+    \includegraphics[width=\textwidth]{gfx/sb-architecture1.png}
     \caption{Sustainable Buildings architecture}
     \label{fig:sb-architecture}
 \end{figure}
@@ -21,12 +18,12 @@ The six virtual machines work together as one system. Each virtual machine is re
     \centering
     \begin{tabular}{l|lrrr}
         Virtual Machine &IP & Cores & RAM & Memory \\ \hline
-        Asgard & 192.168.1.10 &8 & 16 GB & 100 GB \\
-        Vanaheim & 192.168.1.11 &8 & 16 GB & 100 GB \\
-        Alfheim & 192.168.1.12  &8 & 16 GB & 100 GB \\
-        Jotunheim & 192.168.1.13 &8 & 16 GB & 100 GB \\
-        Midgard & 192.168.1.14 &4 & 8 GB & 20 GB \\
-        Niflheim & 192.168.1.15 &4 & 8 GB & 20 GB \\
+        Host $0$ & 192.168.1.13 &8 & 16 GB & 100 GB \\
+        Host $1$ & 192.168.1.11 &8 & 16 GB & 100 GB \\
+        Host $2$ & 192.168.1.12  &8 & 16 GB & 100 GB \\
+        Host $3$ & 192.168.1.10 &8 & 16 GB & 100 GB \\
+        Host $4$ & 192.168.1.14 &4 & 8 GB & 20 GB \\
+        Host $5$ & 192.168.1.15 &4 & 8 GB & 20 GB \\
     \end{tabular}
     \caption{Overview of the architecture}
     \label{tab:vms}
@@ -39,14 +36,14 @@ The six virtual machines work together as one system. Each virtual machine is re
             grow=south,
             rectangle, draw, minimum size=3ex, inner sep=1pt,s sep=7mm
         }
-        [~~Jotunheim~~~ 
-        [~~Vanaheim~~~ 
-          [~~Asgard~~~]
-          [~~Alfheim~~~]
+        [~~Root: Host $0$~~~ 
+        [~~Supernode: Host $1$~~~ 
+          [~~Node: Host $2$~~~]
+          [~~Node: Host $3$~~~]
         ]
-        [~~Jotunheim~~~
-          [~~Midgard~~~]
-          [~~Niffelheim~~~]
+        [~~Supernode: Host $0$~~~
+          [~~Node: Host $4$~~~]
+          [~~Node: Host $5$~~~]
         ]
         ]
     \end{forest}
@@ -79,34 +76,34 @@ In order to solve the issue described in the previous sub-section, a sub samplin
 \end{figure}
 
 \begin{figure}
-    \subfloat[Asgard]{%
+    \subfloat[Host $3$]{%
         \includegraphics[width=0.45\textwidth]{gfx/asgard.png}
         \label{fig:deployment:asgard}
     }\qquad
-    \subfloat[Midgard]{
+    \subfloat[Host $4$]{
         \includegraphics[width=0.45\textwidth]{gfx/midgard.png}%
         \label{fig:deployment:midgard}
     }
     
-    \subfloat[Vanaheim]{%
+    \subfloat[Host $1$]{%
         \includegraphics[width=0.45\textwidth]{gfx/vanaheim.png}
         \label{fig:deployment:vanaheim}
     }\qquad
-    \subfloat[Alfheim]{
+    \subfloat[Host $2$]{
         \includegraphics[width=0.45\textwidth]{gfx/alfheim.png}%
         \label{fig:deployment:alfheim}
     }
     
-    \subfloat[Jotunheim]{%
+    \subfloat[Host $0$]{%
         \includegraphics[width=0.45\textwidth]{gfx/jotunheim.png}
         \label{fig:deployment:jotunheim}
     }\qquad
-    \subfloat[Niflheim]{
+    \subfloat[Host $5$]{
         \includegraphics[width=0.45\textwidth]{gfx/niflheim.png}%
         \label{fig:deployment:niflheim}
     }
     
-    \subfloat[Jotunheim Root]{%
+    \subfloat[Root: Host $0$]{%
         \includegraphics[width=0.45\textwidth]{gfx/jotunheim-root.png}
         \label{fig:deployment:jotunheim-root}
     }
@@ -115,7 +112,7 @@ In order to solve the issue described in the previous sub-section, a sub samplin
 \end{figure}
 
 \subsection{Third meeting}
-In order to solve the issue from the second meeting, the decision was made to implement a caching functionality. This means that the program resolves the internet traffic packets afterwards instead of real-time. The decision was made to implement a caching time limit of one minute, such that the obtained results are near real-time. The system therefore only communicates with its other nodes once per minute. This leads to a more efficient CPU usage, which can be seen in \autoref{fig:deployment}. This figure shows the CPU usage during the lifetime of the system. It can be concluded that the overall  CPU percentage is low, around 4\% for the nodes, and the root. However, for an unknown reason, the Jotunheim supernode linearly grows until 40\%, while the others stay constant. The Jotunheim root shows an average of 2.5\% CPU.
+In order to solve the issue from the second meeting, the decision was made to implement a caching functionality. This means that the program resolves the internet traffic packets afterwards instead of real-time. The decision was made to implement a caching time limit of one minute, such that the obtained results are near real-time. The system therefore only communicates with its other nodes once per minute. This leads to a more efficient CPU usage, which can be seen in \autoref{fig:deployment}. This figure shows the CPU usage during the lifetime of the system. It can be concluded that the overall  CPU percentage is low, around 4\% for the nodes. The Root at host $0$ shows an average of 2.5\% CPU.
 
 \section{Results}
 In order to simply the results, several containers are grouped together using a regular expression. If a certain container name matches a regular expression, then this container is assigned to a certain group. The `other' group acts as a wildcard, matching every container that doesn't belong to a group. \autoref{tab:regex} shows the groups that are proposed, as well as the number of containers in this group.\\
@@ -143,20 +140,43 @@ In order to simply the results, several containers are grouped together using a 
     \label{tab:regex}
 \end{table}
 
+\begin{table}
+    \centering
+    \begin{tabular}{l|rrr|rrr}
+        Group name & CPU usage (\%) & Memory usage & Cost & CPU waste & Memory waste & Waste cost \\ \hline
+        other       & $1.8$     & $9$ GB & $\$0.10$ & $6.3$ &   $7$ GB & $\$0.16$ \\
+        sparkthings & $0.0066$  & $1$ GB & $<\$0.01$& $1.2$ & $955$ MB & $\$0.03$ \\
+        flinkthings & $2.0$     & $9$ GB & $\$0.07$ & $0.21$&  $54$ MB & $<\$0.01$ \\
+        zookeeper   & $0.0085$ &$775$ MB & $<\$0.01$& $1.2$ & $978$ MB & $\$0.03$ \\
+        kafka       & $10.3$    & $6$ GB & $\$0.24$ & $1.8$ &   $1$ GB & $\$0.04$ \\
+        node-exporter & $0.014$ &$66$ MB & $<\$0.01$& $1.2$ &   $1$ GB & $\$0.03$ \\
+        socats      & $0.00059$ & $5$ MB & $<\$0.01$& $1.4$ &   $2$ GB & $\$0.04$ \\
+        cassandra   & $0.70$   & $16$ GB & $\$0.06$ & $0.44$&    $0$ B & $\$0.01$ \\
+        timeseriest-rest&$0.19$ & $3$ GB & $\$0.01$ & $0.72$& $306$ MB & $\$0.02$ \\
+        vault       & $0.011$ & $636$ MB & $<\$0.01$& $1.5$ &   $2$ GB & $\$0.04$ \\
+        hadoop      & $0.011$ & $342$ MB & $<\$0.01$& $0.99$&   $1$ GB & $\$0.03$ \\
+        airflow     & $0.44$  & $552$ MB & $\$0.01$ & $0.40$& $714$ MB & $\$0.01$ \\
+        orchestrator& $0.019$ & $371$ MB & $<\$0.01$& $0.43$& $421$ MB & $\$0.01$ \\
+        middlewares & $0.24$    & $5$ GB & $\$0.02$ & $1.9$ & $750$ MB & $\$0.04$ \\
+    \end{tabular}
+    \caption{Results for the Smart Buildings company}
+    \label{tab:sb-results}
+\end{table}
+
 \noindent
-The services at the Sustainable Buildings Company have been monitored for exactly 14 days (from June 26, 11 AM UTC until July 10, 11 AM UTC). During these days, the resources have been monitored on a containerized level, and the waste cost is distributed over the running containers. The results of the cost and waste computation is summarized in \autoref{fig:stats}, leading to the percentages presented in \autoref{fig:stats_percentage}. This computation is based on the prices proposed in \autoref{sec:pricing}, except for the $p_\text{network}$. \autoref{sec:sb-limitation} describes the limitations with respect to the network traffic monitoring, resulting in an adjusted network price of $p_\text{network} = 0.05$. This is half of the proposed pricing. This is based on the assumption that half of the network traffic is internal (between their services), and other half of the network traffic is external.\\
+The services at the Sustainable Buildings Company have been monitored for exactly 14 days (from June 26, 11 AM UTC until July 10, 11 AM UTC). During these days, the resources have been monitored on a containerized level, and the waste cost is distributed over the running containers. The results of the cost and waste computation is summarized in \autoref{fig:stats}, leading to the percentages presented in \autoref{fig:stats_percentage}. This computation is based on the prices proposed in \autoref{sec:pricing}, except for the $p_\text{network}$. \autoref{sec:sb-limitation} describes the limitations with respect to the network traffic monitoring, resulting in an adjusted network price of $p_\text{network} = 0.05$. This is half of the proposed pricing. This value has been proposed after a small discussion with a technical employee of the company. This is based on the assumption that half of the network traffic is internal (between their services), and other half of the network traffic is external.\\
 
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{gfx/stats.png}
-    \caption{Overall stats of the Sustainability Buildings Company}
+    \caption{Overall stats of the Smart Buildings Company}
     \label{fig:stats}
 \end{figure}
 
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{gfx/stats_percentage.png}
-    \caption{Percentage stats of the Sustainability Buildings Company}
+    \caption{Percentage stats of the Smart Buildings Company}
     \label{fig:stats_percentage}
 \end{figure}
 
@@ -195,7 +215,7 @@ This computation is based on the equation described in \autoref{eq:p}. By using 
 \end{figure}
 
 \section{Limitation} \label{sec:sb-limitation}
-The system proposed in \autoref{ch:design} is able to monitor the CPU and memory usage on a container level. Using TCPDump, a subsampling procedure has been implemented that monitors the packets on a host level. Then, the system assigns this packets to a container by resolving their IP address. However, almost all their communication of their services are configured using Weave Net\footnote{See \url{https://github.com/weaveworks/weave}}. Weave Net creates a virtual network that connects Docker containers across multiple hosts and enables their automatic discovery. To application containers, the network established by Weave resembles a giant Ethernet switch, where all containers are connected and can easily access services from one another. \cite{weave}.\\
+The system proposed in \autoref{ch:design} is able to monitor the CPU and memory usage on a container level. Using TCPdump, a subsampling procedure has been implemented that monitors the packets on a host level. Then, the system assigns this packets to a container by resolving their IP address. However, almost all their communication of their services are configured using Weave Net\footnote{See \url{https://github.com/weaveworks/weave}}. Weave Net creates a virtual network that connects Docker containers across multiple hosts and enables their automatic discovery. To application containers, the network established by Weave resembles a giant Ethernet switch, where all containers are connected and can easily access services from one another. \cite{weave}.\\
 
 \noindent
 When using the weave network, the containers don't communicate by their exposed IP address. Therefore, the proposed system is unable to resolve the internet packets. This leads to a lower estimate of $n_\text{internal}$ in \autoref{formula:traffic}, which results in a higher $n_\text{network}$. Therefore, the estimated cost using \autoref{eq:p} is also too high. Further work is needed to resolve the IP addresses according to the weave network.
