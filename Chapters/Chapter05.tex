@@ -142,25 +142,48 @@ In order to simply the results, several containers are grouped together using a 
 
 \begin{table}
     \centering
-    \begin{tabular}{l|rrr|rrr}
-        Group name & CPU usage (\%) & Memory usage & Cost & CPU waste & Memory waste & Waste cost \\ \hline
-        other       & $1.8$     & $9$ GB & $\$0.10$ & $6.3$ &   $7$ GB & $\$0.16$ \\
-        sparkthings & $0.0066$  & $1$ GB & $<\$0.01$& $1.2$ & $955$ MB & $\$0.03$ \\
-        flinkthings & $2.0$     & $9$ GB & $\$0.07$ & $0.21$&  $54$ MB & $<\$0.01$ \\
-        zookeeper   & $0.0085$ &$775$ MB & $<\$0.01$& $1.2$ & $978$ MB & $\$0.03$ \\
-        kafka       & $10.3$    & $6$ GB & $\$0.24$ & $1.8$ &   $1$ GB & $\$0.04$ \\
-        node-exporter & $0.014$ &$66$ MB & $<\$0.01$& $1.2$ &   $1$ GB & $\$0.03$ \\
-        socats      & $0.00059$ & $5$ MB & $<\$0.01$& $1.4$ &   $2$ GB & $\$0.04$ \\
-        cassandra   & $0.70$   & $16$ GB & $\$0.06$ & $0.44$&    $0$ B & $\$0.01$ \\
-        timeseriest-rest&$0.19$ & $3$ GB & $\$0.01$ & $0.72$& $306$ MB & $\$0.02$ \\
-        vault       & $0.011$ & $636$ MB & $<\$0.01$& $1.5$ &   $2$ GB & $\$0.04$ \\
-        hadoop      & $0.011$ & $342$ MB & $<\$0.01$& $0.99$&   $1$ GB & $\$0.03$ \\
-        airflow     & $0.44$  & $552$ MB & $\$0.01$ & $0.40$& $714$ MB & $\$0.01$ \\
-        orchestrator& $0.019$ & $371$ MB & $<\$0.01$& $0.43$& $421$ MB & $\$0.01$ \\
-        middlewares & $0.24$    & $5$ GB & $\$0.02$ & $1.9$ & $750$ MB & $\$0.04$ \\
+    \begin{tabular}{l|rrr}
+        Group name & CPU usage (cores) & Memory usage & Cost \\ \hline
+        other       & $1.8$     & $9$ GB & $\$0.10$ \\
+        sparkthings & $0.0066$  & $1$ GB & $<\$0.01$\\
+        flinkthings & $2.0$     & $9$ GB & $\$0.07$ \\
+        zookeeper   & $0.0085$ &$775$ MB & $<\$0.01$\\
+        kafka       & $10.3$    & $6$ GB & $\$0.24$ \\
+        node-exporter & $0.014$ &$66$ MB & $<\$0.01$\\
+        socats      & $0.00059$ & $5$ MB & $<\$0.01$\\
+        cassandra   & $0.70$   & $16$ GB & $\$0.06$ \\
+        timeseriest-rest&$0.19$ & $3$ GB & $\$0.01$ \\
+        vault       & $0.011$ & $636$ MB & $<\$0.01$\\
+        hadoop      & $0.011$ & $342$ MB & $<\$0.01$\\
+        airflow     & $0.44$  & $552$ MB & $\$0.01$ \\
+        orchestrator& $0.019$ & $371$ MB & $<\$0.01$\\
+        middlewares & $0.24$    & $5$ GB & $\$0.02$ \\
     \end{tabular}
-    \caption{Results for the Smart Buildings company}
-    \label{tab:sb-results}
+    \caption{Cost results for the Smart Buildings company}
+    \label{tab:sb-results-cost}
+\end{table}
+
+\begin{table}
+    \centering
+    \begin{tabular}{l|rrr}
+        Group name & CPU waste (cores) & Memory waste & Waste cost \\ \hline
+        other       & $6.3$ &   $7$ GB & $\$0.16$ \\
+        sparkthings & $1.2$ & $955$ MB & $\$0.03$ \\
+        flinkthings & $0.21$&  $54$ MB & $<\$0.01$ \\
+        zookeeper   & $1.2$ & $978$ MB & $\$0.03$ \\
+        kafka       & $1.8$ &   $1$ GB & $\$0.04$ \\
+        node-exporter& $1.2$&   $1$ GB & $\$0.03$ \\
+        socats      & $1.4$ &   $2$ GB & $\$0.04$ \\
+        cassandra   & $0.44$&    $0$ B & $\$0.01$ \\
+        timeseriest-rest&$0.72$&$306$ MB &$\$0.02$ \\
+        vault       & $1.5$ &   $2$ GB & $\$0.04$ \\
+        hadoop      & $0.99$&   $1$ GB & $\$0.03$ \\
+        airflow     & $0.40$& $714$ MB & $\$0.01$ \\
+        orchestrator& $0.43$& $421$ MB & $\$0.01$ \\
+        middlewares & $1.9$ & $750$ MB & $\$0.04$ \\
+    \end{tabular}
+    \caption{Waste cost results for the Smart Buildings company}
+    \label{tab:sb-results-waste}
 \end{table}
 
 \noindent
@@ -183,36 +206,8 @@ The services at the Sustainable Buildings Company have been monitored for exactl
 \noindent
 The total cost is interesting, but only grows. It is therefore also interesting to see which services are responsible for the most cost. This is monitored for a time period of one hour, and can be seen in \autoref{fig:sb-cost}.\\
 
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{gfx/sb-cost.png}
-    \caption{Cost per service of the Sustainability Buildings Company for one hour}
-    \label{fig:sb-cost}
-\end{figure}
-
 \noindent
 This computation is based on the equation described in \autoref{eq:p}. By using this formula, it is also interesting to see the distribution of the CPU usage and memory usage. This is shown in \autoref{fig:sb-cost-cpu} and \autoref{fig:sb-cost-mem}. Lastly, the waste distribution shows which services are responsible for the most waste cost. This is shown in \autoref{fig:sb-waste}.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{gfx/sb-cost-cpu.png}
-    \caption{CPU usage cost per service of the Sustainability Buildings Company for one hour}
-    \label{fig:sb-cost-cpu}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{gfx/sb-cost-mem.png}
-    \caption{Memory usage cost per service of the Sustainability Buildings Company for one hour}
-    \label{fig:sb-cost-mem}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{gfx/sb-waste.png}
-    \caption{Waste cost per service of the Sustainability Buildings Company for one hour}
-    \label{fig:sb-waste}
-\end{figure}
 
 \section{Limitation} \label{sec:sb-limitation}
 The system proposed in \autoref{ch:design} is able to monitor the CPU and memory usage on a container level. Using TCPdump, a subsampling procedure has been implemented that monitors the packets on a host level. Then, the system assigns this packets to a container by resolving their IP address. However, almost all their communication of their services are configured using Weave Net\footnote{See \url{https://github.com/weaveworks/weave}}. Weave Net creates a virtual network that connects Docker containers across multiple hosts and enables their automatic discovery. To application containers, the network established by Weave resembles a giant Ethernet switch, where all containers are connected and can easily access services from one another. \cite{weave}.\\
