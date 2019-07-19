@@ -134,7 +134,7 @@ This section can be concluded with a list of endpoints on which the nodes commun
     \item \textbf{/dadvisor/mapping}: For returning both the port to IP mapping and the IP to container mapping.
 \end{itemize}
 
-\noindent \label{sec:decisions}
+\noindent
 The implementation described in \autoref{sec:identify-traffic} contains several limitations. First of all, \autoref{sec:identify-traffic} explains how traffic can be resolved between containers on the same node, or between different nodes. This process requires several steps, which have to be repeated for all internet packets. It is therefore inefficient to continuously execute this process. In order to avoid this, the decision has been made to use sub-sampling. This subsampling uses the following configuration variables:
 
 \begin{itemize}
