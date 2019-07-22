@@ -1,121 +1,18 @@
 %************************************************
 \chapter{Evaluation}\label{ch:evaluation}
 %************************************************
-This chapter evaluates the system proposed in \autoref{ch:design}. An implementation of this system can be found in \autoref{sec:demo_app}.  This chapter starts by evaluating this implemented system. Furthermore, \autoref{sec:eval_k} analyses the consequences of the sub sampling by showing the accuracy and CPU usage of the system.
+This chapter analyses the system proposed in \autoref{ch:design}. This analysis is based on evaluating the requirements that are described in \autoref{sec:architectural_req}. Furthermore, this chapter continues the evaluation of the proposed solution by means of an experimental procedure aimed at evaluating its accuracy. This chapter ends with answering the sub questions, as proposed in \autoref{sec:research_question}.
 
-\section{Demo app evaluation} \label{sec:demo_eval}
-The demo application proposed in \autoref{sec:demo_app} consists of 9 containers, which are divided into three groups:
-\begin{itemize}
-    \item \textbf{Web-service} (3 containers): For receiving internal requests and generating CPU load.
-    \item \textbf{Request-service} (3 containers): For generating the requests for the web-services.
-    \item \textbf{Cassandra} (3 containers): For showing communication on a single node and generating a high memory consumption.
-\end{itemize}
+\section{Evaluating architectural requirements}
+\autoref{sec:architectural_req} describes the architectural requirements. This section provides a small overview whether the requirements are met. The numbering applies to \autoref{sec:architectural_req}.
 
-\noindent
-The demo application is distributed over three nodes. An overview of these three nodes can be found in \autoref{tab:node_stats}. The containers per node can be found \autoref{fig:demo_app}.\\
-
-\begin{table}
-    \centering
-    \begin{tabular}{l|lrr}
-        Virtual Machine &IP & Cores & RAM \\ \hline
-        Supernode & 10.164.0.2 & 1 & 3.9 GB \\
-        Node 1 & 10.164.0.3 & 1 & 3.6 GB \\
-        Node 2 & 10.164.0.7 & 2 & 7.3 GB \\
-    \end{tabular}
-    \caption{Overview of the nodes in the demo application}
-    \label{tab:node_stats}
-\end{table}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{gfx/demo_app}
-    \caption{All containers in the demo application}
-    \label{fig:demo_app}
-\end{figure}
-
-\noindent
-Interesting about this demo application is that it is easy to evaluate the cost model of the system. The supernode consumes almost all its CPU resources, but barely uses memory. Node 1 is low on memory and CPU, and can therefore be used to see how the waste is distributed. Node 2 consumes a lot of memory, but barely uses CPU. For a time period of one hour, the CPU usage is presented in \autoref{fig:demo_cpu_cost}. From this figure, we conclude that the assumptions made above are correct. Note that the unit of the CPU usage is `CH', which means `core hour'. This represents $n_\text{CPU}$ from \autoref{eq:p}.\\
-
-\noindent
-From the CPU usage, the CPU waste is determined. This can be found in \autoref{fig:demo_cpu_waste}. Interesting is node 2 (10.164.0.7), which shows that all containers, except for the web-service, receive a lot of CPU waste. The supernode barely receives waste, as the CPU usage is near 100\%. Node 1 has two equivalent containers, and therefore the waste is equally divided over the nodes. \\
-
-\noindent
-The same analysis can be made for the memory usage- and waste-distribution. The memory usage is presented in \autoref{fig:demo_mem_cost}, and the memory waste is presented in \autoref{fig:demo_mem_cost}. As the web-services on the supernode are efficient in terms of memory usage, their corresponding waste is large. This also applies to the request-services on node 1. The memory waste distribution is interesting on node 2, as the three Cassandra services uses too much memory resources, and therefore don't receive any memory waste.\\
-
-\noindent
-The network traffic analysis is shown in \autoref{fig:demo_network}. However, as all communication is internally, the amount of outgoing network is nearly zero. Due to the inaccuracy of the network analysis, it is not exactly zero, which is described in \autoref{sec:eval_k}.\\
-
-\noindent
-The used resources as presented in \autoref{fig:demo_cpu_cost}, \autoref{fig:demo_mem_cost} and \autoref{fig:demo_network} are used for the cost computation, which is presented in \autoref{fig:demo_cost}. The unused resources as presented in \autoref{fig:demo_cpu_waste} and \autoref{fig:demo_mem_waste} are used for the waste computation, which is presented in \autoref{fig:demo_waste}. The cost and waste are computed using \autoref{eq:cost_and_waste}.\\
-
-\noindent
-In order to simplify the results, the visualizations can also be based on the groups, as determined above. However, this is presented in the industrial case study and is therefore not further described in this chapter. So far, the figures above show the resource usage and cost for a specific amount of time. This already provides interesting results, but aggregating provides further simplification. The aggregated results can be found in \autoref{fig:demo_stats}.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{gfx/demo_cpu_cost}
-    \caption{Distribution of the CPU usage for 1 hour}
-    \label{fig:demo_cpu_cost}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{gfx/demo_cpu_waste}
-    \caption{Distribution of the unused CPU for 1 hour}
-    \label{fig:demo_cpu_waste}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{gfx/demo_mem_cost}
-    \caption{Distribution of the memory usage for 1 hour}
-    \label{fig:demo_mem_cost}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{gfx/demo_mem_waste}
-    \caption{Distribution of the unused memory for 1 hour}
-    \label{fig:demo_mem_waste}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{gfx/demo_network}
-    \caption{Amount of outgoing network traffic for 1 hour}
-    \label{fig:demo_network}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{gfx/demo_cost}
-    \caption{Cost per container for a period of 1 hour}
-    \label{fig:demo_cost}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{gfx/demo_app}
-    \caption{Waste cost per container for a period of 1 hour}
-    \label{fig:demo_waste}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \subfloat[Cost and waste values]{
-        \includegraphics[width=0.45\textwidth]{gfx/demo_stats1.png}
-    }
-    
-    \subfloat[Cost and waste ratios]{%
-        \includegraphics[width=0.45\textwidth]{gfx/demo_stats2.png}
-    }
-    \caption{Aggregated stats for the demo application approximately 1 hour}
-    \label{fig:demo_stats}
-\end{figure}
+\begin{enumerate}
+    \item The system has been designed in such a way that it is functional accros
+\end{enumerate}
 
 
-\section{Internet traffic accuracy evaluation} \label{sec:eval_k}
-This section provides a small research about the accuracy of the internet traffic monitoring. In order to do so, a supernode was deployed to monitor two local containers. One container acting as a web-service, and one container continuously sending requests. The command for collecting all values can be found below:
+\section{Network traffic accuracy} \label{sec:eval_k}
+This section presents the accuracy of network traffic monitoring. In order to do so, a supernode was deployed to monitor two containers. One container acting as a web-service, and one container continuously sending requests. The command for collecting all values can be found below:
 
 \begin{lstlisting}[language=bash, caption=Docker-compose]
 git clone htts://github.com/dadvisor/util
@@ -126,11 +23,11 @@ git clone htts://github.com/dadvisor/util
 The idea behind this evaluation is to allow only one container to communicate with the web-service. By doing so, the total amount of data that a container sends is equivalent to its internal amount of data. Thus, the following variables should hold the same value:
 \begin{itemize}
     \item \textbf{network\_container\_total}: This metric receives a value by scraping data from cAdvisor.
-    \item \textbf{bytes\_send\_total}: This metrics has a key-value pair with both `src' and `dst'. This is the amount of data sent between the source container and the destination container by reading the Tcpdump data.
+    \item \textbf{bytes\_send\_total}: This metrics has a key-value pair with both `src' and `dst'. This is the amount of data sent between the source container and the destination container by reading the TCPdump data.
 \end{itemize}
 
 \noindent
-By analysing the rate (per-second average rate of increase) over a time period of one hour, the accuracy can be determined. This can be expressed as the ratio between the two variables above. A perfect estimation would therefore result in a value of 1. The Prometheus query for analysing the accuracy is presented below.
+By analysing the rate (per-second average rate of increase) over a time period of one hour, the accuracy can be determined. This can be expressed as the ratio between the two variables above. A perfect estimation would therefore result in a value of $1$. The Prometheus query for analysing the accuracy is presented below.
 
 \begin{verbatim}
 rate(network_container_total[5m]) / on (src) 
@@ -138,7 +35,7 @@ rate(bytes_send_total[5m])
 \end{verbatim}
 
 \noindent
-The evaluation has been made for different K values, as proposed in \autoref{sec:decisions}. The data obtained for $K = 3$ can be found in \autoref{fig:network_traffic_accuracy}. This figure shows the accuracy of the network traffic monitoring evaluation. Note that this figure shows several spikes, which is due to the difference update frequency of 
+The evaluation has been made for different K values, as proposed in \autoref{sec:exposing_data}. The data obtained for $K = 3$ can be found in \autoref{fig:network_traffic_accuracy}. This figure shows the accuracy of the network traffic monitoring evaluation. Note that this figure shows several spikes, which is due to the difference update frequency of 
 both variables. Therefore, the minimum and maximum value represent the boundaries of the accuracy. Furthermore, the accuracy is summarized by computing the average. The results for different K values can be found in \autoref{tab:accuracy_results}.
 
 \begin{figure}
@@ -151,7 +48,7 @@ both variables. Therefore, the minimum and maximum value represent the boundarie
 \begin{table}[ht]
     \centering
     \begin{tabular}{r|rrr|r}
-        \multirow{2}{*}{K-value} & \multicolumn{3}{|c|}{Accuracy} & \multirow{2}{*}{CPU Usage} \\
+        \multirow{2}{*}{K-value} & \multicolumn{3}{c|}{Accuracy} & \multirow{2}{*}{CPU Usage} \\
         & Min & Max & average & \\ \hline        
         0 & 0.53& 1.22& 1.10& 9\% \\
         3 & 0.52& 1.04& 1.00& 4\% \\
@@ -165,7 +62,7 @@ both variables. Therefore, the minimum and maximum value represent the boundarie
 \end{table}
 
 \subsection{Conclusion}
-From \autoref{tab:accuracy_results} it can be concluded that there is not much variation in the accuracy across different K-values. A reason for this, is the fact that the network communication is not enough randomized. Thus, with a constant flow of traffic, the prediction of amount of network communication is too trivial.\\
+From \autoref{tab:accuracy_results} it can be concluded that there is not much variation in the accuracy across different K-values. A reason for this is the fact that the network communication is not enough randomized. Thus, with a constant flow of traffic, the prediction of amount of network communication is too trivial.\\
 
 \noindent
 What can be concluded from this table, is the fact that the CPU usage drops if the K-value increases. This is due to a longer sleeping period. However, this number is not very accurate, as the analyses is performed on a single node. Therefore, the overhead of communicating with other nodes is not evaluated.

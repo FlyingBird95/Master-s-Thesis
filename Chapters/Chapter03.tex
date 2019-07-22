@@ -5,27 +5,28 @@ As stated in the introduction (\autoref{ch:introduction}), the research question
 
 \section{Architectural requirements} \label{sec:architectural_req}
 As this research is the successor of the work: `Visualizing Computational Waste in Cloud Computing' by A. Spina \cite{spina}, there is some similarity with his architectural requirements. However, his architecture is based on a solution for which a probe collects data from monitored instances, and an aggregator that represents this data into a human-readable format. Relevant requirements are:
-\begin{itemize}
-    \item The solution should be functional across command cloud providers.
+\begin{enumerate}
+    \item The solution should be functional across common cloud providers.
     \item The data should be considered sensitive and secured accordingly.
     \item The solutions should be configurable, but easy to use.
     \item The solution should strike a balance between efficiency and effectiveness.
     \item The solution should collect utilization statistics on the monitored system. 
-\end{itemize}
+\end{enumerate}
 
 \noindent
 In \cite{aceto2013cloud} a number of properties are mentioned. These apply to a distributed monitoring system, and are therefore applicable to the desired solution. The most important properties are:
-\begin{itemize}
+\begin{enumerate}
+    \setcounter{enumi}{5}
     \item Scalability: a monitoring system is scalable if it can cope with a large number of probes.
     \item Elasticity: a monitoring system is elastic if it can cope with dynamic changes of monitored entities, so that virtual resources created and destroyed by expansion and contraction are monitored correctly.
     \item Adaptability: a monitoring system is adaptable if it can adapt to varying computational and network loads in order not to be invasive.
     \item Timeliness: a monitoring solution is timely if detected events are available on time for their intended use.
     \item Autonomicity: an autonomic monitoring solution is able to self-manage its distributed resources by automatically reacting to unpredictable changes.
     \item Accuracy: a monitoring system is accurate when the measures it provides are accurate, i.e. they are as close as possible to the real value to be measured.
-\end{itemize}
+\end{enumerate}
 
 \noindent
-Both lists with requirements above are relevant, and the desired solution should be able to meet all these properties. For the implemented solution, the decision has been made to monitor only Docker containers, as this provides a way of abstracting a certain deployment. Therefore, the underlying operating system is insignificant. This ensures that the solution will be functional across all OS's that are capable of running Docker containers. 
+Both lists with requirements above are relevant, and the desired solution should be able to meet all these properties. For the implemented solution, the decision has been made to monitor only Docker containers, as this provides a way of abstracting a certain deployment. Therefore, the underlying operating system is insignificant. This ensures that the solution will be functional across all OSs that are capable of running Docker containers. 
 
 \section{Architecture} \label{sec:architecture}
 As mentioned in \autoref{sec:related_technologies}, the proposed architecture uses state-of-the-art open-source technologies. Several design patterns have been evaluated, such as a Client-Server network and a peer-to-peer network \cite{coulouris2005distributed}. The latter is considered more scalable, as the number of resources grow with the number of nodes. Additionally, a peer-to-peer system does not have a single point of failure. Therefore, this system is desired over a client-server network. However, as the data is stored in a Prometheus database, and this cannot operate in a peer-to-peer system, another solution is needed. Using the federation technique of Prometheus \cite{prometheus_federation}, the decision has been made for a hierarchical network. This proposed network consists of only one root, a number of supernodes, and optional a number of nodes.\\
@@ -48,7 +49,7 @@ In order to successfully deploy the entire system, the root needs to be deployed
 As explained before, there is only a slight difference between a node and a super node, as the latter deploys Prometheus. This database is automatically configured such that is scrapes from a set of nodes (as received from the root). The metrics that a super node collects are the same as for a node and are therefore described in the following section.
 
 \subsection{Node} \label{sec:node}
-The node consists of three processes. Resource metrics (i.e. CPU and memory) are collected using the cAdvisor process and internet packets are collected using Tcpdump \cite{tcpdump}. This data is collected using the dAdvisor process, which acts as an aggregator. This process ensures that the data is correctly formatted, and makes it available for Prometheus.
+The node consists of three processes. Resource metrics (i.e. CPU and memory) are collected using the cAdvisor process and internet packets are collected using TCPdump \cite{tcpdump}. This data is collected using the dAdvisor process, which acts as an aggregator. This process ensures that the data is correctly formatted, and makes it available for Prometheus.
 
 \subsection{Conclusion}
 The architecture is proposed in \autoref{sec:root}, \autoref{sec:supernode} and \autoref{sec:node}. According to the Prometheus documentation, this architecture can scale up to ''tens of data centers and millions of nodes`` \cite{prometheus_federation}. Therefore, it provides a scalable way of monitoring the infrastructure. However, the dAdvisor component restricts the scalability a bit. This analysis is described in \autoref{sec:exposing_data}.
@@ -88,15 +89,7 @@ c_\text{waste} &=  n_\text{unused CPU} * p_\text{CPU} + n_\text{unused memory} *
 \end{equation}
 
 \noindent 
-Although not stated, the $c_\text{effective}$ and $c_\text{waste}$ are computed for a specific time $t$ and then summed to get the total $c_\text{effective}$ and $c_\text{waste}$. There are different prices per cloud provider, and it even differs per cloud provider itself, as the cloud provider might provide a discount for longer use. It is therefore not desired to implement a fixed price. Instead, the solution provides the possibility to dynamically change the prices, such that the total cost can be affected. 
-
-%However, to provide an easy-to-use solution, the following default prices are used:
-%\begin{itemize}
-%    \item $p_\text{CPU}$: USD 0.021925 per hour per CPU per host.
-%    \item $p_\text{memory}$: USD 0.002938 per hour per GB memory per host.
-%    \item $p_\text{network}$: USD 0.10 per GB of network traffic going out of their system.
-%\end{itemize}
-
+Although not stated, the $c_\text{effective}$ and $c_\text{waste}$ are computed for a specific time $t$ and then summed to get the total $c_\text{effective}$ and $c_\text{waste}$. There are different prices per cloud provider, and it even differs per cloud provider itself, as the cloud provider might provide a discount for longer use. It is therefore not desired to implement a fixed price. Instead, the solution provides the possibility to dynamically change the prices, such that the total cost can be affected.
 
 \section{Utilization requirements} \label{sec:util_req}
 The CPU and memory are resource metrics that are specified per Docker container. They are either used, or unused as described in \autoref{sec:pricing}. In this section, the used resource (which is either the CPU or memory\footnote{Note that the network resource is excluded, as this is all \textit{effective cost}. Therefore, there is no distribution of the network for the \textit{waste cost}.}) is denoted by $u_i$, which represents the percentage of used resource for a specific container. We assume in this model that $n_\text{used CPU} = n_\text{cpu} * \sum_{i=1}^n u_i$. Additionally, $n_\text{unused CPU} = n_\text{cpu} * \sum_{i=1}^n w_i$. The same formulas can be specified for the memory resource.\\
