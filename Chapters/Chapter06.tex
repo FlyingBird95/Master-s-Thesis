@@ -4,7 +4,7 @@
 This chapter evaluates the system proposed in \autoref{ch:design}. This evaluation is based on analysing the requirements that are described in \autoref{sec:architectural_req}. Furthermore, this chapter continues the evaluation of the proposed solution by means of an experimental procedure aimed at evaluating its accuracy. This chapter ends with answering the sub questions, as proposed in \autoref{sec:research_question}.
 
 \section{Evaluating architectural requirements}
-\autoref{sec:architectural_req} describes the architectural requirements. This section provides a small overview whether the requirements are met. The numbering is consistent with the requirements in \autoref{sec:architectural_req}.
+This section provides a small overview whether the architectural requirements are met. The numbering is consistent with the requirements in \autoref{sec:architectural_req}.
 
 \begin{enumerate}
     \item The system has been designed in such a way that it is functional across multiple cloud providers. The system has been tested on Google Cloud Engine, while the case study operates on a private cloud.
@@ -21,10 +21,10 @@ This chapter evaluates the system proposed in \autoref{ch:design}. This evaluati
 \end{enumerate}
 
 \noindent
-From the items above, we conclude that the system is unsuccessful to meet all requirements. Three of them are not met, which are security, scalability and autonomicity. The other seven requirements are sufficiently met.
+From the items above, we conclude that the system is unsuccessful to meet all requirements. Three of them are not met, which are security, scalability and autonomicity. Six out of the other seven requirements are sufficiently met. The last one (accuracy) is evaluated in the section below.
 
 \section{Accuracy evaluation} \label{sec:accuracy_evaluation}
-The accuracy evaluation is divided into three parts. First, the accuracy of the pricing model proposed in \autoref{sec:pricing} can be found in \autoref{sec:eval_pricing}. Second, the accuracy of the network traffic monitoring can be found in \autoref{sec:eval_k}. Third, the effectiveness of the presented information is evaluated. All three evaluations end up in an overall conclusion in \autoref{sec:accuracy_conclusion}.
+The accuracy evaluation is divided into two parts. First, the accuracy of the pricing model proposed in \autoref{sec:pricing} can be found in \autoref{sec:eval_pricing}. Second, the accuracy of the network traffic monitoring can be found in \autoref{sec:eval_k}. Both evaluations are concluded in \autoref{sec:accuracy_conclusion}.
 
 \subsection{Pricing model accuracy} \label{sec:eval_pricing}
 Due to the complexity of the Cloud and a large number of Cloud Providers, it is extremely complicated to develop an accurate pricing model. This section evaluates the pricing model from \autoref{eq:p}. This pricing model is a combination of three price values, and three resource values.\\
@@ -127,10 +127,43 @@ both variables. Therefore, the minimum and maximum value represent the boundarie
     \label{tab:accuracy_results}
 \end{table}
 
-\subsection{Presented information accuracy}
-
 \subsection{Conclusion} \label{sec:accuracy_conclusion}
-From \autoref{tab:accuracy_results} it can be concluded that there is not much variation in the accuracy across different K-values. A reason for this is the fact that the network communication is not enough randomized. Thus, with a constant flow of traffic, the prediction of amount of network communication is too trivial.\\
+
 
 \noindent
 What can be concluded from this table, is the fact that the CPU usage drops if the K-value increases. This is due to a longer sleeping period. However, this number is not very accurate, as the analyses is performed on a single node. Therefore, the overhead of communicating with other nodes is not evaluated.
+
+\section{Evaluating sub questions}
+This section evaluates the sub questions proposed in \autoref{sec:research_question}.
+
+\begin{quote}
+    \begin{itemize}
+        \item[\textbf{Q2}: ]\textit{How can the utilization of a Cloud-based application be monitored in an effective manner?}
+    \end{itemize}
+\end{quote}
+
+
+\begin{quote}
+    \begin{itemize}
+        \item[\textbf{Q3}: ]\textit{What is an accurate pricing model for estimating the cost of a Cloud-based application?}
+    \end{itemize}
+\end{quote}
+
+
+\begin{quote}
+    \begin{itemize}
+        \item[\textbf{Q4}: ]\textit{What is an effective approach for computing the waste of a Cloud-based application?}
+    \end{itemize}
+\end{quote}
+
+
+\begin{quote}
+    \begin{itemize}
+        \item[\textbf{Q5}: ]\textit{How can the cost and waste be presented to the user in a scalable and effective manner?}
+    \end{itemize}
+\end{quote}
+
+
+
+
+\section{Conclusion}
