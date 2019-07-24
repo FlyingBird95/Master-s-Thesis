@@ -142,6 +142,9 @@ This section evaluates the sub questions proposed in \autoref{sec:research_quest
     \end{itemize}
 \end{quote}
 
+\noindent
+The utilization of a Cloud-based application is monitored using the proposed solution, which is running on every virtual machine of the system. The solution consists of the cAdvisor monitoring tool and the own developed dAdvisor. The latter aggregates the information from cAdvisor, and exports it to Prometheus. This is performed, such that it strives a balance between effectiveness and efficiency, by aggregating the data every minute. Therefore, the proposed solution is still accurate (as can be seen in \autoref{fig:eval_cpu} and \autoref{fig:eval_mem}).
+
 
 \begin{quote}
     \begin{itemize}
