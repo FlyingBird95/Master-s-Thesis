@@ -3,7 +3,7 @@
 %************************************************
 This chapter evaluates the system proposed in \autoref{ch:design}. This evaluation is based on analysing the requirements that are described in \autoref{sec:architectural_req}. Furthermore, this chapter continues the evaluation of the proposed solution by means of an experimental procedure aimed at evaluating its accuracy. This chapter ends with answering the sub questions, as proposed in \autoref{sec:research_question}.
 
-\section{Evaluating architectural requirements}
+\section{Evaluating architectural requirements} \label{sec:eval_arch_req}
 This section provides a small overview whether the architectural requirements are met. The numbering is consistent with the requirements in \autoref{sec:architectural_req}.
 
 \begin{enumerate}
@@ -134,16 +134,15 @@ both variables. Therefore, the minimum and maximum value represent the boundarie
 What can be concluded from this table, is the fact that the CPU usage drops if the K-value increases. This is due to a longer sleeping period. However, this number is not very accurate, as the analyses is performed on a single node. Therefore, the overhead of communicating with other nodes is not evaluated.
 
 \section{Evaluating sub questions}
-This section evaluates the sub questions proposed in \autoref{sec:research_question}.
+This section evaluates the sub questions proposed in \autoref{sec:research_question}. The research question (\textbf{Q1}) is answered in \autoref{ch:conclusion}.
 
 \begin{quote}
     \begin{itemize}
         \item[\textbf{Q2}: ]\textit{How can the utilization of a Cloud-based application be monitored in an effective manner?}
     \end{itemize}
 \end{quote}
-
 \noindent
-The utilization of a Cloud-based application is monitored using the proposed solution, which is running on every virtual machine of the system. The solution consists of the cAdvisor monitoring tool and the own developed dAdvisor. The latter aggregates the information from cAdvisor, and exports it to Prometheus. This is performed, such that it strives a balance between effectiveness and efficiency, by aggregating the data every minute. Therefore, the proposed solution is still accurate (as can be seen in \autoref{fig:eval_cpu} and \autoref{fig:eval_mem}).
+The utilization of a Cloud-based application is monitored using the proposed solution, which is running on every virtual machine of the system. The solution consists of the cAdvisor monitoring tool and the own developed dAdvisor. The latter aggregates the information from cAdvisor, and exports it to Prometheus. This is performed, such that it strives a balance between effectiveness and efficiency, by aggregating the data every minute. Therefore, the proposed solution is sufficient accurate (as can be seen in \autoref{fig:eval_cpu} and \autoref{fig:eval_mem}).
 
 
 \begin{quote}
@@ -151,6 +150,8 @@ The utilization of a Cloud-based application is monitored using the proposed sol
         \item[\textbf{Q3}: ]\textit{What is an accurate pricing model for estimating the cost of a Cloud-based application?}
     \end{itemize}
 \end{quote}
+\noindent
+The pricing model used in this thesis is described in \autoref{sec:pricing}. It is evaluated in \autoref{sec:eval_pricing}. From the evaluation it becomes clear that the pricing model adopted is too simplistic and therefore it lacks accuracy. This becomes clear when the pricing model is used for a period of at least two months\footnote{This is explained in \autoref{sec:eval_pricing}}. On the other hand, the model is very flexible, allowing easy changes of the pricing values used. Therefore, we conclude that the pricing model fits for the case study with the industrial company, and provides an easy-to-use model for the proposed solution.
 
 
 \begin{quote}
@@ -158,15 +159,16 @@ The utilization of a Cloud-based application is monitored using the proposed sol
         \item[\textbf{Q4}: ]\textit{What is an effective approach for computing the waste of a Cloud-based application?}
     \end{itemize}
 \end{quote}
-
+\noindent
+In \autoref{sec:approaches}, three approaches are designed to distribute the unused resources over the available containers. These approaches are first evaluated in \autoref{sec:optimal_approach} by their memory and computational complexity. Furthermore, they are evaluated by the accuracy, which is interpreted as which approach divides the waste using a fair distribution. This leads to an effective approach, which is described in \autoref{sec:linear}.
 
 \begin{quote}
     \begin{itemize}
         \item[\textbf{Q5}: ]\textit{How can the cost and waste be presented to the user in a scalable and effective manner?}
     \end{itemize}
 \end{quote}
-
-
-
+\noindent
+In order to answer this sub question, the question can be divided into two parts. First, the scalability is already discussed in \autoref{sec:eval_arch_req}. This section explains that the presented info is scalable, but has it limits. The second part, effectiveness, can be evaluated the CPU usage in \autoref{sec:accuracy_results}. This table presents that the overhead is quite low, depending on the K-value used. Using the case study, we can determine the overhead of running the root node, which is used for presenting the information. As shown in \autoref{fig:deployment:jotunheim-root}, we can conclude that the average CPU utilization is $2.5\%$. This concludes that the data is presented in an effective manner. 
 
 \section{Conclusion}
+This chapter has provided the evaluation of the system. We conclude that most requirements are met, with seven out of ten. The accuracy of the system is evaluated in \autoref{sec:accuracy_evaluation}. From the section, we conclude that the pricing model is not completely accurate, but the network accuracy is sufficient accurate. This chapter ends with answering the sub questions. From the four sub questions that are proposed, three are sufficiently answered. However, in order to come up with a more accurate pricing model (\textbf{Q3}), future work is needed.
