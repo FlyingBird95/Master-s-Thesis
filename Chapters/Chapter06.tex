@@ -101,37 +101,40 @@ rate(bytes_send_total[5m])
 \end{verbatim}
 
 \noindent
-The evaluation has been made for different K values, as proposed in \autoref{sec:exposing_data}. The data obtained for $K = 3$ can be found in \autoref{fig:network_traffic_accuracy}. This figure shows the accuracy of the network traffic monitoring evaluation. Note that this figure shows several spikes, which is due to the difference update frequency of 
-both variables. Therefore, the minimum and maximum value represent the boundaries of the accuracy. Furthermore, the accuracy is summarized by computing the average. The results for different K values can be found in \autoref{tab:accuracy_results}.
+The analysis has been repeated for different K-values. The meaning of the K-values are described in \autoref{sec:exposing_data}. The data obtained for $K = 0$ can be found in \autoref{fig:network_traffic_accuracy}. This figure shows the accuracy of the network traffic monitoring evaluation. Note that this figure shows several spikes, which is due to the difference update frequency of both variables. Therefore, the minimum and maximum value represent the boundaries of the accuracy. Furthermore, the accuracy is summarized by computing the average. The accuracy is evaluated by an increasing load. The load for $K = 0$ can be found in \autoref{fig:increasing_load}. The results for different K-values can be found in \autoref{tab:accuracy_results}.
 
 \begin{figure}
     \centering
     \includegraphics[width=\textwidth]{gfx/traffic_network_accuracy}
-    \caption{Network traffic accuracy}
+    \caption{Network traffic accuracy for $K = 0$}
     \label{fig:network_traffic_accuracy}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/increasing_load}
+    \caption{Simulating increasing load for $K = 0$}
+    \label{fig:increasing_load}
 \end{figure}
 
 \begin{table}[ht]
     \centering
     \begin{tabular}{r|rrr|r}
         \multirow{2}{*}{K-value} & \multicolumn{3}{c|}{Accuracy} & \multirow{2}{*}{CPU Usage} \\
-        & Min & Max & average & \\ \hline        
-        0 & 0.53& 1.22& 1.10& 9\% \\
-        3 & 0.52& 1.04& 1.00& 4\% \\
-        6 & 0.95& 1.74& 1.66& 3\% \\
-        9 & 0.53& 1.29& 1.05& 3\% \\
-        12& 0.93& 1.33& 1.10& 2\% \\
-        15& 0.51& 1.11& 1.01& 2\% \\        
+        & Min & Max & average & \\ \hline  
+        0 & 0.26& 0.95& 0.77& 13\% \\
+        3 & 0.22& 4.54& 2.43& 4\% \\
+        6 & 0.20& 2.11& 0.75& 3\% \\
+        9 & 0.24& 5.77& 2.31& 3\% \\
+        12& 0.27& 3.50& 1.14& 2\% \\
+        15& 0.20& 4.74& 1.40& 2\% \\        
     \end{tabular}
-    \caption{Network traffic accuracy results for different K-values}
+    \caption{Network traffic accuracy results for different K-values with increasing load}
     \label{tab:accuracy_results}
 \end{table}
 
 \subsection{Conclusion} \label{sec:accuracy_conclusion}
-
-
-\noindent
-What can be concluded from this table, is the fact that the CPU usage drops if the K-value increases. This is due to a longer sleeping period. However, this number is not very accurate, as the analyses is performed on a single node. Therefore, the overhead of communicating with other nodes is not evaluated.
+From \autoref{tab:accuracy_results} can be concluded that there is huge difference in average accuracy between the different K-values. Therefore, we cannot claim that the accuracy drops if the K-value increases. What can be concluded from this table, is the fact that the CPU usage drops if the K-value increases. This is due to a longer sleeping period. However, this number is not very accurate, as the analyses is performed on a single node. Therefore, the overhead of communicating with other nodes is not evaluated.
 
 \section{Evaluating sub questions}
 This section evaluates the sub questions proposed in \autoref{sec:research_question}. The research question (\textbf{Q1}) is answered in \autoref{ch:conclusion}.
@@ -168,7 +171,7 @@ In \autoref{sec:approaches}, three approaches are designed to distribute the unu
     \end{itemize}
 \end{quote}
 \noindent
-In order to answer this sub question, the question can be divided into two parts. First, the scalability is already discussed in \autoref{sec:eval_arch_req}. This section explains that the presented info is scalable, but has it limits. The second part, effectiveness, can be evaluated the CPU usage in \autoref{sec:accuracy_results}. This table presents that the overhead is quite low, depending on the K-value used. Using the case study, we can determine the overhead of running the root node, which is used for presenting the information. As shown in \autoref{fig:deployment:jotunheim-root}, we can conclude that the average CPU utilization is $2.5\%$. This concludes that the data is presented in an effective manner. 
+In order to answer this sub question, the question can be divided into two parts. First, the scalability is already discussed in \autoref{sec:eval_arch_req}. This section explains that the presented info is scalable, but has it limits. The second part, effectiveness, can be evaluated the CPU usage in \autoref{tab:accuracy_results}. This table presents that the overhead is quite low, depending on the K-value used. Using the case study, we can determine the overhead of running the root node, which is used for presenting the information. As shown in \autoref{fig:deployment:jotunheim-root}, we can conclude that the average CPU utilization is $2.5\%$. This concludes that the data is presented in an effective manner. 
 
 \section{Conclusion}
-This chapter has provided the evaluation of the system. We conclude that most requirements are met, with seven out of ten. The accuracy of the system is evaluated in \autoref{sec:accuracy_evaluation}. From the section, we conclude that the pricing model is not completely accurate, but the network accuracy is sufficient accurate. This chapter ends with answering the sub questions. From the four sub questions that are proposed, three are sufficiently answered. However, in order to come up with a more accurate pricing model (\textbf{Q3}), future work is needed.
+This chapter has provided the evaluation of the system. We conclude that most requirements are met, with seven out of ten. The accuracy of the system is evaluated in \autoref{sec:accuracy_evaluation}. From the section, we conclude that the pricing model is not completely accurate, but the network accuracy is sufficient accurate for $K = 0$. This chapter ends with answering the sub questions. From the four sub questions that are proposed, three are sufficiently answered. However, in order to come up with a more accurate pricing model (\textbf{Q3}), future work is needed.
