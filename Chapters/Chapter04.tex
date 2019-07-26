@@ -22,7 +22,7 @@ The root service is a rather small service as it only has to keep track of the a
 Lastly, the root-type contains the Grafana dashboard. This service uses a custom designed dashboard, which is publicly available at \url{https://grafana.com/dashboards/10286}. Grafana is configured in such a way that it automatically adds the local Prometheus service as a data source and installs the dashboard mentioned above. The dashboard uses not only existing visualization tools like graphs and singlestat-panels, but it also visualizes the cost and waste data in a custom designed panel.\\
 
 \noindent
-This panel is implemented in the typescript programming language and can its source code can be found at \url{https://github.com/dadvisor/containers-panel}. It generates 17 different graphs that can all be used to investigate which services (or group of services) are responsible for consuming the most cost or waste. This can also be generated per resource metric as explained in the pricing model (\autoref{sec:pricing}). The graphs for a demo application are presented in \autoref{sec:demo_app}.
+This panel is implemented in the typescript programming language and can its source code can be found at \url{https://github.com/dadvisor/containers-panel}. It generates $17$ different graphs that can all be used to investigate which services (or group of services) are responsible for consuming the most cost or waste. This can also be generated per resource metric as explained in the pricing model (\autoref{sec:pricing}). The graphs for a demo application are presented in \autoref{sec:demo_app}.
 
 \subsection{node} \label{sec:node_imp}
 The node is the probe that collects information about the host that serves the cloud application. Therefore, the node must be deployed on every host that belongs to the cloud system. To summarize, its responsibilities are the following:
@@ -52,9 +52,9 @@ An explanation of the arguments can be found below:
     \item \textbf{-nn ip}: Don't convert addresses (i.e., host addresses, port numbers, etc.) to names \cite{tcpmanpage};
     \item \textbf{-l}: Make the output line buffered;
     \item \textbf{-t}: Don't print the timestamp, as this is not used;
-    \item \textbf{not port 14100}: this port is filtered out, as this is the default port for communicating with other nodes. This option can be configured, such that is contains more ports;
+    \item \textbf{not port $\bm{14100}$}: this port is filtered out, as this is the default port for communicating with other nodes. This option can be configured, such that is contains more ports;
     \item \textbf{tcp} Only retrieve TCP data;
-    \item \textbf{$(\dots~~!= 0)$}: Filter packets with a content length of $0$ \cite{tcpdump-filter}.
+    \item \textbf{$(\dots~~!= \bm{0})$}: Filter packets with a content length of $0$ \cite{tcpdump-filter}.
 \end{itemize}
 An example of the output of the TCPdump is provided below. This data is generated using two containers. The first container continuously sends a request, while the second container answers this.
 \begin{verbatim}
@@ -169,9 +169,9 @@ The demo application is distributed over three nodes. An overview of these three
     \centering
     \begin{tabular}{l|lrr}
         Virtual Machine &IP & Cores & RAM \\ \hline
-        Supernode & 10.164.0.2 & 1 & 3.9 GB \\
-        Node $1$ & 10.164.0.3 & 1 & 3.6 GB \\
-        Node $2$ & 10.164.0.7 & 2 & 7.3 GB \\
+        Supernode & $10.164.0.2$ & $1$ & $3.9$ GB \\
+        Node $1$ & $10.164.0.3$ & $1$ & $3.6$ GB \\
+        Node $2$ & $10.164.0.7$ & $2$ & $7.3$ GB \\
     \end{tabular}
     \caption{Overview of the nodes in the demo application}
     \label{tab:node_stats}
