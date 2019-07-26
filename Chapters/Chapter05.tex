@@ -55,7 +55,7 @@ In order to serve their customers, the company has allocated a physical server c
 This section describes the process of deploying the implemented system on their architecture. This deployment has been made possible within three meetings. They are shortly described in the subsections below.
 
 \subsection{First meeting}
-Each meeting last around three hours. After the first meeting, there were several issues. Initially, the developed system was implemented in such a way that the nodes were communicating over their public IP address. However, it turned out that not every node was publicly accessible. Therefore, the program was updated, such that they communicate over their internal IP. Another issue was due to the amount of load going in and out their system. Therefore, the part of the program that monitors the internet traffic with respect to the containers raised its CPU to above 100\% as can be seen in \autoref{fig:100}.
+Each meeting last around three hours. After the first meeting, there were several issues. Initially, the developed system was implemented in such a way that the nodes were communicating over their public IP address. However, it turned out that not every node was publicly accessible. Therefore, the program was updated, such that they communicate over their internal IP. Another issue was due to the amount of load going in and out their system. Therefore, the part of the program that monitors the network traffic with respect to the containers raised its CPU to above 100\% as can be seen in \autoref{fig:100}.
 The decision was therefore made to not deploy the program any more, and first solve the issues that showed up.
 
 \begin{figure}
@@ -66,7 +66,7 @@ The decision was therefore made to not deploy the program any more, and first so
 \end{figure}
 
 \subsection{Second meeting}
-In order to solve the issue described in the previous subsection, a sub sampling of the internet monitoring was applied. Therefore, instead of capturing all packets, the packets where captured for $x$ seconds, while sleeping $K*x$ seconds. However, for every packet that is coming from a peer within the system, the program tries to assign this packet directly to a remote Docker container. Therefore, there was still a significant amount of communication overhead, which can be seen in \autoref{fig:60}. Eventually, the program kept growing CPU resources consumed, which lead to the conclusion that the program was not efficient enough. Therefore, the program was not deployed during this meeting.
+In order to solve the issue described in the previous subsection, a sub sampling of the network monitoring was applied. Therefore, instead of capturing all packets, the packets where captured for $x$ seconds, while sleeping $K*x$ seconds. However, for every packet that is coming from a peer within the system, the program tries to assign this packet directly to a remote Docker container. Therefore, there was still a significant amount of communication overhead, which can be seen in \autoref{fig:60}. Eventually, the program kept growing CPU resources consumed, which lead to the conclusion that the program was not efficient enough. Therefore, the program was not deployed during this meeting.
 
 \begin{figure}
     \centering
@@ -228,7 +228,7 @@ The totals in the previous two paragraphs can be used for computing the waste ra
 The system proposed in \autoref{ch:design} is able to monitor the CPU and memory usage on a container level. Using TCPdump, a subsampling procedure has been implemented that monitors the packets on a host level. Then, the system assigns this packets to a container by resolving their IP address. However, almost all their communication of their services are configured using Weave Net\footnote{See \url{https://github.com/weaveworks/weave}}. Weave Net creates a virtual network that connects Docker containers across multiple hosts and enables their automatic discovery. To application containers, the network established by Weave resembles a giant Ethernet switch, where all containers are connected and can easily access services from one another. \cite{weave}.\\
 
 \noindent
-When using the weave network, the containers do not communicate by their exposed IP address. Therefore, the proposed system is unable to resolve the internet packets. This leads to a lower estimate of $n_\text{internal}$ in \autoref{formula:traffic}, which results in a higher $n_\text{network}$. Therefore, the estimated cost using \autoref{eq:p} is also too high. Further work is needed to resolve the IP addresses according to the weave network.
+When using the weave network, the containers do not communicate by their exposed IP address. Therefore, the proposed system is unable to resolve the network packets. This leads to a lower estimate of $n_\text{internal}$ in \autoref{formula:traffic}, which results in a higher $n_\text{network}$. Therefore, the estimated cost using \autoref{eq:p} is also too high. Further work is needed to resolve the IP addresses according to the weave network.
 
 
 \section{Interview} \label{sec:sb-interview}

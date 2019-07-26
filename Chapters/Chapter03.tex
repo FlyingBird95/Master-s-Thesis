@@ -1,26 +1,26 @@
 %************************************************
 \chapter{Design}\label{ch:design} % $\mathbb{ZNR}$
 %************************************************
-As stated in the introduction (\autoref{ch:introduction}), the research question is the following: ``How can the cost and waste monitoring of a Cloud Computing application be offered in a scalable manner?''. In order to investigate the characteristics of the solution for monitoring a Cloud Computing application, it is important to determine the requirements beforehand. The architectural requirements lead to a proposed architecture. The pricing model leads to specific utilization requirements, which will on their turn be used for waste requirements. The waste requirements will lead to the construction of three algorithms. These will be evaluated in \autoref{sec:optimal_approach} and the optimal approach will be chosen.
+As stated in the introduction (\autoref{ch:introduction}), the research question is the following: ``How can the cost and waste monitoring of a Cloud-based Application be offered in a scalable manner?''. In order to investigate the characteristics of the solution for monitoring a Cloud Computing application, it is important to determine the requirements beforehand. The architectural requirements lead to a proposed architecture. The pricing model leads to specific utilization requirements, which will on their turn be used for waste requirements. The waste requirements will lead to the construction of three algorithms. These will be evaluated in \autoref{sec:optimal_approach} and the optimal approach will be chosen.
 
 \section{Architectural requirements} \label{sec:architectural_req}
 As this research is the successor of the work: `Visualizing Computational Waste in Cloud Computing' by A. Spina \cite{spina}, there is some similarity with his architectural requirements. However, his architecture is based on a solution for which a probe collects data from monitored instances, and an aggregator that represents this data into a human-readable format. Relevant requirements are:
 \begin{enumerate}
-    \item The solution should be functional across common cloud providers.
-    \item The data should be considered sensitive and secured accordingly.
-    \item The solutions should be configurable, but easy to use.
-    \item The solution should strike a balance between efficiency and effectiveness.
-    \item The solution should collect utilization statistics on the monitored system. 
+    \item The solution should be functional across common Cloud Providers;
+    \item The data should be considered sensitive and secured accordingly;
+    \item The solutions should be configurable, but easy to use;
+    \item The solution should strike a balance between efficiency and effectiveness;
+    \item The solution should collect utilization statistics on the monitored system;
 \end{enumerate}
 
 \noindent
 In \cite{aceto2013cloud} a number of properties are mentioned. These apply to a distributed monitoring system, and are therefore applicable to the desired solution. The most important properties are:
 \begin{enumerate}
     \setcounter{enumi}{5}
-    \item Scalability: a monitoring system is scalable if it can cope with a large number of probes.
-    \item Elasticity: a monitoring system is elastic if it can cope with dynamic changes of monitored entities, so that virtual resources created and destroyed by expansion and contraction are monitored correctly.
+    \item Scalability: a monitoring system is scalable if it can cope with a large number of probes;
+    \item Elasticity: a monitoring system is elastic if it can cope with dynamic changes of monitored entities, so that virtual resources created and destroyed by expansion and contraction are monitored correctly;
     \item Adaptability: a monitoring system is adaptable if it can adapt to varying computational and network loads in order not to be invasive.
-    \item Autonomicity: an autonomic monitoring solution is able to self-manage its distributed resources by automatically reacting to unpredictable changes.
+    \item Autonomicity: an autonomic monitoring solution is able to self-manage its distributed resources by automatically reacting to unpredictable changes;
     \item Accuracy: a monitoring system is accurate when the measures it provides are accurate, i.e. they are as close as possible to the real value to be measured.
 \end{enumerate}
 
@@ -48,13 +48,12 @@ In order to successfully deploy the entire system, the root needs to be deployed
 As explained before, there is only a slight difference between a node and a super node, as the latter deploys Prometheus. This database is automatically configured such that is scrapes from a set of nodes (as received from the root). The metrics that a super node collects are the same as for a node and are therefore described in the following section.
 
 \subsection{Node} \label{sec:node}
-The node consists of three processes. Resource metrics (i.e. CPU and memory) are collected using the cAdvisor process and internet packets are collected using TCPdump \cite{tcpdump}. This data is collected using the dAdvisor process, which acts as an aggregator. This process ensures that the data is correctly formatted, and makes it available for Prometheus.
+The node consists of three processes. Resource metrics (i.e. CPU and memory) are collected using the cAdvisor process and network packets are collected using TCPdump \cite{tcpdump}. This data is collected using the dAdvisor process, which acts as an aggregator. This process ensures that the data is correctly formatted, and makes it available for Prometheus.
 
 \subsection{Conclusion}
 The architecture is proposed in \autoref{sec:root}, \autoref{sec:supernode} and \autoref{sec:node}. According to the Prometheus documentation, this architecture can scale up to ''tens of data centers and millions of nodes`` \cite{prometheus_federation}. Therefore, it provides a scalable way of monitoring the infrastructure. However, the dAdvisor component restricts the scalability a bit. This analysis is described in \autoref{sec:exposing_data}.
 
 \section{Pricing model} \label{sec:pricing}
-
 Another design decision is to propose an accurate pricing model for estimating the price of a VM based on its resources.
 This pricing model will then be used with the consumed resources to estimate the cost of running a container.
 Different schemes and models exist for different service providers \cite{bulla2014cloud}. However, the most common model employed in cloud computing is the ``pay-as-you go'' model. Customers pay a fixed price per unit of use. Amazon\footnote{\url{https://aws.amazon.com/}}, considered the market leader in cloud computing, utilizes such a model by charging a fixed price for each hour of virtual machine usage. 
@@ -63,8 +62,8 @@ Another common scheme employed by these leading enterprises is the ``pay-per-use
 \noindent
 The authors of \cite{mazrekaj2016pricing} provide an overview of the pricing model for the three most popular public cloud providers:
 \begin{itemize}
-    \item \textbf{Google Cloud / App engine: }Charges on monthly basis, per user, and pricing is based on hourly basis.
-    \item \textbf{Amazon Web Services / Elastic Compute Cloud (EC2): }It allows for the reservation of units.
+    \item \textbf{Google Cloud / App engine: }Charges on monthly basis, per user, and pricing is based on hourly basis;
+    \item \textbf{Amazon Web Services / Elastic Compute Cloud (EC2): }It allows for the reservation of units;
     \item \textbf{Microsoft Azure: }Charges on monthly basis, depending on the number of transactions, and on a monthly basis for their database subscription.
 \end{itemize}
 
@@ -98,7 +97,7 @@ The CPU and memory are resource metrics that are specified per Docker container.
 For a specific node, the sum of these metrics over all containers is denoted as the total utilization. For these utilization values, there are a few restrictions, which are mathematically stated below.
 
 \begin{itemize}
-    \item $0 < u_i \leq 1$ for $1 \leq i \leq n$: Every container on a node utilizes a value between $0$ (exclusive) and 1 (inclusive). The desired solution will also be a running container, but the utilization is filtered out of the collected utilization values, such that the monitoring solution only collects data about the deployed system.
+    \item $0 < u_i \leq 1$ for $1 \leq i \leq n$: Every container on a node utilizes a value between $0$ (exclusive) and 1 (inclusive). The desired solution will also be a running container, but the utilization is filtered out of the collected utilization values, such that the monitoring solution only collects data about the deployed system;
     \item $\sum_{i=1}^n u_i \leq 1$: The total utilization of containers for a given host cannot utilize more than 100\%. And with the previous requirement, its lower-bound is 0 (exclusive). As the total waste is computed as $1 - \sum_{i=1}^n u_i$, it can be concluded that the waste is bounded by 0 (inclusive) and 1 (exclusive).
 \end{itemize}
 
@@ -107,9 +106,9 @@ For a specific node, the sum of these metrics over all containers is denoted as 
 \section{Waste requirements} \label{sec:waste_requirements}
 There are several ways in which the utilization values can be used to compute the waste. In this, the following four properties are used for finding an optimal waste distribution. The waste distribution is computed per node, as is the same for the cost requirements above.
 \begin{enumerate}
-    \item \textbf{$\sum_{i=1}^n w_i = 1 - \sum_{i=1}^n u_i $}: The sum of the elements of the waste and the sum of the elements of the utilization values should sum up to 1, as it implies that a resource is either used (this is $u$) or being wasted (this is $w$).
-    \item \textbf{$w_i \geq 0$} for $1 \leq i \leq n$: The waste of every certain container is non negative. Thus, it is impossible for a container to have a negative waste. As the waste distribution is used for computing the amount of money wasted, this would imply that money is being earned, while running a certain container.
-    \item \textbf{$\max w_i \Rightarrow \min u_i$}: The container that utilizes the most resources, should be responsible for wasting the least amount of resources. This property implies that the order of containers from lowest utilization to highest utilization is the same as the order of containers from highest waste to lowest waste. 
+    \item \textbf{$\sum_{i=1}^n w_i = 1 - \sum_{i=1}^n u_i $}: The sum of the elements of the waste and the sum of the elements of the utilization values should sum up to 1, as it implies that a resource is either used (this is $u$) or being wasted (this is $w$);
+    \item \textbf{$w_i \geq 0$} for $1 \leq i \leq n$: The waste of every certain container is non negative. Thus, it is impossible for a container to have a negative waste. As the waste distribution is used for computing the amount of money wasted, this would imply that money is being earned, while running a certain container;
+    \item \textbf{$\max w_i \Rightarrow \min u_i$}: The container that utilizes the most resources, should be responsible for wasting the least amount of resources. This property implies that the order of containers from lowest utilization to highest utilization is the same as the order of containers from highest waste to lowest waste;
     \item \textbf{$u_i = u_j \Rightarrow w_i = w_j $}: If two containers utilize the same amount of resources, than they should also waste the same amount of resources. The inverse does not necessarily hold. If two containers utilize both a different amount of resources, than it is not guaranteed that they have a different amount of waste.
 \end{enumerate}
 

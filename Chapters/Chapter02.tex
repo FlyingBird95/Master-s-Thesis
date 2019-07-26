@@ -1,7 +1,7 @@
 %*****************************************
 \chapter{Related Work}\label{ch:related_work}
 %*****************************************
-This chapter describes the related literature in the field of Cloud Computing Monitoring. Additional, this chapter provides a small overview of several state-of-the-art Open Source solutions that are relevant in developing a monitoring Cloud application.
+This chapter describes several open issues that are addressed with Cloud Computing Monitoring. Furthermore, related literature in the field of Cloud Computing Monitoring is described. Additional, this chapter provides a small overview of several state-of-the-art Open Source solutions that are relevant in developing a Monitoring Cloud-based Application.
 
 \section{Background} \label{sec:background}
 Monitoring for the Cloud Consumer is primarily performed for discovering whether the service is working as expected. Additionally, Cloud Consumer Monitoring can be used for comparing monitoring data, from equivalent services, to decide which is the best one. However, it is important that the quality of the collected data is of a certain standard. The next section evaluates several properties of assessing this quality.
@@ -23,7 +23,7 @@ Obtaining a good level of quality for the monitoring data according to these att
 In this section, several open issues and challenges are discussed. As stated in \cite{pernici2016monitoring, aceto2013cloud} there are multiple main issues in a systematic approach to monitoring. There are all described below.\\
 
 \noindent
-The first open issue is with respect to the specification of monitoring elements. It can be stated as: ``what monitoring data should be collected?'' The interesting data depends on the service being provided, and is thus different for every situation. Not only the elements to be monitored should be specified, but also the available sources. Another issue concerns the possibility of viewing the data and analysing it at different granularities. A third issue concerns the quality of the monitoring data, as can be evaluated by using the properties from \autoref{sec:quality}. Concerning sources, the monitoring system should be able to dynamically create or use new sources, in particular in services being provided in very variable situations, such as the ability to auto-scale in Docker\footnote{This is explained further in \autoref{sec:docker}.}\\
+The first open issue is with respect to the specification of monitoring elements. It can be stated as: ``what monitoring data should be collected?'' The interesting data depends on the service being provided, and is thus different for every situation. Not only the elements to be monitored should be specified, but also the available sources. Another issue concerns the possibility of viewing the data and analysing it at different granularities. A third issue concerns the quality of the monitoring data, as can be evaluated by using the properties from \autoref{sec:quality}. Concerning sources, the monitoring system should be able to dynamically create or use new sources, in particular in services being provided in very variable situations, such as the ability to auto-scale in Docker\footnote{This is explained further in \autoref{sec:docker}.}.\\
 
 \noindent
 Another open issue is concerned with the usage of the monitoring data. As there is variability in systems being monitored, there is also variability in the monitoring system behaviour. In some situations, monitoring is not always necessary or only a light observation is needed. In other situations, such as start up phases, there is stronger need for monitoring. In general, there is need to design the monitoring process. This can be done by specifying the requirements, related to different types of risks. The requirements include the specification of the quality parameters for monitoring elements, as described in \autoref{sec:quality}. Thus, there is a need to coordinate monitoring activities, and to investigate monitoring as a process. The specification of monitoring requirements needs additional research by designing formal models and methods.\\
@@ -52,7 +52,7 @@ According to \cite{wang2018self}, cloud computing systems are always in large sc
     \item \textbf{CPU: }CPU time occupied by system calls;
     \item \textbf{Network: }Number of packets received and sent;
     \item \textbf{Memory: }Number of bytes transferred from disk to memory;
-    \item \textbf{Disk: }Number of bytes read and written;
+    \item \textbf{Disk: }Number of bytes read and written.
 \end{itemize}
 
 \noindent
@@ -71,11 +71,11 @@ The authors from \cite{aktas2018hybrid} propose a generic software architecture 
 \noindent
 Equivalent to \cite{aktas2018hybrid}, is the development of another monitoring architecture that offers a monitoring platform-as-a-Service to each cloud consumer that allows to customize the monitoring metrics \cite{calero2014monpaas}. This is accomplished by means of an adaptive distributed monitoring architecture automatically deployed in the cloud infrastructure. The architecture has been implemented and released under GPL licence to the community as ``MonPaaS''. The architecture fulfils successfully all the requirements from the perspective of the Cloud Consumer:
 \begin{itemize}
-    \item Distributed architecture for high scalability.
-    \item Allow cloud providers and consumers to monitor resources independently.
-    \item Securely and privately provide monitoring information to the correct party.
-    \item Disaster Recovery against failures.
-    \item Discover automatically all the resources to be monitored (cold start).
+    \item Distributed architecture for high scalability;
+    \item Allow cloud providers and consumers to monitor resources independently;
+    \item Securely and privately provide monitoring information to the correct party;
+    \item Disaster Recovery against failures;
+    \item Discover automatically all the resources to be monitored (cold start);
     \item Allows cloud customer to extend, configure and customize the resources and services to be monitored (Monitoring-as-a-Service).
 \end{itemize}
 
@@ -104,7 +104,7 @@ Prometheus\footnote{\url{https://github.com/prometheus/prometheus/}} is a system
     \item A multi-dimensional data model (timeseries defined by metric name and set of key/value dimensions);
     \item A flexible query language to leverage this dimensionality;
     \item Timeseries collection happens via a pull model over HTTP;
-    \item Support for hierarchical and horizontal federation;
+    \item Support for hierarchical and horizontal federation.
 \end{itemize}
     
 Its architecture is interesting as it provides a better understanding of the possibilities with Prometheus and how it works. This architecture can be found in \autoref{fig:prometheus_architecture}. In this image, it can be seen that Prometheus collects its metrics by scraping multiple targets (called a job), and it can even scrape other Prometheus servers (known as federation). From this architecture, it also becomes clear that Prometheus can be configured with Grafana for presenting its visualizations. This is described in the next section.\\
@@ -120,9 +120,9 @@ Its architecture is interesting as it provides a better understanding of the pos
 
 Another interesting feature of Prometheus is how it represents its data. Unlike traditional SQL databases, the data is not structured in tables, rather it is structured as time series, in one of the four possible metric types \cite{prometheus_metrics}:
 \begin{itemize}
-    \item \textbf{Counter: }A counter is a cumulative metric that represents a single monotonically increasing counter whose value can only increase or be reset to zero on restart.
-    \item \textbf{Gauge: }A gauge is a metric that represents a single numerical value that can arbitrarily go up and down.
-    \item \textbf{Histogram: }A histogram samples observations (usually things like request durations or response sizes) and counts them in configurable buckets. It also provides a sum of all observed values.
+    \item \textbf{Counter: }A counter is a cumulative metric that represents a single monotonically increasing counter whose value can only increase or be reset to zero on restart;
+    \item \textbf{Gauge: }A gauge is a metric that represents a single numerical value that can arbitrarily go up and down;
+    \item \textbf{Histogram: }A histogram samples observations (usually things like request durations or response sizes) and counts them in configurable buckets. It also provides a sum of all observed values;
     \item \textbf{Summary: }Similar to a histogram, a summary samples observations (usually things like request durations and response sizes). While it also provides a total count of observations and a sum of all observed values, it calculates configurable quantiles over a sliding time window.
 \end{itemize}
 
