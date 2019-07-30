@@ -25,7 +25,7 @@ Lastly, the root-type contains the Grafana dashboard. This service uses a custom
 This panel is implemented in the typescript programming language and can its source code can be found at \url{https://github.com/dadvisor/containers-panel}. It generates $17$ different graphs that can all be used to investigate which services (or group of services) are responsible for consuming the most cost or waste. This can also be generated per resource metric as explained in the pricing model (\autoref{sec:pricing}). The graphs for a demo application are presented in \autoref{sec:demo_app}.
 
 \subsection{node} \label{sec:node_imp}
-The node is the probe that collects information about the host that serves the cloud application. Therefore, the node must be deployed on every host that belongs to the cloud system. To summarize, its responsibilities are the following:
+The node is the probe that collects information about the host that serves the Cloud Application. Therefore, the node must be deployed on every host that belongs to the Cloud System. To summarize, its responsibilities are the following:
 \begin{enumerate}
     \item Inspect network packets and analyse these to find out which containers are communicating with each other;
     \item Identify the running containers, including their IP addresses. Collect resource statistics about the running containers;

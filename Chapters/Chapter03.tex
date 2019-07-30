@@ -56,11 +56,11 @@ The architecture is proposed in \autoref{sec:root}, \autoref{sec:supernode} and 
 \section{Pricing model} \label{sec:pricing}
 Another design decision is to propose an accurate pricing model for estimating the price of a VM based on its resources.
 This pricing model will then be used with the consumed resources to estimate the cost of running a container.
-Different schemes and models exist for different service providers \cite{bulla2014cloud}. However, the most common model employed in cloud computing is the ``pay-as-you go'' model. Customers pay a fixed price per unit of use. Amazon\footnote{\url{https://aws.amazon.com/}}, considered the market leader in cloud computing, utilizes such a model by charging a fixed price for each hour of virtual machine usage. 
+Different schemes and models exist for different service providers \cite{bulla2014cloud}. However, the most common model employed in Cloud Computing is the ``pay-as-you go'' model. Customers pay a fixed price per unit of use. Amazon\footnote{\url{https://aws.amazon.com/}}, considered the market leader in Cloud Computing, utilizes such a model by charging a fixed price for each hour of virtual machine usage. 
 Another common scheme employed by these leading enterprises is the ``pay-per-use'' model. A customer pays for the amount of bandwidth or storage utilized.\\
 
 \noindent
-The authors of \cite{mazrekaj2016pricing} provide an overview of the pricing model for the three most popular public cloud providers:
+The authors of \cite{mazrekaj2016pricing} provide an overview of the pricing model for the three most popular public Cloud Providers:
 \begin{itemize}
     \item \textbf{Google Cloud / App engine: }Charges on monthly basis, per user, and pricing is based on hourly basis;
     \item \textbf{Amazon Web Services / Elastic Compute Cloud (EC2): }It allows for the reservation of units;
@@ -75,7 +75,7 @@ p(t) = n_\text{CPU}(t) * p_\text{CPU} + n_\text{memory}(t) * p_\text{memory} + n
 \end{equation}
 
 \noindent
-Where $n_\text{CPU}(t)$ is the amount of CPU cores requested per hour on a specific host over time $t$. For example, if 2 CPU cores are requested for 3 hours, then $n_\text{CPU} = 6$. $p_\text{CPU}$ is the price per CPU per hour. The same notion applies to $n_\text{memory}(t)$ and $p_\text{memory}$. $n_\text{network}(t)$ represents the amount of outgoing network in GB over time $t$. Note that all cloud providers only charge for network traffic flowing out of their system, and not for communication between internal services. $p_\text{network}$ is the price of this outgoing network per GB.\\
+Where $n_\text{CPU}(t)$ is the amount of CPU cores requested per hour on a specific host over time $t$. For example, if 2 CPU cores are requested for 3 hours, then $n_\text{CPU} = 6$. $p_\text{CPU}$ is the price per CPU per hour. The same notion applies to $n_\text{memory}(t)$ and $p_\text{memory}$. $n_\text{network}(t)$ represents the amount of outgoing network in GB over time $t$. Note that all Cloud Providers only charge for network traffic flowing out of their system, and not for communication between internal services. $p_\text{network}$ is the price of this outgoing network per GB.\\
 
 \noindent
 The pricing model $p(t)$ can be used to compute the actual cost by summing over all time instances $t$: $c_\text{actual} = \sum_t p(t)$. This cost model can be split into \textit{effective cost}, meaning the cost for used resources, and \textit{waste cost}, a cost model for unused resources. This implies that $n_\text{used CPU} + n_\text{unused CPU} = n_\text{CPU}$. When it comes to the network cost, all the external network is used, and therefore there is no network cost modelled in $c_\text{waste}$. 
@@ -88,7 +88,7 @@ c_\text{waste} &=  n_\text{unused CPU} * p_\text{CPU} + n_\text{unused memory} *
 \end{equation}
 
 \noindent 
-Although not stated, the $c_\text{effective}$ and $c_\text{waste}$ are computed for a specific time $t$ and then summed to get the total $c_\text{effective}$ and $c_\text{waste}$. There are different prices per cloud provider, and it even differs per cloud provider itself, as the cloud provider might provide a discount for longer use. It is therefore not desired to implement a fixed price. Instead, the solution provides the possibility to dynamically change the prices, such that the total cost can be affected.
+Although not stated, the $c_\text{effective}$ and $c_\text{waste}$ are computed for a specific time $t$ and then summed to get the total $c_\text{effective}$ and $c_\text{waste}$. There are different prices per Cloud Provider, and it even differs per Provider itself, as the Cloud Provider might provide a discount for longer use. It is therefore not desired to implement a fixed price. Instead, the solution provides the possibility to dynamically change the prices, such that the total cost can be affected.
 
 \section{Utilization requirements} \label{sec:util_req}
 The CPU and memory are resource metrics that are specified per Docker container. They are either used, or unused as described in \autoref{sec:pricing}. In this section, the used resource (which is either the CPU or memory\footnote{Note that the network resource is excluded, as this is all \textit{effective cost}. Therefore, there is no distribution of the network for the \textit{waste cost}.}) is denoted by $u_i$, which represents the percentage of used resource for a specific container. We assume in this model that $n_\text{used CPU} = n_\text{cpu} * \sum_{i=1}^n u_i$. Additionally, $n_\text{unused CPU} = n_\text{cpu} * \sum_{i=1}^n w_i$. The same formulas can be specified for the memory resource.\\
