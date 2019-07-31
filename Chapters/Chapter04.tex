@@ -199,7 +199,7 @@ From the CPU usage, the CPU waste is determined. This can be found in \autoref{f
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{gfx/demo_cpu_waste}
+    \includegraphics[width=0.9\textwidth]{gfx/demo_cpu_waste}
     \caption{Distribution of the unused CPU for 1 hour}
     \label{fig:demo_cpu_waste}
 \end{figure}
@@ -207,14 +207,14 @@ From the CPU usage, the CPU waste is determined. This can be found in \autoref{f
 \noindent
 The same analysis can be made for the memory usage- and waste-distribution. The memory usage is presented in \autoref{fig:demo_mem_cost}, and the memory waste is presented in \autoref{fig:demo_mem_waste}. As the web-services on the supernode are efficient with their memory resources, their corresponding waste is large. This also applies to the request-services on node $1$. The memory waste distribution is interesting on node $2$, whereas the three Cassandra services use too much memory resources, and therefore do not receive any memory waste.\\
 
-\begin{figure}[!hbt]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{gfx/demo_mem_cost}
+    \includegraphics[width=0.9\textwidth]{gfx/demo_mem_cost}
     \caption{Distribution of the memory usage for 1 hour}
     \label{fig:demo_mem_cost}
 \end{figure}
 
-\begin{figure}[!hbt]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{gfx/demo_mem_waste}
     \caption{Distribution of the unused memory for 1 hour}
@@ -224,7 +224,7 @@ The same analysis can be made for the memory usage- and waste-distribution. The 
 \noindent
 The network traffic analysis is shown in \autoref{fig:demo_network}. However, as all communication is internally, the amount of outgoing network is nearly zero. Due to the inaccuracy of the network analysis, it is not exactly zero.\\
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{gfx/demo_network}
     \caption{Amount of outgoing network traffic for 1 hour}
@@ -240,33 +240,38 @@ The used resources as presented in \autoref{fig:demo_cpu_cost}, \autoref{fig:dem
 \end{itemize}
 
 \noindent
-The unused resources, as presented in \autoref{fig:demo_cpu_waste} and \autoref{fig:demo_mem_waste}, are used for the waste computation. This is presented in \autoref{fig:demo_waste}. The cost and waste are computed using \autoref{eq:cost_and_waste}.\\
+The unused resources, as presented in \autoref{fig:demo_cpu_waste} and \autoref{fig:demo_mem_waste}, are used for the waste computation. This is presented in \autoref{fig:demo_waste}. The cost and waste are computed using \autoref{eq:cost_and_waste}.
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{gfx/demo_cost}
     \caption{Cost per container for a period of $1$ hour}
     \label{fig:demo_cost}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{gfx/demo_app}
     \caption{Waste cost per container for a period of 1 hour}
     \label{fig:demo_waste}
 \end{figure}
 
+\subsection{Aggregating results}
+In order to simplify the results, the data is summarized in two different manners. First of all, the data is aggregated over time, leading to a running total. Second, the data can be aggregated over specified groups. As the demo application consists of three different services, these can each be used as a group.\\
+
 \noindent
-In order to simplify the results, the visualizations can also be based on the groups, as determined above. This is also presented in the industrial case study and is therefore not further described in this chapter. So far, the figures above show the resource usage and cost for a specific amount of time. This already provides interesting results, but aggregating provides further simplification. The aggregated results can be found in \autoref{fig:demo_stats}.
+The aggregated results in the former case (i.e. over time) can be found in  
+
+visualizations can also be based on the groups, as determined above. This is also presented in the industrial case study and is therefore not further described in this chapter. So far, the figures above show the resource usage and cost for a specific amount of time. This already provides interesting results, but aggregating provides further simplification. The aggregated results can be found in \autoref{fig:demo_stats}.
 
 \begin{figure}
     \centering
     \subfloat[Cost and waste values]{
-        \includegraphics[width=0.45\textwidth]{gfx/demo_stats1.png}
+        \includegraphics[width=\textwidth]{gfx/demo_stats1.png}
     }
     
     \subfloat[Cost and waste ratios]{%
-        \includegraphics[width=0.45\textwidth]{gfx/demo_stats2.png}
+        \includegraphics[width=\textwidth]{gfx/demo_stats2.png}
     }
     \caption{Aggregated stats for the demo application after one hour}
     \label{fig:demo_stats}
