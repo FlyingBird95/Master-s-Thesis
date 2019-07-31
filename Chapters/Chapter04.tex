@@ -3,11 +3,11 @@
 %************************************************
 This chapter explains the implementation of the proposed solution from \autoref{ch:design}. The first section of this chapter explains the relevant technologies with several details about the communication. Additionally, several decisions are described in \autoref{sec:exposing_data}. This chapter is finished with a deployed demo application which verifies the effectiveness of the implemented solution (\autoref{sec:demo_app}).
 
-\section{Interface} \label{sec:interface}
+\section{System} \label{sec:interface}
 As explained in \autoref{sec:architecture}, the proposed solution consists of three different types. This section provides an overview of each type and the communication between them.
 
 \subsection{Root} \label{sec:impl-root}
-The root contains the connect API which is used as an access point for other nodes. Its interface contains the following relevant endpoints:
+The root contains the ConnectAPI which is used as an access point for other nodes. Its interface contains the following relevant endpoints:
 
 \begin{itemize}
     \item \textbf{/root/add}: accepts POST-requests for adding nodes to keep track of. A node consists of an IP-address, including a port, and a boolean value indicating whether it is a super-node or a normal node;
@@ -165,7 +165,7 @@ Cassandra nodes are known for consuming a lot of memory. Therefore, node $2$ run
 \noindent
 The demo application is distributed over three nodes. An overview of these three nodes can be found in \autoref{tab:node_stats}. The containers per node can be found \autoref{fig:demo_app}.\\
 
-\begin{table}
+\begin{table}[hbt!]
     \centering
     \begin{tabular}{l|lrr}
         Virtual Machine &IP & Cores & RAM \\ \hline
@@ -177,7 +177,7 @@ The demo application is distributed over three nodes. An overview of these three
     \label{tab:node_stats}
 \end{table}
 
-\begin{figure}
+\begin{figure}[hbt!]
     \centering
     \includegraphics[width=\textwidth]{gfx/demo_app}
     \caption{All containers in the demo application}
@@ -187,7 +187,7 @@ The demo application is distributed over three nodes. An overview of these three
 \noindent
 In this demo application it is easy to interpret the cost model of the system. The supernode consumes almost all its CPU resources, but barely uses memory. Node $1$ is low on memory and CPU, and can therefore be used to see how the waste is distributed. Node $2$ consumes a lot of memory, but barely uses CPU. For a time period of one hour, the CPU usage is presented in \autoref{fig:demo_cpu_cost}. From this figure, we conclude hat the monitored data from our solution are in compliance with this expected behaviour. Note that the unit of the CPU usage is `CH', which means `core hour'. This represents $n_\text{CPU}$ from \autoref{eq:p}.\\
 
-\begin{figure}
+\begin{figure}[hbt!]
     \centering
     \includegraphics[width=\textwidth]{gfx/demo_cpu_cost}
     \caption{Distribution of the CPU usage for 1 hour}
@@ -197,7 +197,7 @@ In this demo application it is easy to interpret the cost model of the system. T
 \noindent
 From the CPU usage, the CPU waste is determined. This can be found in \autoref{fig:demo_cpu_waste}. Interesting is node $2$ ($10$.$164$.$0$.$7$), which shows that all containers, except for the web-service, are responsible for a lot of CPU waste. The supernode is barely responsible for waste, as the CPU usage is near $100\%$. Node $1$ has two equivalent containers, and therefore the waste is equally divided over the nodes.\\
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{gfx/demo_cpu_waste}
     \caption{Distribution of the unused CPU for 1 hour}
@@ -207,14 +207,14 @@ From the CPU usage, the CPU waste is determined. This can be found in \autoref{f
 \noindent
 The same analysis can be made for the memory usage- and waste-distribution. The memory usage is presented in \autoref{fig:demo_mem_cost}, and the memory waste is presented in \autoref{fig:demo_mem_waste}. As the web-services on the supernode are efficient with their memory resources, their corresponding waste is large. This also applies to the request-services on node $1$. The memory waste distribution is interesting on node $2$, whereas the three Cassandra services use too much memory resources, and therefore do not receive any memory waste.\\
 
-\begin{figure}
+\begin{figure}[!hbt]
     \centering
     \includegraphics[width=\textwidth]{gfx/demo_mem_cost}
     \caption{Distribution of the memory usage for 1 hour}
     \label{fig:demo_mem_cost}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[!hbt]
     \centering
     \includegraphics[width=\textwidth]{gfx/demo_mem_waste}
     \caption{Distribution of the unused memory for 1 hour}

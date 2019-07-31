@@ -33,7 +33,7 @@ As mentioned in \autoref{sec:related_technologies}, the proposed architecture us
 \noindent
 An architectural overview of the three node types, as well as the technologies that are included, can be found in \autoref{fig:architecture}. Several processes are listed in bold as this denotes a custom created process. The only difference between a node and a supernode is the Prometheus database. Furthermore, the root is only used to visualize the collected metric data in the Grafana dashboard. Each node type is shortly described below.
 
-\begin{figure}
+\begin{figure}[ht]
     \centering
     \includegraphics[width=0.3\textwidth]{gfx/architecture.png}
     \caption{Architectural overview}
@@ -42,7 +42,7 @@ An architectural overview of the three node types, as well as the technologies t
 
 \subsection{Root} \label{sec:root}
 The root is a single access point for the displaying the obtained results. The corresponding Prometheus database is dynamically configured, such that it scrapes data from all the super nodes deployed in the system. 
-In order to successfully deploy the entire system, the root needs to be deployed first, as it provides an access point for the nodes as well. This access point is implemented in the connect API and further described in \autoref{sec:impl-root}. The connect API distributes the available nodes over the available super nodes.
+In order to successfully deploy the entire system, the root needs to be deployed first, as it provides an access point for the nodes as well. This access point is implemented in the ConnectAPI and further described in \autoref{sec:impl-root}. The ConnectAPI distributes the available nodes over the available super nodes.
 
 \subsection{Super node} \label{sec:supernode}
 As explained before, there is only a slight difference between a node and a super node, as the latter deploys Prometheus. This database is automatically configured such that is scrapes from a set of nodes (as received from the root). The metrics that a super node collects are the same as for a node and are therefore described in the following section.
