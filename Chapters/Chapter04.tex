@@ -251,18 +251,17 @@ The unused resources, as presented in \autoref{fig:demo_cpu_waste} and \autoref{
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{gfx/demo_app}
+    \includegraphics[width=\textwidth]{gfx/demo_waste}
     \caption{Waste cost per container for a period of 1 hour}
     \label{fig:demo_waste}
 \end{figure}
 
-\subsection{Aggregating results}
-In order to simplify the results, the data is summarized in two different manners. First of all, the data is aggregated over time, leading to a running total. Second, the data can be aggregated over specified groups. As the demo application consists of three different services, these can each be used as a group.\\
+\subsection{Aggregating results} \label{sec:aggregating_results}
+In order to simplify the results, the data is summarized in two different manners. First of all, the data is aggregated over time, leading to a running total. Second, the data can be aggregated by defining groups. As the demo application consists of three different services, these can each correspond to a group. The groups are composed by matching a regular expression based on the container name. For example, as the three Cassandra containers in $10.164.0.7$ from \autoref{fig:demo_waste} all contain the characters `cassandra', this can be used to place them into the `cassandra' group.\\
 
 \noindent
-The aggregated results in the former case (i.e. over time) can be found in  
-
-visualizations can also be based on the groups, as determined above. This is also presented in the industrial case study and is therefore not further described in this chapter. So far, the figures above show the resource usage and cost for a specific amount of time. This already provides interesting results, but aggregating provides further simplification. The aggregated results can be found in \autoref{fig:demo_stats}.
+The aggregated results over time can be found in \autoref{fig:demo_stats}. Note that this is the running total cost over a time period of one hour. 
+The aggregated results, computed by grouping multiple containers together, is visualized in \autoref{fig:aggregated_mem}. Both figures are generated for the case study as well, and are described into more details in \autoref{ch:case_study}.
 
 \begin{figure}
     \centering
@@ -275,4 +274,11 @@ visualizations can also be based on the groups, as determined above. This is als
     }
     \caption{Aggregated stats for the demo application after one hour}
     \label{fig:demo_stats}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{gfx/aggregated_waste}
+    \caption{Aggregated unused memory distribution, corresponding to \autoref{fig:demo_mem_waste}}
+    \label{fig:aggregated_mem}
 \end{figure}
