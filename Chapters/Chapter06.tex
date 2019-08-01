@@ -1,18 +1,18 @@
 %************************************************
 \chapter{Evaluation}\label{ch:evaluation}
 %************************************************
-This chapter evaluates the system proposed in \autoref{ch:design}. This evaluation is based on analysing the requirements that are described in \autoref{sec:architectural_req}. Furthermore, this chapter continues the evaluation of the proposed solution by means of an experimental procedure aimed at evaluating its accuracy. This chapter ends with answering the sub questions, as proposed in \autoref{sec:research_question}.
+This chapter assesses the developed system against the requirements for a solution identified in \autoref{ch:design}. It also continues the evaluation of the proposed solution by means of an experimental procedure aimed at evaluating its accuracy, since this aspect was not sufficiently covered by the case study discussed in the previous chapter. This chapter ends with answering the research questions defined in \autoref{sec:research_question}.
 
 \section{Evaluating architectural requirements} \label{sec:eval_arch_req}
 This section provides a small overview whether the architectural requirements are met. The numbering is consistent with the requirements in \autoref{sec:architectural_req}.
 
 \begin{enumerate}
     \item The system has been designed in such a way that it is functional across multiple Cloud Providers. The system has been tested on Google Cloud Engine, while the case study operates on a private Cloud.
-    \item The data transmitted between nodes is not secured, as it is being send over HTTP. However, the system should be set up in a way in which only the dashboard is publicly available. As this is the case, the data is only accessible in the Grafana dashboard. This can be seen only using a username-password authentication. However, the dashboard is automatically served over HTTP. Therefore, we conclude that the data is not secure.
+    \item The data transmitted between nodes is not secured, as it is being send over HTTP and is unencrypted. Although a password authentication is required to display the data, we conclude that this is not sufficient. Therefore, the system lacks security.
     \item We conclude that the system is sufficient configurable. There are configuration options for all resource prices, network traffic monitoring and node types. Therefore, the system can be tweaked to support multiple systems, each with its own characteristics. However, this is not a full proof, and we verified the system only using a demo application and at an industrial company. The solution is easy to use, as it works without any configuration as well (due to default variables).
     \item \autoref{fig:deployment} presents the overhead of the monitoring solution during the case study. It shows that the overall CPU utilization is low. Furthermore, \autoref{sec:eval_k} explains how the solution can be tweaked to balance between efficiency and effectiveness. We conclude that there is a balance, although this must be configured.
     \item The solution is able to collect utilization statistics on the monitored system using cAdvisor and TCPdump, as described in \autoref{sec:node}.
-    \item The proposed solution is scalable, although it has limits. Using the hierarchical structure defined in \autoref{sec:architecture}, the system is able to scale to tens of super nodes and millions of nodes. However, the data is not aggregated at the root, so this might become a bottleneck. The Grafana dashboard requests data from the Prometheus database, which returns each container with the corresponding info as a datapoint. As explained in the Grafana documentation \cite{grafana}, the maximum number of datapoints is $2495$. Therefore, we conclude that the proposed solution is not very scalable.
+    \item The proposed solution is scalable, although it has limits. Using the hierarchical structure defined in \autoref{sec:architecture}, the system is able to scale to tens of super nodes and millions of nodes. However, the data is not aggregated at the root, so this might become a bottleneck. The Grafana dashboard requests data from the Prometheus database, which returns each container with the corresponding info as a datapoint. As explained in the Grafana documentation \cite{grafana}, the maximum number of datapoints is $2495$. Therefore, we conclude that the proposed solution is only partially scalable.
     \item The solution is elastic as it can detect new running containers and stopped containers. As a container is stopped and removed, the data persists in the database. Furthermore, in case of new resources (i.e. virtual machines) added to the system, the solution is able to automatically update the hierarchical structure (assuming the solution is configured correctly). If the new monitoring node is a supernode, than it automatically receives a number of nodes to monitor. If the new monitoring node is a normal node, it is automatically scraped by one of the available supernodes. Therefore, we conclude that the system is elastic.
     \item The solution is adaptable, as it can deal with spikes of network load. In this case, the monitoring solution has a smaller sleeping period, which leads to a decrease in the network sleeping time. However, this sleeping time is always a constant multiple of the network monitoring time. The solution is not affected by the load put on the system, as the monitored values are collected at regular intervals, which is independent of their value.
     \item The solution is not autonomic, as it is not able to self-manage its distributed resources by automatically reacting to unpredictable changes. Although the solution works by connecting a new monitoring node automatically to the other nodes, it cannot scale these nodes on-demand without the help of the Cloud Consumer. Therefore, we conclude that the system is not fully autonomic.
@@ -23,19 +23,19 @@ This section provides a small overview whether the architectural requirements ar
 From the items above, we conclude that the system is unsuccessful to meet all requirements. Three of them are not met, which are security, scalability and autonomicity. Six out of the other seven requirements are sufficiently met. The last requirement -accuracy- is evaluated in the section below.
 
 \section{Accuracy evaluation} \label{sec:accuracy_evaluation}
-The accuracy evaluation is divided into two parts. First, the accuracy of the pricing model proposed in \autoref{sec:pricing} can be found in \autoref{sec:eval_pricing}. Second, the accuracy of the network traffic monitoring can be found in \autoref{sec:eval_k}. Both evaluations are concluded in \autoref{sec:accuracy_conclusion}.
+The accuracy evaluation is divided into two parts. First, the accuracy of the pricing model proposed in \autoref{sec:pricing} can be found in \autoref{sec:eval_pricing}. Second, the accuracy of the network traffic monitoring can be found in \autoref{sec:eval_k}.
 
 \subsection{Pricing model accuracy} \label{sec:eval_pricing}
 Due to the complexity of the Cloud and a large number of Cloud Providers, it is not trivial to develop an accurate pricing model. This section evaluates the pricing model from \autoref{eq:p}. This pricing model is a combination of three price values, and three resource values.\\
 
 \noindent
-The price values are designed in such a way that they can be changed dynamically. Therefore, the user of the monitoring system can adjust the prices such that they fit to his spendings. This provides a simple solution, but is based on the assumption that the prices do not change while monitoring the system (some Public Cloud Providers offers discount for longer use). Furthermore, it is also based on the assumption that there are no free resources when the deployment of the Cloud-based application is started (e.g. the first $50$ GB of outgoing network data is free). However, using the dynamic set up of this model, the issues mentioned above can be solved, by updating the prices. For example, if the price per outgoing GB is $\$0.10$, and the solution has monitored $200$ GB so far. The price for the model could be $\$0.075$ in case the first $50$ GB is indeed free. The same trick can be applied in case the Cloud Provider offers discount for longer use. However, by continuous changing the prices manually, we can conclude that the pricing model on itself is too simplistic and therefore limited accurate.\\
+The price values are designed in such a way that they can be changed dynamically. Therefore, the user of the monitoring system can adjust the prices such that they fit to his spendings. This provides a simple solution, but is based on the assumption that the prices do not change while monitoring the system (some Public Cloud Providers offer discount for longer use). Furthermore, it is also based on the assumption that there are no free resources when the deployment of the Cloud-based application is started (e.g. the first $50$ GB of outgoing network data is free). However, using the dynamic set up of this model, the issues mentioned above can be solved, by updating the prices. For example, if the price per outgoing GB is $\$0.10$, and the solution has monitored $200$ GB so far. The price for the model could be $\$0.075$ in case the first $50$ GB is indeed free. The same trick can be applied in case the Cloud Provider offers discount for longer use. However, by continuous changing the prices manually, we can conclude that the pricing model on itself is too simplistic and therefore of limited accuracy.\\
 
 \noindent
 It needs to be pointed out that the model, although simplistic, is easy-to-use. According to the technical employee of the industrial company, the ``pricing is of course configurable, so it can be adjusted to be more accurate for other scenarios''. Furthermore, the issues from the previous paragraph are only effective when the system is used for at least a month. In \cite{infoworld} is explained that ``monthly usage, saves about $10$ percent over on-demand usage''. Therefore, its inaccuracy for monitoring two months is only $5\%$.\\
 
 \noindent
-The resource values are the network utilization, the CPU utilization and the memory utilization. The accuracy of the first is described in \autoref{sec:eval_k}, while the latter two are described in this section. In order to evaluate the accuracy of those two values in the system, a small architecture has been set up. This architecture consists of a demo system (two containers), an external cAdvisor for verification, and a supernode that monitors the resources of these two containers. The command for running this experiment is the following:
+The resource values are the network utilization, the CPU utilization and the memory utilization. The accuracy of the first is described in \autoref{sec:eval_k}, while the latter two are described in this section. In order to evaluate the accuracy of those two values in the system, a small test application has been set up. This architecture consists of a demo system (two containers), an external cAdvisor for verification, and a supernode that monitors the resources of these two containers. The command for running this experiment is the following:
 
 \begin{lstlisting}[language=bash, caption=Docker-compose]
 git clone https://github.com/dadvisor/util
@@ -57,7 +57,7 @@ scalar(machine_memory_bytes))
 \end{verbatim}
 
 \noindent
-The first query above is for the CPU analysis, while the second is for the memory analysis. The proposed solution uses a delay in getting the resource data, and it takes a delay before the data is scraped by the Prometheus database. The accuracy of the CPU utilization can be found in \autoref{fig:eval_cpu}. This figure shows that there is a difference of factor $4$ in the beginning, but later flattens out to $1$ (A value of $1$ corresponds to a perfect estimate.). The accuracy of the memory utilization can be found in \autoref{fig:eval_mem}. This figure shows the same pattern, except that the peak in the beginning is a bit higher.\\
+The first query above is for the CPU analysis, while the second is for the memory analysis. The proposed solution uses a delay in getting the resource data, and it takes a delay before the data is scraped by the Prometheus database. The accuracy of the CPU utilization can be found in \autoref{fig:eval_cpu}. This figure shows that there is a difference of factor $4$ in the beginning, but later flattens out to $1$ (a value of $1$ corresponds to a perfect estimate.). The accuracy of the memory utilization can be found in \autoref{fig:eval_mem}. This figure shows the same pattern, except that the peak in the beginning is a bit higher. We conclude that the pricing model is therefore accurate to an acceptable extent.
 
 \begin{figure}
     \centering
@@ -73,11 +73,9 @@ The first query above is for the CPU analysis, while the second is for the memor
     \label{fig:eval_mem}
 \end{figure}
 
-\noindent 
-We conclude that the pricing model is accurate to a certain extend. The latter of this section has shown that the utilization values are close to the real values, which makes them accurate. The first part of this section discusses the pricing values used. Although they are too simplistic, and therefore limited accurate, they provide an easy-to-use solution for the user of the developed solution.
-
 \subsection{Network traffic accuracy} \label{sec:eval_k}
-This section presents the accuracy of network traffic monitoring. In order to do so, a supernode was deployed to monitor two containers. One container acting as a web-service, and one container continuously sending requests. The command for collecting all values can be found below:
+This section presents the accuracy of network traffic monitoring. In order to do so, a supernode was deployed to monitor two containers. One container acting as a web-service, and one container continuously sending requests. The command for collecting all values can be found below:\\\\
+
 
 \begin{lstlisting}[language=bash, caption=Docker-compose]
 git clone https://github.com/dadvisor/util
@@ -100,7 +98,7 @@ rate(bytes_send_total[5m])
 \end{verbatim}
 
 \noindent
-The analysis has been repeated for different K-values. The meaning of the K-values are described in \autoref{sec:exposing_data}. The data obtained for $K = 0$ can be found in \autoref{fig:network_traffic_accuracy}. This figure shows the accuracy of the network traffic monitoring evaluation. Note that this figure shows several spikes, which is due to the difference update frequency of both variables. Therefore, the minimum and maximum value represent the boundaries of the accuracy. Furthermore, the accuracy is summarized by computing the average. The accuracy is evaluated by an increasing load. The load for $K = 0$ can be found in \autoref{fig:increasing_load}. The results for different K-values can be found in \autoref{tab:accuracy_results}.
+The analysis has been repeated for different K-values. The meaning of the K-values are described in \autoref{sec:exposing_data}. The data obtained for $K = 0$ can be found in \autoref{fig:network_traffic_accuracy}. This figure shows the accuracy of the network traffic monitoring evaluation. Note that this figure shows several spikes, which is due to the different update frequency of both variables. Therefore, the minimum and maximum value represent the boundaries of the accuracy. Furthermore, the accuracy is summarized by computing the average. The accuracy is evaluated by an increasing load. The load for $K = 0$ can be found in \autoref{fig:increasing_load}. The results for different K-values can be found in \autoref{tab:accuracy_results}.\\
 
 \begin{figure}
     \centering
@@ -132,24 +130,16 @@ The analysis has been repeated for different K-values. The meaning of the K-valu
     \label{tab:accuracy_results}
 \end{table}
 
-\subsection{Conclusion} \label{sec:accuracy_conclusion}
-From \autoref{tab:accuracy_results} can be concluded that there is huge difference in average accuracy between the different K-values. Therefore, we cannot claim that the accuracy drops if the K-value increases. What can be concluded from this table, is the fact that the CPU usage drops if the K-value increases. This is due to a longer sleeping period. However, this number is not very accurate, as the analyses is performed on a single node. Therefore, the overhead of communicating with other nodes is not evaluated.
+\label{sec:accuracy_conclusion}
+\noindent
+From \autoref{tab:accuracy_results} can be concluded that there is huge difference in average accuracy between the different K-values. Therefore, we cannot claim that the accuracy decreases if the K-value increases. What can be concluded from this table, is the fact that the CPU usage decreases if the K-value increases. This is due to a longer sleeping period.
 
 \section{Evaluating sub questions} \label{sec:subquestions}
-This section evaluates the sub questions proposed in \autoref{sec:research_question}. The research question (\textbf{Q1}) is answered in \autoref{ch:conclusion}.
+This section evaluates the questions proposed in \autoref{sec:research_question}. The research question (\textbf{Q1}) is answered in \autoref{ch:conclusion}.
 
 \begin{quote}
     \begin{itemize}
-        \item[\textbf{Q2}: ]\textit{How can the utilization of a Cloud-based application be monitored in an effective manner?}
-    \end{itemize}
-\end{quote}
-\noindent
-The utilization of a Cloud-based Application is monitored using the proposed solution, which is running on every Virtual Machine of the system. The solution consists of the cAdvisor monitoring tool and the own developed dAdvisor. The latter aggregates the information from cAdvisor, and exports it to Prometheus. This is configured such that it strives a balance between effectiveness and efficiency by aggregating the data every minute. Therefore, the proposed solution has limited accuracy (as can be seen in \autoref{fig:eval_cpu} and \autoref{fig:eval_mem}).
-
-
-\begin{quote}
-    \begin{itemize}
-        \item[\textbf{Q3}: ]\textit{What is an accurate pricing model for estimating the cost of a Cloud-based application?}
+        \item[\textbf{Q2}: ]\textit{How can the cost of a Cloud-based Application be accurately estimated?}
     \end{itemize}
 \end{quote}
 \noindent
@@ -158,19 +148,19 @@ The pricing model used in this thesis is described in \autoref{sec:pricing}. It 
 
 \begin{quote}
     \begin{itemize}
-        \item[\textbf{Q4}: ]\textit{What is an effective approach for computing the waste of a Cloud-based application?}
+        \item[\textbf{Q3}: ]\textit{What is an effective and accurate approach for computing the waste of a Cloud-based Application?}
     \end{itemize}
 \end{quote}
 \noindent
-In \autoref{sec:approaches}, three approaches are designed to distribute the unused resources over the available containers. These approaches are first evaluated in \autoref{sec:optimal_approach} by their memory and computational complexity. Furthermore, they are evaluated by the accuracy, which is interpreted as which approach divides the waste using a fair distribution. This leads to an effective approach, which is described in \autoref{sec:linear}.
+In \autoref{sec:approaches}, three approaches are designed to distribute the unused resources over the available containers. These approaches are first evaluated in \autoref{sec:optimal_approach} by their memory and computational complexity. Furthermore, they are evaluated by the effectiveness, which is interpreted as which approach divides the waste using a fair distribution. This leads to an effective approach, which is described in \autoref{sec:linear}. The accuracy is evaluated in \autoref{sec:accuracy_evaluation}. This section concludes that the developed solution is partially accurate.
 
 \begin{quote}
     \begin{itemize}
-        \item[\textbf{Q5}: ]\textit{How can the cost and waste be presented to the user in a scalable and effective manner?}
+        \item[\textbf{Q4}: ]\textit{How can the cost and waste be presented to the user in an efficient and effective manner?}
     \end{itemize}
 \end{quote}
 \noindent
-In order to answer this sub question, the question can be divided into two parts. First, the scalability is already discussed in \autoref{sec:eval_arch_req}. This section explains that the presented info is scalable, but has it limits. Effectiveness is evaluated by the CPU usage, as presented in \autoref{tab:accuracy_results}. This table shows that the overhead is quite low, depending on the K-value used. Using the case study, we determine the overhead of running the root node. \autoref{fig:deployment:jotunheim-root} shows that the average CPU utilization is $2.5\%$. This implies that the data is presented in an effective manner. 
+In order to answer this sub question, the question can be divided into two parts. First,  efficiency is evaluated according to the case study with the industrial company. The deployed monitoring system shows an average CPU usage of $4\%$ (\autoref{fig:deployment}). When it comes to presenting the information to the user, the CPU usage is $2.5\%$ on average. It can therefore be concluded that the solution is efficient. Second, effectiveness is evaluated by an interview with a technical employee of the company. This interview confirms that the gathered information of the deployed system `will be incredibly helpful', and the solution is `useful in increasing the understanding of how the system operates as a whole'. This concludes that the data is presented in an efficient and effective manner.
 
 \section{Conclusion}
-This chapter has provided the evaluation of the system. We conclude that most requirements are met, with seven out of ten. The accuracy of the system is evaluated in \autoref{sec:accuracy_evaluation}. This section concludes that the pricing model is not completely accurate, and the network accuracy is sufficient accurate for $K = 0$. This chapter ends with answering the sub questions in \autoref{sec:subquestions}. The sub questions are used for answering the research question in \autoref{ch:conclusion}.
+This chapter has provided the evaluation of the system. We conclude that most requirements are met, with seven out of ten. The accuracy of the system is evaluated in \autoref{sec:accuracy_evaluation}. This section concludes that the pricing model is not completely accurate, and the network accuracy is sufficient accurate for $K = 0$. This chapter ends with answering the defined research questions in \autoref{sec:subquestions}. These answers are used for answering the research question in \autoref{ch:conclusion}.
