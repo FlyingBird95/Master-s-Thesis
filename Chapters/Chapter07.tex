@@ -4,7 +4,7 @@
 This chapter concludes the thesis by providing a small summary of the work performed (\autoref{sec:ch7_con}). Furthermore, it ends with a section about the future work (\autoref{sec:future_work}).
 
 \section{Conclusion} \label{sec:ch7_con}
-This research attempts to provide insights into the costs of Cloud Computing from the perspective of Cloud Consumers. In order to do so, the costs are divided into two categories, which are \textit{effective cost} and \textit{waste cost}.
+This research attempts to provide insights into the costs of Cloud Computing from the perspective of Cloud Consumers. In order to do so, the costs are divided into two categories, which are \textit{effective cost} and \textit{waste cost}.\\
 
 \noindent
 \autoref{ch:related_work} describes the related literature in the field of Cloud Computing Monitoring. It lists the open issues, which includes the lack of custom algorithms and techniques that provide effective summaries. The related literature is grouped into three categories: resource selection, architecture, and estimating cost. For all of these categories, the relevant papers are discussed. This chapter ends with explaining the popular open-source stack for Service Monitoring, which consists of cAdvisor, Prometheus and Grafana.\\
@@ -28,7 +28,7 @@ Apart from the interview, the solution is analysed by evaluating the requirement
 \end{quote}
 
 \noindent
-The proposed solution starts with monitoring the resources of the individual components using a distributed architecture. By proposing a pricing model can the resources be converted into the \textit{effective cost}. This can be computed on a containerized level. Using an algorithm, the unused resources are divided over the available containers with a \textit{linear inverse distribution}. This can be used to compute the \textit{waste cost}. The results can be aggregated by assigning multiple containers into a cost-group. The information is presented at the root node of the system, using a Grafana dashboard. This leads to a scalable manner of monitoring a Cloud-based application.
+The proposed solution starts with monitoring the resources of the individual components using a distributed architecture. By proposing a pricing model, the resources can be converted into the \textit{effective cost}. This is computed on a containerized level. Using an algorithm, the unused resources are divided over the available containers with a \textit{linear inverse distribution}. This can be used to compute the \textit{waste cost}. The results can be aggregated by assigning multiple containers into a group. The information is presented at the root node of the system, using a Grafana dashboard. The efficiency and effectiveness is evaluated in an empirical manner, by deploying the developed solution at an industrial company. The deployed monitoring system shows an average CPU usage of $4\%$ (\autoref{fig:deployment}). This concludes that the system is efficient. Effectiveness can be concluded from the interview with a technical employee of the industrial company. In this interview, the developed solution is described as `incredibly helpful', and the effective and waste cost are considered `quite useful'.
 
 \section{Future work} \label{sec:future_work}
 As explained in the case study, the proposed solution has several limitations that require further work. They are listed below:
